@@ -1,3 +1,5 @@
+import TableDriver from ".";
+
 export type ICellType = "body" | "header";
 export interface IRowKey {
     /**@description 序号，从0计数 */
@@ -78,3 +80,12 @@ export interface IActionItem {
     value?: any;
 }
 export type IActionStack = IActionItem[];
+
+// 操作执行动作
+export interface IActionService {
+    /**@description 执行,返回false时不入stack */
+    exec: (value: any, driver: TableDriver) => void | false;
+    /**@description 撤销 */
+    undo?: (value: any, driver: TableDriver) => void;
+}
+export type IAcitonServiceMap = ICacheObj<IActionService>;
