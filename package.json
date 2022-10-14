@@ -38,8 +38,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "i18next": "^21.9.1",
-    "i18next-browser-languagedetector": "^6.1.5",
     "lodash.merge": "^4.6.2",
     "mobx": "^6.6.2",
     "mobx-react-lite": "^3.4.0",
@@ -47,7 +45,6 @@
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
-    "react-i18next": "^11.18.5",
     "react-icons": "^4.4.0",
     "react-resizable": "^3.0.4",
     "styled-components": "^5.3.5"
@@ -64,6 +61,7 @@
     "@storybook/builder-vite": "^0.2.4",
     "@storybook/react": "^6.5.12",
     "@storybook/testing-library": "^0.0.13",
+    "@types/lodash.merge": "^4.6.7",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",

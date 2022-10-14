@@ -1,4 +1,5 @@
-import { makeObservable, observable, action } from "mobx"
+import { makeObservable, observable, action, computed } from "mobx"
+import { getValue } from "../utils/basicUtil";
 import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem } from "./ITableDriver"
 export default class TableDriver {
     // 操作栈
@@ -17,10 +18,19 @@ export default class TableDriver {
             selecting: observable,
             doAction: action,
             redoAction: action,
-            undoAction: action
+            undoAction: action,
+            reset: action
         });
+        // 直接使用props传入对象，作为整体处理
         this.config = config;
     }
+
+    reset(config: ITableCacheConfig) {
+        this.actionStack = [];
+        this.undoStack = [];
+        this.config = config;
+    }
+
     // 注册动作
     registerActions(actions: IAcitonServiceMap) {
         Object.keys(actions).map(key => {

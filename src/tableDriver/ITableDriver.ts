@@ -55,6 +55,7 @@ export interface ICellRange {
 }
 
 /**@description 整体存储结构 */
+// cells/rows/cols > header/body
 export interface ITableCacheConfig {
     /**@description 单元格单独配置 */
     cells?: ICacheObj<ICellConfig>;
@@ -70,6 +71,10 @@ export interface ITableCacheConfig {
     merged?: ICellRange[];
     /**@description 选择的单元格范围 */
     selected?: ICellRange[];
+    /**@description 指定的最小行数 */
+    rowCount?: number;
+    /**@description 指定的最小列数 */
+    colCount?: number;
 }
 
 /**操作栈相关 */
