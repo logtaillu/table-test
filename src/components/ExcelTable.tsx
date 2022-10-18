@@ -1,3 +1,7 @@
+/**
+ * 类excel表
+ * 由TableCore+特定service和传参构成
+ */
 import React from 'react'
 import colDataService from '../services/colDataService';
 import { ITableService } from '../services/ITableService';

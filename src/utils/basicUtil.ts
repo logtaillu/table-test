@@ -38,14 +38,3 @@ export const setValue = (paths: string[], target: any, value: any) => {
         }
     });
 }
-
-/**
- * 简单的添加样式前缀
- * @param cls 样式名
- * @returns string
- */
-const CLSPREFIX = "extable";
-export const prefix = (cls: string = "", prefixcls = "") => {
-    prefixcls = prefixcls || CLSPREFIX;
-    return cls.length ? cls.split(" ").filter(s => !!s).map(s => prefixcls + "-" + s).join(" ") : prefixcls;
-}

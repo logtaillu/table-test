@@ -11,7 +11,7 @@ table + services集合=>功能table
 2. 工具栏-toolbars
 3. 功能services-actions/props handle
 /components 组件列表
-/toolbars 工具栏组件，订阅存储结构的内容
+/toolbarItems 工具栏组件，订阅存储结构的内容
 /tableDriver 配置交互存储结构
 包含配置内容和操作栈
 /services 功能

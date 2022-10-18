@@ -1,3 +1,7 @@
+/**
+ * 数据表
+ * 由TableCore+特定service和传参构成
+ */
 import React from 'react'
 import { ITableService } from '../services/ITableService';
 import TableCore, { ITableCoreProps } from './TableCore'

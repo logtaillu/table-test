@@ -2,7 +2,7 @@ import TableDriver from ".";
 
 export type ICellType = "body" | "header";
 export interface IRowKey {
-    /**@description 序号，从0计数 */
+    /**@description 序号，从0计数，单个类型 */
     index: number;
     /**@description 类型 */
     type: ICellType;
@@ -53,6 +53,15 @@ export interface ICellRange {
     from: ICellKey;
     to: ICellKey;
 }
+/**
+ * @description 范围间关系
+ * in 被包含
+ * out 分离
+ * same 完全相同
+ * part 部分重叠，交错
+ * contain 包含
+ */
+export type IRangeRelation = "in" | "out" | "same" | "part" | "contain";
 
 /**@description 整体存储结构 */
 // cells/rows/cols > header/body
@@ -69,7 +78,7 @@ export interface ITableCacheConfig {
     body?: IGlobalCacheConfig;
     /**@description 合并的单元格范围 */
     merged?: ICellRange[];
-    /**@description 选择的单元格范围 */
+    /**@description 选择的单元格范围，以最小单元格计算 */
     selected?: ICellRange[];
     /**@description 指定的最小行数 */
     rowCount?: number;
