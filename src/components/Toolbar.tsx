@@ -48,10 +48,8 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
         return (
             <div className="dropdown" key={target.key}>
                 {btn}
-                <div tabIndex={0} className="dropdown-content card card-compact w-auto p-2 shadow bg-white text-primary-content">
-                    <div className="card-body">
-                        {target.dropdown(args)}
-                    </div>
+                <div tabIndex={0} className="dropdown-content card card-compact w-auto p-0 shadow bg-white text-primary rounded">
+                    {target.dropdown(args)}
                 </div>
             </div>
         )
@@ -63,30 +61,29 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
 export interface IActionToolbarProps {
     /**@description 控制器 */
     driver: TableDriver;
+    /**@description 自定义工具栏 */
+    items?: IToolbarItem[];
+    /**@description 自定义资源表 */
+    sources?: Record<string, any>;
     /**@description 是否有工具栏 */
-    toolbar?: false | {
-        /**@description 自定义工具栏 */
-        items?: IToolbarItem[];
-        /**@description 自定义资源表 */
-        sources?: Record<string, any>;
-    };
+    toolbar?: boolean;
 }
 /**@description 工具栏 */
 export default observer(function (props: IActionToolbarProps) {
-    const { toolbar, driver } = props;
+    const { toolbar, driver, items, sources } = props;
     if (!toolbar) {
         return null;
     }
-    const list = (toolbar.items || ToolbarItem.defaultList).map((item, idx) => {
+    const list = (items || []).map((item, idx) => {
         const target = ToolbarItem.item(item);
         if (!target) {
             return <div key={idx} />;
         } else {
-            return <ReactToolbarItem key={target.key} driver={driver} target={target} sources={toolbar.sources} />;
+            return <ReactToolbarItem key={target.key} driver={driver} target={target} sources={sources} />;
         }
     });
     return (
-        <div className={driver.prefix("toolbar")}>
+        <div className={driver.prefix("toolbar") + " flex"}>
             {list}
         </div>
     )

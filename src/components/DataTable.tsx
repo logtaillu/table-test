@@ -4,7 +4,8 @@
  */
 import React from 'react'
 import { ITableService } from '../services/ITableService';
-import TableCore, { ITableCoreProps } from './TableCore'
+import TableCore, { ITableCoreProps } from './TableCore';
+const defaultToolbar = ['undo', 'redo', 'globalRange'];
 export interface IDataTableProps extends ITableCoreProps{
 }
 export default function (props: IDataTableProps) {
@@ -12,5 +13,5 @@ export default function (props: IDataTableProps) {
     let sary: ITableService[] = [
     ];
     sary = sary.concat(services || []);
-    return <TableCore {...coreProps} services={sary} />;
+    return <TableCore items={defaultToolbar} {...coreProps} services={sary} />;
 }

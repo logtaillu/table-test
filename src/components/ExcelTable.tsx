@@ -7,7 +7,8 @@ import colDataService from '../services/colDataService';
 import { ITableService } from '../services/ITableService';
 import rangeSelectService from '../services/rangeSelectService';
 import TableCore, { ITableCoreProps } from './TableCore'
-export interface IExcelTableProps extends ITableCoreProps{
+const defaultToolbar = ['undo', 'redo'];
+export interface IExcelTableProps extends ITableCoreProps {
 }
 export default function (props: IExcelTableProps) {
     const { services, ...coreProps } = props;
@@ -17,6 +18,7 @@ export default function (props: IExcelTableProps) {
     ];
     sary = sary.concat(services || []);
     return <TableCore
+        items={defaultToolbar}
         showHeader={false}
         {...coreProps}
         services={sary}

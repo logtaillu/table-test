@@ -7,11 +7,13 @@ import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellR
 import DriverFunc from "./DriverFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
+export type IGlobalRange = "body" | "header" | "all";
 export interface ISettableProps {
     config?: ITableCacheConfig
     prefixCls?: string;
     lang?: string;
     editable?: boolean;
+    globalRange?: IGlobalRange;
 }
 export default class TableDriver extends DriverFunc {
     // 操作栈
@@ -32,6 +34,8 @@ export default class TableDriver extends DriverFunc {
     editable: boolean = false;
     // 表格元素
     tableRef: HTMLDivElement | null = null;
+    // 当前的全局设置维度
+    globalRange: IGlobalRange = "body";
     constructor(props: ISettableProps) {
         super();
         makeObservable(this, {
@@ -51,7 +55,8 @@ export default class TableDriver extends DriverFunc {
             redoEnable: computed,
             lang: observable,
             editable: observable,
-            setConf: observable
+            setConf: observable,
+            globalRange: observable
         });
         // 直接使用props传入对象，作为整体处理
         this.setConf(props);
@@ -69,6 +74,9 @@ export default class TableDriver extends DriverFunc {
         }
         if ('editable' in props) {
             this.editable = !!props.editable;
+        }
+        if (props.globalRange) {
+            this.globalRange = props.globalRange;
         }
     }
 

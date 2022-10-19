@@ -5,7 +5,11 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      padding: {
+        "4px": "4px"
+      }
+    },
   },
   plugins: [require("daisyui")]
 }

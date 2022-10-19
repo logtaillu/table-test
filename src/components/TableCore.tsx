@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { observer } from "mobx-react-lite";
-import TableDriver from '../tableDriver';
+import TableDriver, { IGlobalRange } from '../tableDriver';
 import InnerTable from './InnerTable';
 import SelectRange from './SelectRange';
 import Toolbar, { IActionToolbarProps } from './Toolbar';
@@ -17,7 +17,7 @@ export interface IThemeVar extends React.CSSProperties {
     "--border-type": string;
     [key: string]: any;
 }
-export interface ITableCoreProps extends TableProps<any>, Pick<IActionToolbarProps, "toolbar"> {
+export interface ITableCoreProps extends TableProps<any>, Pick<IActionToolbarProps, "toolbar" | "items" | "sources"> {
     /**@description 自定义配置 */
     config?: ITableCacheConfig;
     /**@description 启用的功能 */
@@ -32,6 +32,8 @@ export interface ITableCoreProps extends TableProps<any>, Pick<IActionToolbarPro
     lang?: string;
     /**@description 自定义语言文本 */
     locales?: Record<string, any>;
+    /**@description 默认的全局设置范围 */
+    globalRange?: IGlobalRange;
 }
 const getMessages = (lang?: string, locales?: Record<string, any>) => {
     lang = lang || "zh-CN";
@@ -41,9 +43,9 @@ const getMessages = (lang?: string, locales?: Record<string, any>) => {
     }
 }
 export default observer(React.forwardRef(function (props: ITableCoreProps, ref) {
-    const { config, services, toolbar, wrapClassName, theme, lang, locales, editable, ...tableProps } = props;
+    const { config, services, toolbar, wrapClassName, theme, lang, locales, editable, globalRange, items, sources, ...tableProps } = props;
     const { prefixCls } = tableProps;
-    const [driver] = useState(() => new TableDriver({ prefixCls, lang: navigator.language || lang, editable, config: config || {} }));
+    const [driver] = useState(() => new TableDriver({ prefixCls, lang: navigator.language || lang, editable, config: config || {}, globalRange }));
     const isMounted = useRef(false);
     useEffect(() => {
         return () => {
@@ -64,9 +66,9 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
         if (!isMounted.current) {
             isMounted.current = true;
         } else {
-            driver.setConf({ prefixCls, lang, editable });
+            driver.setConf({ prefixCls, lang, editable, globalRange });
         }
-    }, [prefixCls, lang, editable]);
+    }, [prefixCls, lang, editable, globalRange]);
     // 挂载services的actions
     useEffect(() => {
         if (services) {
@@ -87,7 +89,7 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
     return (
         <IntlProvider locale={driver.lang} defaultLocale="zh-CN" messages={getMessages(lang, locales)}>
             <div className={driver.prefix("table-wrapper") + " " + (wrapClassName || "")} style={theme || {}}>
-                <Toolbar driver={driver} toolbar={toolbar} />
+                <Toolbar driver={driver} toolbar={toolbar} items={items} sources={sources} />
                 <div ref={setRef} className={driver.prefix("inner-table")}>
                     <InnerTable driver={driver} table={tableProps} services={services} />
                     <SelectRange driver={driver} />

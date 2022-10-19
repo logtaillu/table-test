@@ -18,7 +18,7 @@ export interface IToolbarItemObj {
     /**@description 标识 */
     key: string;
     /**@description 资源列表 */
-    source?: IToolbarFunc<any>;
+    source?: any;
     /**@description 提示语 */
     tooltip: IToolbarFunc<string>;
     /**@description 图标 */
