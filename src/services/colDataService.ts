@@ -1,3 +1,4 @@
+// 最小行列数补充
 import { TableProps } from "rc-table/lib/Table";
 import { ITableService } from "./ITableService";
 const ENRICH_COLUMN = "enrichCol";

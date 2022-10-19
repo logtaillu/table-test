@@ -38,6 +38,7 @@ export default class TableDriver extends DriverFunc {
             config: observable,
             selecting: observable,
             doAction: action,
+            exec: action,
             redoAction: action,
             undoAction: action,
             reset: action,
@@ -105,7 +106,7 @@ export default class TableDriver extends DriverFunc {
     doAction(action: IActionItem, clearUndo: boolean = true) {
         const service = this.actionMap[action.type];
         if (service) {
-            const result = service.exec(action, this);
+            const result = service.exec(this, action.value);
             if (result === false) {
                 return;
             }
@@ -118,6 +119,10 @@ export default class TableDriver extends DriverFunc {
                 }
             }
         }
+    }
+
+    exec(type: string, value?: any) {
+        this.doAction({ type, value });
     }
     // 重做
     redoAction() {
@@ -163,8 +168,9 @@ export default class TableDriver extends DriverFunc {
     get selectedShowRanges() {
         const merged = this.config.merged || [];
         return (this.config.selected || []).map(range => {
+            // 格式化
             let { from, to } = this.getFormatedRange(range);
-            // 找到包含右下角的
+            // 考虑非最小格的情况，找到包含右下角的
             const target = merged.find(current => {
                 return this.getCellRelationToRange(to, current) !== "out";
             });
@@ -175,7 +181,7 @@ export default class TableDriver extends DriverFunc {
         });
     }
 
-   /************************事件相关 ********************************/
+    /************************事件相关 ********************************/
     /**是否目标table */
     isEventTarget(e: any) {
         const wrapper = e.target?.closest(`div.${this.prefix("inner-table")}`);

@@ -76,9 +76,9 @@ export interface ITableCacheConfig {
     header?: IGlobalCacheConfig;
     /**@description 内容全局配置 */
     body?: IGlobalCacheConfig;
-    /**@description 合并的单元格范围 */
+    /**@description 合并的单元格范围，可以not formatted */
     merged?: ICellRange[];
-    /**@description 选择的单元格范围，以最小单元格计算 */
+    /**@description 选择的单元格范围，可以not formatted，可以非最小单元格 */
     selected?: ICellRange[];
     /**@description 指定的最小行数 */
     rowCount?: number;
@@ -98,8 +98,8 @@ export type IActionStack = IActionItem[];
 // 操作执行动作
 export interface IActionService {
     /**@description 执行,返回false时不入stack */
-    exec: (value: any, driver: TableDriver) => void | false;
+    exec: (driver: TableDriver, value: any) => void | false;
     /**@description 撤销 */
-    undo?: (value: any, driver: TableDriver) => void;
+    undo?: (driver: TableDriver, value: any) => void;
 }
 export type IAcitonServiceMap = ICacheObj<IActionService>;
