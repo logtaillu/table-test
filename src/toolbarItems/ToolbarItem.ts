@@ -1,9 +1,12 @@
 // 工具栏组件表，目前不做observe控制
 import { IToolbarItem, IToolbarItemObj } from "./IToolbarItem";
+import { redo, undo } from "./redoundo";
 
-class ToolbarItemControler{
-    private itemMap: Record<string, IToolbarItemObj> = {};
-    private defaultItems: IToolbarItem[] = [];
+class ToolbarItemControler {
+    private itemMap: Record<string, IToolbarItemObj> = {
+        redo, undo
+    };
+    private defaultItems: IToolbarItem[] = ["undo", "redo"];
     // 注册
     register(items: IToolbarItemObj[]) {
         items.map(item => {

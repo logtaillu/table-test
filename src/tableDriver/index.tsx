@@ -5,6 +5,12 @@
 import { makeObservable, observable, action, computed } from "mobx"
 import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange } from "./ITableDriver"
 import DriverFunc from "./DriverFunc";
+export interface ISettableProps {
+    config?: ITableCacheConfig
+    prefixCls?: string;
+    lang?: string;
+    editable?: boolean;
+}
 export default class TableDriver extends DriverFunc {
     // 操作栈
     actionStack: IActionStack = [];
@@ -18,9 +24,13 @@ export default class TableDriver extends DriverFunc {
     actionMap: IAcitonServiceMap = {};
     // 样式前缀
     prefixCls: string = "extable";
+    // 语言
+    lang: string = "zh-CN";
+    // 编辑状态
+    editable: boolean = false;
     // 表格元素
     tableRef: HTMLDivElement | null = null;
-    constructor(config: ITableCacheConfig, prefixCls?: string) {
+    constructor(props: ISettableProps) {
         super();
         makeObservable(this, {
             config: observable,
@@ -32,15 +42,34 @@ export default class TableDriver extends DriverFunc {
             selectedRanges: computed,
             mergedRanges: computed,
             selectedShowRanges: computed,
-            prefix: computed,
-            tableRef: observable.ref
+            tableRef: observable.ref,
+            prefixCls: observable,
+            undoEnable: computed,
+            redoEnable: computed,
+            lang: observable,
+            editable: observable,
+            setConf: observable
         });
         // 直接使用props传入对象，作为整体处理
-        this.config = config;
-        if (prefixCls) {
-            this.prefixCls = prefixCls;
+        this.setConf(props);
+    }
+
+    setConf(props: ISettableProps) {
+        if (props.config) {
+            this.config = props.config;
+        }
+        if (props.lang) {
+            this.lang = props.lang;
+        }
+        if (props.prefixCls) {
+            this.prefixCls = props.prefixCls;
+        }
+        if ('editable' in props) {
+            this.editable = !!props.editable;
         }
     }
+
+
     // 简易的样式前缀补充函数
     prefix = (cls: string = "") => {
         return cls.length ? cls.split(" ").filter(s => !!s).map(s => this.prefixCls + "-" + s).join(" ") : this.prefixCls;
@@ -100,6 +129,15 @@ export default class TableDriver extends DriverFunc {
             }
         }
     }
+
+
+    get undoEnable() {
+        return this.actionStack.length > 0;
+    }
+
+    get redoEnable() {
+        return this.undoStack.length > 0;
+    }
     /************************范围(range)操作 ********************************/
 
     get selectedRanges(): ICellRange[] {
@@ -124,6 +162,4 @@ export default class TableDriver extends DriverFunc {
             return { from, to };
         });
     }
-
-
 }

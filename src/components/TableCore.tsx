@@ -9,25 +9,41 @@ import { ITableService } from '../services/ITableService';
 import { TableProps } from 'rc-table/lib/Table';
 import "../styles/main.css";
 import "../styles/index.less";
+import { IntlProvider } from 'react-intl';
+import messages from "../locales/index";
 export interface IThemeVar extends React.CSSProperties {
     "--border-color": string;
     "--border-width": string;
     "--border-type": string;
+    [key: string]: any;
 }
 export interface ITableCoreProps extends TableProps<any>, Pick<IActionToolbarProps, "toolbar"> {
     /**@description 自定义配置 */
     config?: ITableCacheConfig;
     /**@description 启用的功能 */
     services?: ITableService[];
+    /**@description 编辑状态 */
+    editable?: boolean;
     /**@description 主题var变量配置，同时包含外层style */
     theme?: IThemeVar;
     /**@description 外层className */
     wrapClassName?: string;
+    /**@description 当前语言 */
+    lang?: string;
+    /**@description 自定义语言文本 */
+    locales?: Record<string, any>;
+}
+const getMessages = (lang?: string, locales?: Record<string, any>) => {
+    lang = lang || "zh-CN";
+    return {
+        ...(messages[lang] || messages["zh-CN"]),
+        ...(locales ? (locales[lang] || locales["zh-CN"]) : {})
+    }
 }
 export default observer(React.forwardRef(function (props: ITableCoreProps, ref) {
-    const { config, services, toolbar, wrapClassName, theme, ...tableProps } = props;
+    const { config, services, toolbar, wrapClassName, theme, lang, locales, editable, ...tableProps } = props;
     const { prefixCls } = tableProps;
-    const [driver] = useState(() => new TableDriver(config || {}, prefixCls));
+    const [driver] = useState(() => new TableDriver({ prefixCls, lang: navigator.language || lang, editable, config: config || {} }));
     const isMounted = useRef(false);
     useEffect(() => {
         return () => {
@@ -43,14 +59,14 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
         }
     }, [config]);
 
-    // prefixCls改变
+    // config对象以外的改变
     useEffect(() => {
         if (!isMounted.current) {
             isMounted.current = true;
-        } else if (typeof (prefixCls) === "string") {
-            driver.prefixCls = prefixCls;
+        } else {
+            driver.setConf({ prefixCls, lang, editable });
         }
-    }, [prefixCls]);
+    }, [prefixCls, lang, editable]);
     // 挂载services的actions
     useEffect(() => {
         (services || []).map(s => driver.registerActions(s.actions));
@@ -63,14 +79,15 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
     useImperativeHandle(ref, () => ({
 
     }));
-
     return (
-        <div className={driver.prefix("table-wrapper") + " " + (wrapClassName || "")} style={theme || {}}>
-            <Toolbar driver={driver} toolbar={toolbar}/>
-            <div ref={setRef} className={driver.prefix("inner-table")}>
-                <InnerTable driver={driver} table={tableProps} services={services} />
-                <SelectRange driver={driver} />
+        <IntlProvider locale={driver.lang} defaultLocale="zh-CN" messages={getMessages(lang, locales)}>
+            <div className={driver.prefix("table-wrapper") + " " + (wrapClassName || "")} style={theme || {}}>
+                <Toolbar driver={driver} toolbar={toolbar} />
+                <div ref={setRef} className={driver.prefix("inner-table")}>
+                    <InnerTable driver={driver} table={tableProps} services={services} />
+                    <SelectRange driver={driver} />
+                </div>
             </div>
-        </div>
+        </IntlProvider>
     )
 }));

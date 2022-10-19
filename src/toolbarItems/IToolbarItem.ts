@@ -1,4 +1,5 @@
 import React from "react";
+import { IntlShape } from "react-intl";
 import TableDriver from "../tableDriver";
 /**
  * 工具栏项目
@@ -7,7 +8,12 @@ import TableDriver from "../tableDriver";
  * 可以设置disabled和active状态
  * 能做source覆盖
  */
-export type IToolbarFunc<T> = (driver: TableDriver, source: any) => T;
+export interface IToolbarArgs {
+    driver: TableDriver;
+    intl: IntlShape;
+    source: any;
+}
+export type IToolbarFunc<T> = (args: IToolbarArgs) => T;
 export interface IToolbarItemObj {
     /**@description 标识 */
     key: string;

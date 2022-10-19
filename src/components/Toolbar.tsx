@@ -7,6 +7,7 @@ import TableDriver from '../tableDriver';
 import { IToolbarItem, IToolbarItemObj } from '../toolbarItems/IToolbarItem';
 import ToolbarItem from '../toolbarItems/ToolbarItem';
 import classnames from "classnames";
+import { useIntl } from 'react-intl';
 export interface IToolBarItem {
     /**@description 控制器 */
     driver: TableDriver;
@@ -18,24 +19,28 @@ export interface IToolBarItem {
 /**@description 工具栏单项 */
 const ReactToolbarItem = observer(function (props: IToolBarItem) {
     const { target, driver, sources } = props;
+    const intl = useIntl();
     const source = sources && sources[target.key] || target.source;
+    const args = { driver, source, intl };
     const click = () => {
         if (target.onClick) {
-            target.onClick(driver, source);
+            target.onClick(args);
         }
     };
-    const disabled = target.disabled ? target.disabled(driver, source) : false;
-    const active = target.active ? target.active(driver, source) : false;
+    const disabled = target.disabled ? target.disabled(args) : false;
+    const active = target.active ? target.active(args) : false;
     const cls = classnames({
         "btn": true,
         "btn-square": true,
         "btn-disabled": disabled,
-        "btn-active": active
+        "btn-active": active,
+        "rounded-none": true,
+        "btn-sm": true
     })
     const btn = (
-        <div className="tooltip" data-tip={target.tooltip(driver, source)} key={target.key} tabIndex={0}>
-            <button className={cls} onClick={click} disabled={disabled} >
-                {target.icon(driver, source)}
+        <div className="tooltip tooltip-bottom" data-tip={target.tooltip(args)} key={target.key} tabIndex={0}>
+            <button className={cls} onClick={click} >
+                {target.icon(args)}
             </button>
         </div>
     );
@@ -45,7 +50,7 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
                 {btn}
                 <div tabIndex={0} className="dropdown-content card card-compact w-auto p-2 shadow bg-white text-primary-content">
                     <div className="card-body">
-                        {target.dropdown(driver, source)}
+                        {target.dropdown(args)}
                     </div>
                 </div>
             </div>
