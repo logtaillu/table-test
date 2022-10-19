@@ -5,6 +5,8 @@
 import { makeObservable, observable, action, computed } from "mobx"
 import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange } from "./ITableDriver"
 import DriverFunc from "./DriverFunc";
+import { ITableService } from "../services/ITableService";
+import eventUtil from "../utils/eventUtil";
 export interface ISettableProps {
     config?: ITableCacheConfig
     prefixCls?: string;
@@ -83,10 +85,20 @@ export default class TableDriver extends DriverFunc {
     }
 
     // 注册动作
-    registerActions(actions: IAcitonServiceMap) {
-        Object.keys(actions).map(key => {
-            this.actionMap[key] = actions[key];
+    register(services: ITableService[]) {
+        services.map(service => {
+            const { actions = {}, events = [] } = service;
+            if (actions) {
+                Object.keys(actions).map(key => {
+                    this.actionMap[key] = actions[key];
+                });
+            }
+            eventUtil.addEvents(this, events);
         });
+    }
+    // 移除
+    remove() {
+        eventUtil.removeEvents(this);
     }
 
     // 执行操作
@@ -161,5 +173,12 @@ export default class TableDriver extends DriverFunc {
             }
             return { from, to };
         });
+    }
+
+   /************************事件相关 ********************************/
+    /**是否目标table */
+    isEventTarget(e: any) {
+        const wrapper = e.target?.closest(`div.${this.prefix("inner-table")}`);
+        return wrapper === this.tableRef;
     }
 }

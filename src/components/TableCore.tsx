@@ -69,7 +69,12 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
     }, [prefixCls, lang, editable]);
     // 挂载services的actions
     useEffect(() => {
-        (services || []).map(s => driver.registerActions(s.actions));
+        if (services) {
+            driver.register(services);
+        }
+        return () => {
+            driver.remove();
+        }
     }, [services]);
     const setRef = (n: HTMLDivElement) => {
         driver.tableRef = n;
