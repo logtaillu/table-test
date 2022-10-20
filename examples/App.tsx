@@ -14,19 +14,19 @@ const getData = (str: string, num: number) => {
 }
 export default function () {
     const [exConf] = useState<IExcelTableProps>({
-        toolbar: {},
+        toolbar: true,
         config: {
             rowCount: 5,
             colCount: 5
         }
     });
     const [dataConf] = useState<IDataTableProps>({
-        toolbar: {},
+        toolbar: true,
         data: getData("abcde", 6),
         columns: "abcde".split("").map(k => ({ title: k, dataIndex: k }))
     });
     return (
-        <div>
+        <div style={{padding: 30, background:"#f5f5f5"}}>
             <h1>data table</h1>
             <DataTable {...dataConf} />
             <h1>excel table</h1>

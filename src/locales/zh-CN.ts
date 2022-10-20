@@ -3,5 +3,6 @@ export default {
     "redo": "重做",
     "all": "全部",
     "header": "表头",
-    "body": "内容"
+    "body": "内容",
+    "globalRange": "范围选择"
 }

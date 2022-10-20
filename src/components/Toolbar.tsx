@@ -1,7 +1,7 @@
 /**
  * 工具栏
  */
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import TableDriver from '../tableDriver';
 import { IToolbarItem, IToolbarItemObj } from '../toolbarItems/IToolbarItem';
@@ -19,36 +19,80 @@ export interface IToolBarItem {
 /**@description 工具栏单项 */
 const ReactToolbarItem = observer(function (props: IToolBarItem) {
     const { target, driver, sources } = props;
+    const [open, setOpen] = useState(false);
+    const ref = useRef<any>(null);
+    const close = () => {
+        (document.activeElement as any)?.blur();
+        setOpen(false);
+    }
     const intl = useIntl();
     const source = sources && sources[target.key] || target.source;
-    const args = { driver, source, intl };
+    const args = { driver, source, intl, close };
+    // 需要dropdown时，打开下拉框，否则直接执行onClick
     const click = () => {
-        if (target.onClick) {
+        if (target.dropdown || target.listmode) {
+            if (open) {
+                close();
+            } else {
+                setOpen(true);
+                if (ref.current && ref.current.focus) {
+                    ref.current.focus();
+                }
+            }
+        } else if (target.onClick) {
             target.onClick(args);
         }
     };
+    // 按钮
     const disabled = target.disabled ? target.disabled(args) : false;
     const active = target.active ? target.active(args) : false;
     const cls = classnames({
         "btn": true,
         "btn-square": true,
         "btn-disabled": disabled,
-        "btn-active": active,
-        "rounded-none": true,
-        "btn-sm": true
-    })
+        "btn-active": active || open,
+        "rounded-sm": true,
+        "btn-sm": true,
+        "w-auto": true,
+        "min-w-sm": true,
+        "text-opacity-80": disabled,
+        "text-normal": true
+    });
     const btn = (
-        <div className="tooltip tooltip-bottom" data-tip={target.tooltip(args)} key={target.key} tabIndex={0}>
-            <button className={cls} onClick={click} >
+        <div className={open ? "" : "tooltip tooltip-bottom"} data-tip={target.tooltip(args)} key={target.key} tabIndex={0}>
+            <button className={cls} onClick={click} data-theme="toolbar">
                 {target.icon(args)}
             </button>
         </div>
     );
-    if (target.dropdown) {
+    const dpbasecls = " whitespace-nowrap dropdown-content shadow rounded translate-x-[-50%] left-[50%] bg-white";
+    // 下拉
+    if (target.listmode) {
         return (
-            <div className="dropdown" key={target.key}>
+            <div className='dropdown' key={target.key}>
                 {btn}
-                <div tabIndex={0} className="dropdown-content card card-compact w-auto p-0 shadow bg-white text-primary rounded">
+                <ul ref={ref} onBlur={close} tabIndex={0} className={"menu" + dpbasecls}>
+                    {(source || []).map(({ value, label }: { value: any, label: string }) => {
+                        const click = () => {
+                            if (target.onClick) {
+                                target.onClick({ ...args, value });
+                            }
+                            close();
+                        }
+                        return (
+                            <li key={value} value={value} onClick={click}>
+                                <a className={classnames({ "py-4px": true, active: target.listmode ? target.listmode(args) === value : false })}>{intl.formatMessage({ id: label, defaultMessage: label })}</a>
+                            </li>
+                        )
+                    })}
+                </ul>
+            </div>
+        )
+    } else if (target.dropdown) {
+        return (
+            <div className={"dropdown"} key={target.key}>
+                {btn}
+                <div ref={ref} onBlur={close} tabIndex={0} className={"card card-compact w-auto p-0 text-secondary-content" + dpbasecls}>
                     {target.dropdown(args)}
                 </div>
             </div>

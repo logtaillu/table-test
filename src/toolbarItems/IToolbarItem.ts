@@ -12,6 +12,9 @@ export interface IToolbarArgs {
     driver: TableDriver;
     intl: IntlShape;
     source: any;
+    close: () => void;
+    /**@description select list模式才有的value传参 */
+    value?: any;
 }
 export type IToolbarFunc<T> = (args: IToolbarArgs) => T;
 export interface IToolbarItemObj {
@@ -31,6 +34,8 @@ export interface IToolbarItemObj {
     onClick?: IToolbarFunc<void>;
     /**@description 下拉模式，此时不需要onClick */
     dropdown?: IToolbarFunc<React.ReactElement>;
+    /**@description 选择列表模式，启用时设置getActiveValue函数 */
+    listmode?: IToolbarFunc<any>;
 }
 
 export type IToolbarItem = IToolbarItemObj | string;

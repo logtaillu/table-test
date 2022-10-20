@@ -1,9 +1,9 @@
 import React from 'react'
 import { IToolbarItemObj } from "./IToolbarItem";
-import { FaRedo,FaUndo } from "react-icons/fa";
+import { ImUndo2,ImRedo2 } from "react-icons/im";
 export const undo: IToolbarItemObj = {
     key: "undo",
-    icon: () => <FaUndo />,
+    icon: () => <ImUndo2 />,
     tooltip: ({intl}) => intl.formatMessage({ id: "undo" }),
     disabled: ({driver}) => {
         return !driver.undoEnable;
@@ -14,7 +14,7 @@ export const undo: IToolbarItemObj = {
 }
 export const redo: IToolbarItemObj = {
     key: "redo",
-    icon: () => <FaRedo />,
+    icon: () => <ImRedo2 />,
     tooltip: ({ intl }) => intl.formatMessage({ id: "redo" }),
     disabled: ({driver}) => {
         return !driver.redoEnable;

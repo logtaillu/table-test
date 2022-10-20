@@ -5,24 +5,11 @@ import { IGlobalRange } from '../tableDriver';
 const keys: IGlobalRange[] = ["all", "body", "header"];
 export const globalRange: IToolbarItemObj = {
     key: "globalRange",
-    icon: ({ driver, intl }) => <span>{intl.formatMessage({ id: driver.globalRange })} </span>,
-    tooltip: ({ intl }) => intl.formatMessage({ id: "undo" }),
-    dropdown: ({ driver, intl }) => {
-        return (
-            <ul className="menu whitespace-nowrap">
-                {keys.map(key => {
-                    const active = driver.globalRange === key;
-                    const cls = classnames({ active, "py-4px": true });
-                    const change = () => {
-                        driver.globalRange = key;
-                    }
-                    return (
-                        <li key={key} onClick={change}>
-                            <a className={cls}>{intl.formatMessage({ id: key })}</a>
-                        </li>
-                    )
-                })}
-            </ul>
-        )
+    icon: ({ driver, intl }) => <span className="px-2">{intl.formatMessage({ id: driver.globalRange })} </span>,
+    tooltip: ({ intl }) => intl.formatMessage({ id: "globalRange" }),
+    listmode: ({driver})=>driver.globalRange,
+    source: keys.map(k => ({ value: k, label: k })),
+    onClick: ({ value, driver }) => {
+        driver.setConf({ globalRange: value });
     }
 }
