@@ -1,6 +1,6 @@
 import React from "react";
 import { IntlShape } from "react-intl";
-import TableDriver from "../tableDriver";
+import TableDriver from "../tableDriver/TableDriver";
 /**
  * 工具栏项目
  * 有点击和popover2种模式，应该也可以扩展其他模式，比如弹窗
@@ -23,9 +23,9 @@ export interface IToolbarItemObj {
     /**@description 资源列表 */
     source?: any;
     /**@description 提示语 */
-    tooltip: IToolbarFunc<string>;
+    tooltip: string | IToolbarFunc<string>;
     /**@description 图标 */
-    icon: IToolbarFunc<React.ReactElement>;
+    icon: React.ReactElement | IToolbarFunc<React.ReactElement>;
     /**@description 禁用状态 */
     disabled?: IToolbarFunc<boolean>;
     /**@description 高亮状态 */

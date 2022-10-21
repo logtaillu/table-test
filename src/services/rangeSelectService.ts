@@ -1,4 +1,4 @@
-import TableDriver from "../tableDriver";
+import TableDriver from "../tableDriver/TableDriver";
 import { ICellKey } from "../tableDriver/ITableDriver";
 import { ITableService } from "./ITableService";
 export interface ISelectRangeAction {

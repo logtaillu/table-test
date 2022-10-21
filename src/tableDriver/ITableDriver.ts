@@ -1,4 +1,4 @@
-import TableDriver from ".";
+import TableDriver from "./TableDriver";
 
 export type ICellType = "body" | "header";
 export interface IRowKey {
@@ -78,7 +78,7 @@ export interface ITableCacheConfig {
     body?: IGlobalCacheConfig;
     /**@description 合并的单元格范围，可以not formatted */
     merged?: ICellRange[];
-    /**@description 选择的单元格范围，可以not formatted，可以非最小单元格 */
+    /**@description 选择的单元格范围，可以not formatted，可以非最小单元格[merge/noMerge都有可能] */
     selected?: ICellRange[];
     /**@description 指定的最小行数 */
     rowCount?: number;

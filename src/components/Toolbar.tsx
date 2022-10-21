@@ -3,7 +3,7 @@
  */
 import React, { useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite';
-import TableDriver from '../tableDriver';
+import TableDriver from '../tableDriver/TableDriver';
 import { IToolbarItem, IToolbarItemObj } from '../toolbarItems/IToolbarItem';
 import ToolbarItem from '../toolbarItems/ToolbarItem';
 import classnames from "classnames";
@@ -58,10 +58,17 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
         "text-opacity-80": disabled,
         "text-normal": true
     });
+    const getValue = (func: any) => {
+        if (typeof (func) === "function") {
+            return func(args);
+        } else {
+            return typeof (func) === "string" ? intl.formatMessage({ id: func }) : func;
+        }
+    }
     const btn = (
-        <div className={open ? "" : "tooltip tooltip-bottom"} data-tip={target.tooltip(args)} key={target.key} tabIndex={0}>
+        <div className={open ? "" : "tooltip tooltip-bottom"} data-tip={getValue(target.tooltip)} key={target.key} tabIndex={0}>
             <button className={cls} onClick={click} data-theme="toolbar">
-                {target.icon(args)}
+                {getValue(target.icon)}
             </button>
         </div>
     );

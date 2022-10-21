@@ -1,6 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite';
-import TableDriver from '../tableDriver';
+import TableDriver from '../tableDriver/TableDriver';
 import { ICellRange } from '../tableDriver/ITableDriver';
 export interface ISelectRangeProps {
     driver: TableDriver;

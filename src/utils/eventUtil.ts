@@ -1,5 +1,5 @@
 import { IEventItem } from "../services/ITableService";
-import TableDriver from "../tableDriver";
+import TableDriver from "../tableDriver/TableDriver";
 // driver/event/func
 class EventControler {
     private events: Map<keyof WindowEventMap, Map<TableDriver, any[]>> = new Map();

@@ -1,5 +1,5 @@
 import { TableProps } from "rc-table/lib/Table";
-import TableDriver from "../tableDriver";
+import TableDriver from "../tableDriver/TableDriver";
 import { IAcitonServiceMap } from "../tableDriver/ITableDriver";
 export interface IEventItem {
     name: keyof WindowEventMap;

@@ -5,8 +5,8 @@
 import React from 'react'
 import { ITableService } from '../services/ITableService';
 import TableCore, { ITableCoreProps } from './TableCore';
-const defaultToolbar = ['undo', 'redo', 'globalRange'];
-export interface IDataTableProps extends ITableCoreProps{
+const defaultToolbar = ['undo', 'redo', 'globalRange', 'autoHeight'];
+export interface IDataTableProps extends ITableCoreProps {
 }
 export default function (props: IDataTableProps) {
     const { services, ...coreProps } = props;

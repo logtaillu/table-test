@@ -2,10 +2,11 @@
 import { globalRange } from "./globalRange";
 import { IToolbarItem, IToolbarItemObj } from "./IToolbarItem";
 import { redo, undo } from "./redoundo";
+import { autoHeight } from "./rowColSize";
 
 class ToolbarItemControler {
     private itemMap: Record<string, IToolbarItemObj> = {
-        redo, undo, globalRange
+        redo, undo, globalRange, autoHeight
     };
     // 注册
     register(items: IToolbarItemObj[]) {

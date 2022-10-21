@@ -7,7 +7,7 @@ import colDataService from '../services/colDataService';
 import { ITableService } from '../services/ITableService';
 import rangeSelectService from '../services/rangeSelectService';
 import TableCore, { ITableCoreProps } from './TableCore'
-const defaultToolbar = ['undo', 'redo'];
+const defaultToolbar = ['undo', 'redo', 'autoHeight'];
 export interface IExcelTableProps extends ITableCoreProps {
 }
 export default function (props: IExcelTableProps) {

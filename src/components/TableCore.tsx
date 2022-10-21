@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { observer } from "mobx-react-lite";
-import TableDriver, { IGlobalRange } from '../tableDriver';
+import TableDriver, { IGlobalRange } from '../tableDriver/TableDriver';
 import InnerTable from './InnerTable';
 import SelectRange from './SelectRange';
 import Toolbar, { IActionToolbarProps } from './Toolbar';
@@ -42,33 +42,33 @@ const getMessages = (lang?: string, locales?: Record<string, any>) => {
         ...(locales ? (locales[lang] || locales["zh-CN"]) : {})
     }
 }
-export default observer(React.forwardRef(function (props: ITableCoreProps, ref) {
-    const { config, services, toolbar, wrapClassName, theme, lang, locales, editable, globalRange, items, sources, ...tableProps } = props;
-    const { prefixCls } = tableProps;
-    const [driver] = useState(() => new TableDriver({ prefixCls, lang: navigator.language || lang, editable, config: config || {}, globalRange }));
+const useUpdateEffect = (func: any, dep: any[]) => {
     const isMounted = useRef(false);
     useEffect(() => {
         return () => {
             isMounted.current = false;
         };
     }, []);
+    useEffect(() => {
+        if (!isMounted.current) {
+            isMounted.current = true;
+        } else {
+            func();
+        }
+    }, dep);
+}
+export default observer(React.forwardRef(function (props: ITableCoreProps, ref) {
+    const { config, services, toolbar, wrapClassName, theme, lang, locales, editable, globalRange, items, sources, ...tableProps } = props;
+    const { prefixCls } = tableProps;
+    const [driver] = useState(() => new TableDriver({ prefixCls, lang: navigator.language || lang, editable, config: config || {}, globalRange }));
     // config对象change，重置，指object本身，内部值改变不重置
-    useEffect(() => {
-        if (!isMounted.current) {
-            isMounted.current = true;
-        } else {
-            driver.reset(config || {});
-        }
+    useUpdateEffect(() => { 
+        driver.conf = config;
     }, [config]);
-
-    // config对象以外的改变
-    useEffect(() => {
-        if (!isMounted.current) {
-            isMounted.current = true;
-        } else {
-            driver.setConf({ prefixCls, lang, editable, globalRange });
-        }
-    }, [prefixCls, lang, editable, globalRange]);
+    useUpdateEffect(() => { driver.cls = prefixCls }, [prefixCls]);
+    useUpdateEffect(() => { driver.language = lang }, [lang]);
+    useUpdateEffect(() => { driver.edit = editable }, [editable]);
+    useUpdateEffect(() => { driver.range = globalRange }, [globalRange]);
     // 挂载services的actions
     useEffect(() => {
         if (services) {

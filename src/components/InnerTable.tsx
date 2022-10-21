@@ -4,7 +4,7 @@
 import { observer } from 'mobx-react-lite';
 import Table from 'rc-table';
 import merge from "lodash.merge";
-import TableDriver from '../tableDriver';
+import TableDriver from '../tableDriver/TableDriver';
 import { TableProps } from 'rc-table/lib/Table';
 import { ITableService } from '../services/ITableService';
 export interface IInnerTableProps {
