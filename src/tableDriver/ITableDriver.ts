@@ -41,6 +41,8 @@ export interface IRowConfig {
 export interface ICellConfig {
 
 }
+/**@description 可用字段 */
+export type IConfigKey = keyof ICellConfig | keyof IRowConfig | keyof IColConfig;
 
 export type ICacheObj<T> = Record<string, T>;
 

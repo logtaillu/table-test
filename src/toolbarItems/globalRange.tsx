@@ -1,8 +1,8 @@
 import React from 'react'
+import { IGlobalRange } from '../tableDriver/ITableDriver';
 import { IToolbarItemObj } from "./IToolbarItem";
-import classnames from "classnames";
-import { IGlobalRange } from '../tableDriver/TableDriver';
 const keys: IGlobalRange[] = ["all", "body", "header"];
+/**@description 全局范围选择 */
 export const globalRange: IToolbarItemObj = {
     key: "globalRange",
     icon: ({ driver, intl }) => <span className="px-2">{intl.formatMessage({ id: driver.globalRange })} </span>,

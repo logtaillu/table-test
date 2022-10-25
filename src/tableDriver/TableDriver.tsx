@@ -2,9 +2,9 @@
  * table操作配置缓存及操作栈管理
  * 每个table有自己的driver
  */
-import { makeAutoObservable, observable, action, computed } from "mobx"
-import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType } from "./ITableDriver"
-import { getCellKey, getCellRelationToRange, getCellTypeKey, getColKey, getFormatedRange, getPriorityValue, getRangeCells, getRangeRelation, getRowKey, getValue, setValue } from "./DriverFunc";
+import { makeAutoObservable, observable } from "mobx"
+import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType, IConfigKey } from "./ITableDriver"
+import { getCellKey, getCellRelationToRange, getCellTypeKey, getColKey, getFormatedRange, getPriorityValue, getRangeCells, getRangeRelation, getRowKey, setValue } from "./DriverFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
 export interface ISettableProps {
@@ -199,16 +199,13 @@ export default class TableDriver {
     // 2. 值优先级：cells/rows/cols > body/header > all
     // 3. 展示：如果当前范围的目标对象值均相等，则取当前范围，否则往上优先级找
     // 4. 设值：对当前范围的目标列表设值，同时清除下级范围的值设置
-    getRangeValueDeep(key: string, type: IValueType, curlevel: number) {
-
-    }
     /**
      * 范围取值（展示）
      * @param key 字段
      * @param type 类型
      * @param useGlobal 是否强制使用全局量 
      */
-    getRangeValue(key: string, type: IValueType, useGlobal = false) {
+    getRangeValue(type: IValueType, key: IConfigKey, useGlobal = false) {
         const selected = this.config.selected || [];
         let range = this.globalRange;
         if (selected.length && !useGlobal) {
@@ -236,7 +233,7 @@ export default class TableDriver {
             }
         }
         if (range === "all") {
-            return getPriorityValue(this.config, [range,type, key]);
+            return getPriorityValue(this.config, [range, type, key]);
         } else {
             return getPriorityValue(this.config, [
                 [range, type, key],
@@ -250,12 +247,12 @@ export default class TableDriver {
      * @param type 类型
      * @param useGlobal 是否强制使用全局量 
      */
-    setRangeValue(key: string, type: IValueType, value: any, useGlobal = false) {
+    setRangeValue(type: IValueType, key: IConfigKey, value: any, useGlobal = false) {
         const selected = this.config.selected || [];
         if (selected.length && !useGlobal) {
             const list = this.getCellListInRanges(selected);
             list.map(cell => {
-                setValue(this.config, [type, getCellTypeKey(cell, type), key], value); 
+                setValue(this.config, [type, getCellTypeKey(cell, type), key], value);
             });
         } else {
             setValue(this.config, [this.globalRange, type, key], value);
@@ -267,10 +264,10 @@ export default class TableDriver {
             // 遍历当前type的key值，清除范围内的
             const target = this.config[type] || {};
             Object.keys(target).map(typekey => {
-                if (this.globalRange === "all" || type ==="col" || typekey.includes(this.globalRange)) {
+                if (this.globalRange === "all" || type === "col" || typekey.includes(this.globalRange)) {
                     setValue(target[typekey], [key], value);
                 }
-            });   
+            });
         }
     }
 
