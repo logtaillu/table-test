@@ -1,6 +1,8 @@
 import TableDriver from "./TableDriver";
 
 export type ICellType = "body" | "header";
+export type IGlobalRange = "body" | "header" | "all";
+export type IValueType = "col" | "row" | "cell";
 export interface IRowKey {
     /**@description 序号，从0计数，单个类型 */
     index: number;
@@ -67,15 +69,17 @@ export type IRangeRelation = "in" | "out" | "same" | "part" | "contain";
 // cells/rows/cols > header/body
 export interface ITableCacheConfig {
     /**@description 单元格单独配置 */
-    cells?: ICacheObj<ICellConfig>;
+    cell?: ICacheObj<ICellConfig>;
     /**@description 行单独配置 */
-    rows?: ICacheObj<IRowConfig>;
+    row?: ICacheObj<IRowConfig>;
     /**@description 列单独配置 */
-    cols?: ICacheObj<IColConfig>;
+    col?: ICacheObj<IColConfig>;
     /**@description 表头全局配置 */
     header?: IGlobalCacheConfig;
     /**@description 内容全局配置 */
     body?: IGlobalCacheConfig;
+    /**@description 整体全局配置 */
+    all?: IGlobalCacheConfig;
     /**@description 合并的单元格范围，可以not formatted */
     merged?: ICellRange[];
     /**@description 选择的单元格范围，可以not formatted，可以非最小单元格[merge/noMerge都有可能] */

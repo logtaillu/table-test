@@ -1,10 +1,10 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { observer } from "mobx-react-lite";
-import TableDriver, { IGlobalRange } from '../tableDriver/TableDriver';
+import TableDriver from '../tableDriver/TableDriver';
 import InnerTable from './InnerTable';
 import SelectRange from './SelectRange';
 import Toolbar, { IActionToolbarProps } from './Toolbar';
-import { ITableCacheConfig } from '../tableDriver/ITableDriver';
+import { IGlobalRange, ITableCacheConfig } from '../tableDriver/ITableDriver';
 import { ITableService } from '../services/ITableService';
 import { TableProps } from 'rc-table/lib/Table';
 import "../styles/main.css";
@@ -63,7 +63,7 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
     const [driver] = useState(() => new TableDriver({ prefixCls, lang: navigator.language || lang, editable, config: config || {}, globalRange }));
     // config对象change，重置，指object本身，内部值改变不重置
     useUpdateEffect(() => { 
-        driver.conf = config;
+        driver.content = config;
     }, [config]);
     useUpdateEffect(() => { driver.cls = prefixCls }, [prefixCls]);
     useUpdateEffect(() => { driver.language = lang }, [lang]);

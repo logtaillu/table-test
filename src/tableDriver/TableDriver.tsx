@@ -3,11 +3,10 @@
  * 每个table有自己的driver
  */
 import { makeAutoObservable, observable, action, computed } from "mobx"
-import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey } from "./ITableDriver"
-import { getCellKey, getCellRelationToRange, getColKey, getFormatedRange, getRangeCells, getRangeRelation, getRowKey } from "./DriverFunc";
+import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType } from "./ITableDriver"
+import { getCellKey, getCellRelationToRange, getCellTypeKey, getColKey, getFormatedRange, getPriorityValue, getRangeCells, getRangeRelation, getRowKey, getValue, setValue } from "./DriverFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
-export type IGlobalRange = "body" | "header" | "all";
 export interface ISettableProps {
     config?: ITableCacheConfig
     prefixCls?: string;
@@ -38,7 +37,7 @@ export default class TableDriver {
     // 表格元素
     tableRef: HTMLDivElement | null = null;
     // 当前的全局设置维度
-    globalRange: IGlobalRange = "body";
+    globalRange: IGlobalRange = "all";
     // 缓存，表头行数
     headerDeep: number = 0;
     // 构造函数
@@ -47,7 +46,7 @@ export default class TableDriver {
             tableRef: observable.ref
         });
         this.range = props.globalRange;
-        this.conf = props.config;
+        this.content = props.config;
         this.language = props.lang;
         this.cls = props.prefixCls;
         this.deep = props.headerDeep;
@@ -64,15 +63,15 @@ export default class TableDriver {
         }
     };
     // 设置config同时清空操作栈
-    set conf(val: ITableCacheConfig | undefined) {
+    set content(val: ITableCacheConfig | undefined) {
         this.actionStack = [];
         this.undoStack = [];
         this.config = val || defaultConfig();
     };
-    set language(val: string | undefined) { val && (this.lang = val) };
-    set cls(val: string | undefined) { val && (this.prefixCls = val) };
-    set deep(val: number | undefined) { val && (this.headerDeep = val) };
-    set edit(val: boolean | undefined) { this.editable = !!val };
+    set language(val: string | undefined) { val && (this.lang = val) }
+    set cls(val: string | undefined) { val && (this.prefixCls = val) }
+    set deep(val: number | undefined) { val && (this.headerDeep = val) }
+    set edit(val: boolean | undefined) { this.editable = !!val }
 
     // 简易的样式前缀补充函数
     prefix = (cls: string = "") => {
@@ -160,6 +159,12 @@ export default class TableDriver {
         return (this.config.merged || []).map(range => getFormatedRange(range));
     }
     // 获取右下角的合并单元格处理后的range，返回格式化range
+    /**
+     * 
+     * @param range 范围
+     * @param useMerged 是否使用合并后单元格
+     * @returns 格式化范围
+     */
     getRangeHandleMerged(range: ICellRange, useMerged: boolean): ICellRange {
         const merged = this.config.merged || [];
         let { from, to } = getFormatedRange(range);
@@ -181,26 +186,92 @@ export default class TableDriver {
         });
     }
 
-    // 获取当前范围内的单元格[最小格]
-    getCellListInRange(range: ICellRange): ICellKey[] {
-        const minCellRange = this.getRangeHandleMerged(range, false);
-        return getRangeCells(minCellRange, this.headerDeep);
+    /**
+     * 获取当前范围数组内的单元格列表[最小格]
+     * @param ranges 范围数组
+     * @returns 单元格列表
+     */
+    getCellListInRanges(ranges: ICellRange[]): ICellKey[] {
+        const minCellRanges = ranges.map(range => this.getRangeHandleMerged(range, false));
+        return getRangeCells(minCellRanges, this.headerDeep);
     }
-    // 1. 范围优先级：selecRange => all/body/header
-    // 2. 值优先级：cells/rows/cols=>body/header
-    // 范围取值（展示）
-    getRangeValue(key: string, type: "col" | "row" | "cell") {
+    // 1. 范围优先级：selecRange > body/header > all
+    // 2. 值优先级：cells/rows/cols > body/header > all
+    // 3. 展示：如果当前范围的目标对象值均相等，则取当前范围，否则往上优先级找
+    // 4. 设值：对当前范围的目标列表设值，同时清除下级范围的值设置
+    getRangeValueDeep(key: string, type: IValueType, curlevel: number) {
+
+    }
+    /**
+     * 范围取值（展示）
+     * @param key 字段
+     * @param type 类型
+     * @param useGlobal 是否强制使用全局量 
+     */
+    getRangeValue(key: string, type: IValueType, useGlobal = false) {
         const selected = this.config.selected || [];
-        if (selected.length) {
-            // 有选择范围，根据选择范围来设置
+        let range = this.globalRange;
+        if (selected.length && !useGlobal) {
+            // 有选择范围，获取单元格列表
+            const list = this.getCellListInRanges(selected);
+            if (list.length) {
+                const getCellValue = (cell: ICellKey) => {
+                    return getPriorityValue(this.config, [
+                        [type, getCellTypeKey(cell, type), key],
+                        [cell.type, type, key],
+                        ["all", type, key]
+                    ]);
+                }
+                // 是否所有单元格值相同
+                const firstValue = getCellValue(list[0]);
+                const nosameValue = list.findIndex(cell => getCellValue(cell) != firstValue) >= 0;
+                if (nosameValue) {
+                    // 如果类型相同，那么优先当前类型的值
+                    const nosameType = list.findIndex(cell => cell.type !== list[0].type) >= 0;
+                    range = nosameType ? "all" : list[0].type;
+                } else {
+                    // 值全部相同
+                    return firstValue;
+                }
+            }
+        }
+        if (range === "all") {
+            return getPriorityValue(this.config, [range,type, key]);
         } else {
-            const globalRange = this.globalRange;
-            // 没有选择范围，根据globalRange来
+            return getPriorityValue(this.config, [
+                [range, type, key],
+                ["all", type, key]
+            ]);
         }
     }
-    // 范围设置值（保存）
-    setRangeValue(key: string, type: "col" | "row" | "cell", value: any) {
-
+    /**
+     * 范围设值（保存）
+     * @param key 字段
+     * @param type 类型
+     * @param useGlobal 是否强制使用全局量 
+     */
+    setRangeValue(key: string, type: IValueType, value: any, useGlobal = false) {
+        const selected = this.config.selected || [];
+        if (selected.length && !useGlobal) {
+            const list = this.getCellListInRanges(selected);
+            list.map(cell => {
+                setValue(this.config, [type, getCellTypeKey(cell, type), key], value); 
+            });
+        } else {
+            setValue(this.config, [this.globalRange, type, key], value);
+            // 清除下层
+            if (this.globalRange === "all") {
+                setValue(this.config.header, [type, key], undefined);
+                setValue(this.config.body, [type, key], undefined);
+            }
+            // 遍历当前type的key值，清除范围内的
+            const target = this.config[type] || {};
+            Object.keys(target).map(typekey => {
+                if (this.globalRange === "all" || type ==="col" || typekey.includes(this.globalRange)) {
+                    setValue(target[typekey], [key], value);
+                }
+            });   
+        }
     }
 
     /************************事件相关 ********************************/
