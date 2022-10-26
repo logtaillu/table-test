@@ -3,8 +3,8 @@
  * 每个table有自己的driver
  */
 import { makeAutoObservable, observable } from "mobx"
-import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType, IConfigKey } from "./ITableDriver"
-import { getCellKey, getCellRelationToRange, getCellTypeKey, getColKey, getFormatedRange, getPriorityValue, getRangeCells, getRangeRelation, getRowKey, setValue } from "./DriverFunc";
+import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType, IConfigKey, IRowKey, IColKey } from "./ITableDriver"
+import { getCellKey, getCellRelationToRange, getCellTypeKey, getColKey, getFormatedRange, getPriorityValue, getRangeCells, getRangeRelation, getRowKey, getTargetRange, getValue, setValue } from "./DriverFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
 export interface ISettableProps {
@@ -15,7 +15,11 @@ export interface ISettableProps {
     globalRange?: IGlobalRange;
     headerDeep?: number;
 }
-const defaultConfig: () => ITableCacheConfig = () => ({});
+const defaultConfig: () => ITableCacheConfig = () => ({
+    all: {
+        row: { autoHeight: true, rowHeight: 40 }
+    }
+});
 export default class TableDriver {
     /*******************常量定义 **********************/
     // 操作栈
@@ -205,10 +209,10 @@ export default class TableDriver {
      * @param type 类型
      * @param useGlobal 是否强制使用全局量 
      */
-    getRangeValue(type: IValueType, key: IConfigKey, useGlobal = false) {
-        const selected = this.config.selected || [];
+    getRangeValue(type: IValueType, key: IConfigKey, userRange: ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false = false) {
+        const selected = userRange ? getTargetRange(userRange) : this.config.selected || [];
         let range = this.globalRange;
-        if (selected.length && !useGlobal) {
+        if (selected.length > 0) {
             // 有选择范围，获取单元格列表
             const list = this.getCellListInRanges(selected);
             if (list.length) {
@@ -233,7 +237,7 @@ export default class TableDriver {
             }
         }
         if (range === "all") {
-            return getPriorityValue(this.config, [range, type, key]);
+            return getValue(this.config, [range, type, key]);
         } else {
             return getPriorityValue(this.config, [
                 [range, type, key],
@@ -247,9 +251,9 @@ export default class TableDriver {
      * @param type 类型
      * @param useGlobal 是否强制使用全局量 
      */
-    setRangeValue(type: IValueType, key: IConfigKey, value: any, useGlobal = false) {
-        const selected = this.config.selected || [];
-        if (selected.length && !useGlobal) {
+    setRangeValue(type: IValueType, key: IConfigKey, value: any, userRange: ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false = false) {
+        const selected = userRange ? getTargetRange(userRange) : this.config.selected || [];
+        if (selected.length > 0) {
             const list = this.getCellListInRanges(selected);
             list.map(cell => {
                 setValue(this.config, [type, getCellTypeKey(cell, type), key], value);
@@ -258,14 +262,14 @@ export default class TableDriver {
             setValue(this.config, [this.globalRange, type, key], value);
             // 清除下层
             if (this.globalRange === "all") {
-                setValue(this.config.header, [type, key], undefined);
-                setValue(this.config.body, [type, key], undefined);
+                setValue(this.config, ["header", type, key], undefined);
+                setValue(this.config, ["body", type, key], undefined);
             }
             // 遍历当前type的key值，清除范围内的
             const target = this.config[type] || {};
             Object.keys(target).map(typekey => {
                 if (this.globalRange === "all" || type === "col" || typekey.includes(this.globalRange)) {
-                    setValue(target[typekey], [key], value);
+                    setValue(this.config, [type, typekey, key], value);
                 }
             });
         }

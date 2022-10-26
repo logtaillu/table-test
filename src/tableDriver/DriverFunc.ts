@@ -180,6 +180,28 @@ export function getRangeCells(formattedRanges: ICellRange[], deep: number): ICel
     cellMap.forEach((value) => cells.push(value));
     return cells;
 }
+/**
+ * @description 从单个行/列等获取目标范围
+ */
+export function getTargetRange(target: ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey): ICellRange[] {
+    if (Array.isArray(target)) {
+        return target;
+    }
+    if ('from' in target) {
+        return [target];
+    } else if ('row' in target) {
+        return [{
+            from: target,
+            to: target
+        }];
+    } else if ('type' in target) {
+        const cell: ICellKey = { row: target.index, type: target.type, col: 0 };
+        return [{ from: cell, to: cell }];
+    } else {
+        const cell: ICellKey = { row: target.index, type: "body", col: 0 };
+        return [{ from: cell, to: cell }];
+    }
+}
 
 
 /**
@@ -233,7 +255,7 @@ export function setValue(target: any, paths: string[], value: any) {
             if (value === undefined) {
                 if (p in target) {
                     delete target[p];
-                }   
+                }
             } else {
                 target[p] = value;
             }

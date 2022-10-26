@@ -4,6 +4,8 @@ import { IAcitonServiceMap } from "../tableDriver/ITableDriver";
 export interface IEventItem {
     name: keyof WindowEventMap;
     func: (driver: TableDriver, e: any) => void;
+    key?: string;
+    ctrl?: boolean;
 }
 export interface ITableService {
     /**@description props处理 */

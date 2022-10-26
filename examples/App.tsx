@@ -18,12 +18,14 @@ export default function () {
         config: {
             rowCount: 5,
             colCount: 5
-        }
+        },
+        editable: true
     });
     const [dataConf] = useState<IDataTableProps>({
         toolbar: true,
         data: getData("abcde", 6),
-        columns: "abcde".split("").map(k => ({ title: k, dataIndex: k }))
+        columns: "abcde".split("").map(k => ({ title: k, dataIndex: k })),
+        editable: true
     });
     return (
         <div style={{padding: 30, background:"#f5f5f5"}}>

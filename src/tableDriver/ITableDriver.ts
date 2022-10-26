@@ -48,9 +48,9 @@ export type ICacheObj<T> = Record<string, T>;
 
 /**@description 单个n合一配置 */
 export interface IGlobalCacheConfig {
-    row: IRowConfig;
-    cell: ICellConfig;
-    col: IColConfig;
+    row?: IRowConfig;
+    cell?: ICellConfig;
+    col?: IColConfig;
 }
 
 export interface ICellRange {

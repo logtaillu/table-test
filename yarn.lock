@@ -3319,7 +3319,7 @@
   dependencies:
     "@types/unist" "*"
 
-"@types/hoist-non-react-statics@^3.3.1":
+"@types/hoist-non-react-statics@*", "@types/hoist-non-react-statics@^3.3.1":
   version "3.3.1"
   resolved "http://scm.nicezhuanye.com/artifactory/api/npm/npm_virtual/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
   integrity sha1-ESSq/lEYy1kZd66xzqrtEHDrA58=
@@ -3465,6 +3465,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-resizable@^3.0.3":
+  version "3.0.3"
+  resolved "http://scm.nicezhuanye.com/artifactory/api/npm/npm_virtual/@types/react-resizable/-/react-resizable-3.0.3.tgz#76952da74820fae0dbd9669861514c836d5f1e83"
+  integrity sha1-dpUtp0gg+uDb2WaYYVFMg21fHoM=
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@16 || 17 || 18", "@types/react@^18.0.17":
   version "18.0.21"
   resolved "http://scm.nicezhuanye.com/artifactory/api/npm/npm_virtual/@types/react/-/react-18.0.21.tgz#b8209e9626bb00a34c76f55482697edd2b43cc67"
@@ -3483,6 +3490,15 @@
   version "0.1.2"
   resolved "http://scm.nicezhuanye.com/artifactory/api/npm/npm_virtual/@types/source-list-map/-/source-list-map-0.1.2.tgz#0078836063ffaf17412349bba364087e0ac02ec9"
   integrity sha1-AHiDYGP/rxdBI0m7o2QIfgrALsk=
+
+"@types/styled-components@^5.1.26":
+  version "5.1.26"
+  resolved "http://scm.nicezhuanye.com/artifactory/api/npm/npm_virtual/@types/styled-components/-/styled-components-5.1.26.tgz#5627e6812ee96d755028a98dae61d28e57c233af"
+  integrity sha1-VifmgS7pbXVQKKmNrmHSjlfCM68=
+  dependencies:
+    "@types/hoist-non-react-statics" "*"
+    "@types/react" "*"
+    csstype "^3.0.2"
 
 "@types/tapable@^1", "@types/tapable@^1.0.5":
   version "1.0.8"

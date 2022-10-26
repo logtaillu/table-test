@@ -7,5 +7,8 @@ export default {
     "globalRange": "范围选择",
     "heightSetting": "高度自适应设置",
     "autoHeight": "动态单元格高度",
-    "fixHeight": "固定单元格高度"
+    "fixHeight": "固定单元格高度",
+    "size": "行高和列宽设置",
+    "rowHeight": "行高",
+    "colWidth": "列宽"
 }

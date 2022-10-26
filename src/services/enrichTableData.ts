@@ -1,7 +1,8 @@
-// 最小行列数补充
+/**
+ * 最小行列数补充
+ */
 import { TableProps } from "rc-table/lib/Table";
 import { ITableService } from "./ITableService";
-const ENRICH_COLUMN = "enrichCol";
 export default {
     enrichProps: (props, driver) => {
         const { columns, data } = props;
@@ -15,7 +16,7 @@ export default {
             for (let i = collen; i < colCount; i++) {
                 newcols.push({
                     title: "",
-                    dataIndex: `${ENRICH_COLUMN}${i}`
+                    dataIndex: i
                 });
             }
             append.columns = newcols;

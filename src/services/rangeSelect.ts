@@ -1,3 +1,6 @@
+/**
+ * 范围选择监听
+ */
 import TableDriver from "../tableDriver/TableDriver";
 import { ICellKey } from "../tableDriver/ITableDriver";
 import { ITableService } from "./ITableService";

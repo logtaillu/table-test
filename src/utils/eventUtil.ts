@@ -2,7 +2,7 @@ import { IEventItem } from "../services/ITableService";
 import TableDriver from "../tableDriver/TableDriver";
 // driver/event/func
 class EventControler {
-    private events: Map<keyof WindowEventMap, Map<TableDriver, any[]>> = new Map();
+    private events: Map<keyof WindowEventMap, Map<TableDriver, IEventItem[]>> = new Map();
     private funcs: Map<keyof WindowEventMap, any> = new Map();
 
     private getMap<T>(map: Map<any, any>, key: any, defaultValue: () => T): T {
@@ -18,10 +18,10 @@ class EventControler {
     addEvents(driver: TableDriver, events: IEventItem[]) {
         events.map(event => {
 
-            const { name, func } = event;
+            const { name } = event;
             const eventTarget = this.getMap<Map<any, any>>(this.events, name, () => new Map());
             const driverTarget = this.getMap<any[]>(eventTarget, driver, () => ([]));
-            driverTarget.push(func);
+            driverTarget.push(event);
             this.addFunc(name);
 
         })
@@ -34,8 +34,10 @@ class EventControler {
             if (emap) {
                 emap.forEach((funcs, driver) => {
                     if (driver.isEventTarget(e)) {
-                        funcs.map(func => {
-                            func(driver, e);
+                        funcs.map(item => {
+                            if (name !== "keydown" || (e.ctrlKey === (!!item.ctrl) && e.key.toLowerCase() === item.key?.toLocaleLowerCase())) {
+                                item.func(driver, e);
+                            }
                         });
                     }
                 })

@@ -18,7 +18,7 @@ export interface IToolBarItem {
 }
 /**@description 工具栏单项 */
 const ReactToolbarItem = observer(function (props: IToolBarItem) {
-    const { target, driver, sources } = props;
+    let { target, driver, sources } = props;
     const [open, setOpen] = useState(false);
     const ref = useRef<any>(null);
     const close = () => {
@@ -26,8 +26,14 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
         setOpen(false);
     }
     const intl = useIntl();
-    const source = sources && sources[target.key] || target.source;
-    const args = { driver, source, intl, close };
+    if (sources && sources[target.key]) {
+        if (Array.isArray(sources[target.key])) {
+            target = { ...target, source: sources[target.key] };
+        } else {
+            target = { ...target, ...sources[target.key] };
+        }
+    }
+    const args = { driver, source: target.source, intl, close };
     // 需要dropdown时，打开下拉框，否则直接执行onClick
     const click = () => {
         if (target.dropdown || target.listmode) {
@@ -47,16 +53,9 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
     const disabled = target.disabled ? target.disabled(args) : false;
     const active = target.active ? target.active(args) : false;
     const cls = classnames({
-        "btn": true,
-        "btn-square": true,
         "btn-disabled": disabled,
         "btn-active": active || open,
-        "rounded-sm": true,
-        "btn-sm": true,
-        "w-auto": true,
-        "min-w-sm": true,
         "text-opacity-80": disabled,
-        "text-normal": true
     });
     const getValue = (func: any) => {
         if (typeof (func) === "function") {
@@ -67,7 +66,7 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
     }
     const btn = (
         <div className={open ? "" : "tooltip tooltip-bottom"} data-tip={getValue(target.tooltip)} key={target.key} tabIndex={0}>
-            <button className={cls} onClick={click} data-theme="toolbar">
+            <button className={"btn btn-square rounded-sm btn-sm w-auto min-w-sm text-opacity-80 text-normal " + cls} onClick={click} data-theme="toolbar">
                 {getValue(target.icon)}
             </button>
         </div>
@@ -79,7 +78,7 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
             <div className='dropdown' key={target.key}>
                 {btn}
                 <ul ref={ref} onBlur={close} tabIndex={0} className={"menu" + dpbasecls}>
-                    {(source || []).map(({ value, label }: { value: any, label: string }) => {
+                    {(target.source || []).map(({ value, label }: { value: any, label: string }) => {
                         const click = () => {
                             if (target.onClick) {
                                 target.onClick({ ...args, value });
@@ -122,7 +121,7 @@ export interface IActionToolbarProps {
 /**@description 工具栏 */
 export default observer(function (props: IActionToolbarProps) {
     const { toolbar, driver, items, sources } = props;
-    if (!toolbar) {
+    if (!toolbar || !driver.editable) {
         return null;
     }
     const list = (items || []).map((item, idx) => {
