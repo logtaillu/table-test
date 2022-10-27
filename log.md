@@ -1,3 +1,4 @@
+1. 提供对setRangeValue的redo
 每个功能考虑service、keyevents和toolbar
 1. 样式组件确定并调整
 2. 行高/列宽调整/高度自适应-both

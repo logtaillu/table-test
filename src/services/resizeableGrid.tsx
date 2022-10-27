@@ -2,6 +2,7 @@
  * 行高/列宽拖拽配置
  * a. 即时生效，end的时候pushStack
  * b. 列宽配在th上，行高配在tr上
+ * c. 自动高度需要给cell
  */
 import { TableProps } from 'rc-table/lib/Table';
 import React, { useState } from 'react'
@@ -77,4 +78,16 @@ export default {
             ...append
         };
     },
+    actions: {
+        sizeChange: {
+            exec(driver, value) {
+                return false;
+            },
+            undo(driver, value) {
+                return {};
+            },
+        },
+
+    },
+    events: []
 } as ITableService;

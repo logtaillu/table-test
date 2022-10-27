@@ -4,9 +4,11 @@
  */
 import { makeAutoObservable, observable } from "mobx"
 import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType, IConfigKey, IRowKey, IColKey } from "./ITableDriver"
-import { getCellKey, getCellRelationToRange, getCellTypeKey, getColKey, getFormatedRange, getPriorityValue, getRangeCells, getRangeRelation, getRowKey, getTargetRange, getValue, setValue } from "./DriverFunc";
+import { getCellRelationToRange, getFormatedRange, getRangeCells, getRangeRelation, getTargetRange } from "./DriverFunc";
+import { getPriorityValue, getValue, setValue } from "./ValueFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
+import { getCellTypeKey, getColKey, getCellKey, getRowKey } from "./keyFunc";
 export interface ISettableProps {
     config?: ITableCacheConfig
     prefixCls?: string;
@@ -251,7 +253,8 @@ export default class TableDriver {
      * @param type 类型
      * @param useGlobal 是否强制使用全局量 
      */
-    setRangeValue(type: IValueType, key: IConfigKey, value: any, userRange: ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false = false) {
+    setRangeValue(type: IValueType, key: IConfigKey, value: any, userRange: ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false = false): Partial<ITableCacheConfig> {
+        const changedValue: Partial<ITableCacheConfig> = {};
         const selected = userRange ? getTargetRange(userRange) : this.config.selected || [];
         if (selected.length > 0) {
             const list = this.getCellListInRanges(selected);
@@ -273,7 +276,10 @@ export default class TableDriver {
                 }
             });
         }
+        return changedValue;
     }
+    /**提供对setRangeValue的undo类型 */
+
 
     /************************事件相关 ********************************/
     /**是否目标table */

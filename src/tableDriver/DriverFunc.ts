@@ -1,7 +1,8 @@
 /**
  * 不涉及内部状态的辅助函数
  */
-import { ICellKey, ICellRange, IColKey, IRangeRelation, IRowKey, IValueType } from "./ITableDriver";
+import { ICellKey, ICellRange, IColKey, IRangeRelation, IRowKey } from "./ITableDriver";
+import { getCellKey } from "./keyFunc";
 
 
 /**
@@ -107,46 +108,6 @@ export function getRangeRelation(current: ICellRange, target: ICellRange): IRang
 export function getCellRelationToRange(cell: ICellKey, mintarget: ICellRange) {
     return getRangeRelation({ from: cell, to: cell }, mintarget);
 }
-/**
- * string类型cell key
- * @param cell 单元格
- * @returns key
- */
-export function getCellKey(cell: ICellKey) {
-    return [cell.type, cell.row, cell.col].join("-");
-}
-/**
- * string类型row key
- * @param row 行
- * @returns key
- */
-export function getRowKey(row: IRowKey) {
-    return [row.type, row.index].join("-");
-}
-/**
- * string类型col key
- * @param col 列
- * @returns key
- */
-export function getColKey(col: IColKey) {
-    return col.index + "";
-}
-
-/**
- * 从cell获取各种类型的key
- * @param cell 单元格
- * @param type 需要获取的key类型
- * @returns string 
- */
-export function getCellTypeKey(cell: ICellKey, type: IValueType) {
-    if (type === "cell") {
-        return getCellKey(cell);
-    } else if (type === "row") {
-        return getRowKey({ type: cell.type, index: cell.row });
-    } else {
-        return getColKey({ index: cell.col });
-    }
-}
 
 /**
  * 获取范围内的单元格列表
@@ -201,70 +162,4 @@ export function getTargetRange(target: ICellRange[] | ICellRange | ICellKey | IR
         const cell: ICellKey = { row: target.index, type: "body", col: 0 };
         return [{ from: cell, to: cell }];
     }
-}
-
-
-/**
- * 判空取值
- * @param target 取值目标
- * @param paths 路径
- */
-export function getValue(target: any, paths: string[] | string) {
-    paths = Array.isArray(paths) ? paths : paths.split(".");
-    let cur = target;
-    if (!cur) {
-        return cur;
-    }
-    for (let i = 0; i < paths.length; i++) {
-        const p = paths[i];
-        cur = cur[p];
-        if (!cur) {
-            break;
-        }
-    }
-    return cur;
-}
-
-/**
- * 按顺序取最后的有效值
- * @param target 取值目标
- * @param paths 路径列表
- * @returns 值
- */
-export function getPriorityValue(target: any, paths: Array<string[] | string>) {
-    let res = undefined;
-    for (let i = 0; i < paths.length; i++) {
-        const current = getValue(target, paths[i]);
-        if (current !== null || current !== undefined) {
-            res = current;
-            break;
-        }
-    }
-    return res;
-}
-/**
- * 判空设置值
- * @param target 设值目标
- * @param paths 路径
- * @param value 值
- */
-export function setValue(target: any, paths: string[], value: any) {
-    const len = paths.length;
-    paths.map((p, idx) => {
-        if (idx === len - 1) {
-            if (value === undefined) {
-                if (p in target) {
-                    delete target[p];
-                }
-            } else {
-                target[p] = value;
-            }
-        } else {
-            p = p.toString();
-            const isArray = p.startsWith("ary");
-            const realP = p.replace(/^ary/, "");
-            target[realP] = target[realP] || (isArray ? [] : {});
-            target = target[realP];
-        }
-    });
 }
