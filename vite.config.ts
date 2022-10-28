@@ -7,6 +7,12 @@ const name = pkg.name;
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), dts()],
+  resolve: {
+    alias: [{
+      find: /^~/,
+      replacement: ''
+    }]
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),

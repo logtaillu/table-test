@@ -12,24 +12,13 @@ module.exports = {
       minWidth: {
         "sm": "2rem"
       },
-      textColor: {
-        "normal": "#666"
+      borderRadius: {
+        "s": "0.25rem"
       }
     },
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: [{
-      basetable: {
-        ...require("daisyui/src/colors/themes")["[data-theme=emerald]"],
-        secondary: "#66cc8a",
-        "secondary-content": "#223D30",
-        primary: "#377cfb",
-        "primary-content": "#f9fafb",
-      },
-      toolbar: {
-        "neutral": "#fff"
-      }
-    }]
+    themes: ["emerald"]
   },
 }

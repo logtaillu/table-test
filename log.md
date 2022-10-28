@@ -1,10 +1,9 @@
-1. 提供对setRangeValue的redo
-每个功能考虑service、keyevents和toolbar
+每个功能考虑service、keyevents和toolbar、说明
 1. 样式组件确定并调整
 2. 行高/列宽调整/高度自适应-both
 ***
 3. redo/undo-both
-4. 给与行号和列头-ok-excel
+4. 给与行号和列头-excel
 ***
 5. selectRange，包含行列选择功能-both
 6. 合并/拆分单元格-excel

@@ -8,6 +8,7 @@ import { IToolbarItem, IToolbarItemObj } from '../toolbarItems/IToolbarItem';
 import ToolbarItem from '../toolbarItems/ToolbarItem';
 import classnames from "classnames";
 import { useIntl } from 'react-intl';
+import DropDown from "rc-dropdown";
 export interface IToolBarItem {
     /**@description 控制器 */
     driver: TableDriver;
@@ -22,7 +23,6 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
     const [open, setOpen] = useState(false);
     const ref = useRef<any>(null);
     const close = () => {
-        (document.activeElement as any)?.blur();
         setOpen(false);
     }
     const intl = useIntl();
@@ -36,16 +36,7 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
     const args = { driver, source: target.source, intl, close };
     // 需要dropdown时，打开下拉框，否则直接执行onClick
     const click = () => {
-        if (target.dropdown || target.listmode) {
-            if (open) {
-                close();
-            } else {
-                setOpen(true);
-                if (ref.current && ref.current.focus) {
-                    ref.current.focus();
-                }
-            }
-        } else if (target.onClick) {
+        if (target.onClick) {
             target.onClick(args);
         }
     };
@@ -56,6 +47,7 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
         "btn-disabled": disabled,
         "btn-active": active || open,
         "text-opacity-80": disabled,
+        "toolbar-btn": true
     });
     const getValue = (func: any) => {
         if (typeof (func) === "function") {
@@ -65,20 +57,23 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
         }
     }
     const btn = (
-        <div className={open ? "" : "tooltip tooltip-bottom"} data-tip={getValue(target.tooltip)} key={target.key} tabIndex={0}>
-            <button className={"btn btn-square rounded-sm btn-sm w-auto min-w-sm text-opacity-80 text-normal " + cls} onClick={click} data-theme="toolbar">
+        <div className="dptooltip" data-tip={getValue(target.tooltip)} key={target.key} tabIndex={0}>
+            <button className={cls} onClick={target.dropdown || target.listmode ? undefined : click}>
                 {getValue(target.icon)}
             </button>
         </div>
     );
-    const dpbasecls = " whitespace-nowrap dropdown-content shadow rounded translate-x-[-50%] left-[50%] bg-white";
+
+    const dp = (overlay: React.ReactElement) => (
+        <DropDown visible={open} key={target.key} overlay={overlay} onVisibleChange={setOpen} trigger="click" placement="bottomCenter">
+            {btn}
+        </DropDown>
+    );
     // 下拉
     if (target.listmode) {
-        return (
-            <div className='dropdown' key={target.key}>
-                {btn}
-                <ul ref={ref} onBlur={close} tabIndex={0} className={"menu" + dpbasecls}>
-                    {(target.source || []).map(({ value, label }: { value: any, label: string }) => {
+        const overlay = (
+            <ul className='toolbar-menu'>
+                 {(target.source || []).map(({ value, label }: { value: any, label: string }) => {
                         const click = () => {
                             if (target.onClick) {
                                 target.onClick({ ...args, value });
@@ -91,18 +86,11 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
                             </li>
                         )
                     })}
-                </ul>
-            </div>
-        )
+            </ul>
+        );
+        return dp(overlay);
     } else if (target.dropdown) {
-        return (
-            <div className={"dropdown"} key={target.key}>
-                {btn}
-                <div ref={ref} onBlur={close} tabIndex={0} className={"card card-compact w-auto p-0 text-secondary-content" + dpbasecls}>
-                    {target.dropdown(args)}
-                </div>
-            </div>
-        )
+        return dp(target.dropdown(args));
     } else {
         return btn;
     }
@@ -133,7 +121,7 @@ export default observer(function (props: IActionToolbarProps) {
         }
     });
     return (
-        <div className={driver.prefix("toolbar") + " flex"}>
+        <div className={driver.prefix("toolbar")}>
             {list}
         </div>
     )

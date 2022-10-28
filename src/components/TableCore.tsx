@@ -7,7 +7,6 @@ import Toolbar, { IActionToolbarProps } from './Toolbar';
 import { IGlobalRange, ITableCacheConfig } from '../tableDriver/ITableDriver';
 import { ITableService } from '../services/ITableService';
 import { TableProps } from 'rc-table/lib/Table';
-import "../styles/main.css";
 import "../styles/index.less";
 import { IntlProvider } from 'react-intl';
 import messages from "../locales/index";

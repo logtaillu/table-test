@@ -1,7 +1,34 @@
+@import "~tailwindcss/base.css";
+@import "~tailwindcss/components.css";
+@import "~tailwindcss/utilities.css";
+@import "~rc-dropdown/assets/index.css";
 @import "./theme.less";
 @tprefix: extable;
-
+@layer components{
+    .toolbar-btn {
+        @apply btn btn-square btn-sm rounded-none min-w-sm w-auto p-1 align-middle;
+    }
+    .dptooltip {
+        @apply tooltip tooltip-bottom;
+        &.rc-dropdown-open::before, &.rc-dropdown-open::after{
+            display: none;
+        }
+    }
+    .toolbar-menu {
+        @apply menu bg-white;
+    }
+}
+.@{tprefix}-toolbar{
+    >:first-child .toolbar-btn{
+        @apply rounded-l-s;
+    }
+    >:last-child .toolbar-btn{
+        @apply rounded-r-s;
+    }
+}
 .@{tprefix}-table-wrapper {
     .theme();
-    @border: var(--border-width) var(--border-type) var(--border-color);
+    // @border: var(--border-width) var(--border-type) var(--border-color);
+    // 关于如何组合tailwindcss
+    // @apply btn;
 }
