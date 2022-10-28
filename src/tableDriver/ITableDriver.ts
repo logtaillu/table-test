@@ -92,20 +92,35 @@ export interface ITableCacheConfig {
     colCount?: number;
 }
 
+// 批量设值
+export type ISaveValues = Array<{ value: any; paths: string[] }>;
+
 /**操作栈相关 */
+/**@description 用户操作对象 */
 export interface IActionItem {
     /**@description 类型 */
     type: string;
     /**@description 内容*/
     value?: any;
 }
-export type IActionStack = IActionItem[];
+/**@description stack操作对象 */
+export interface IActionStackItem extends IActionItem{
+    undo?: ISaveValues;
+}
+export type IActionStack = IActionStackItem[];
 
 // 操作执行动作
+
 export interface IActionService {
     /**@description 执行,返回false时不入stack */
-    exec: (driver: TableDriver, value: any) => void | false;
+    exec: (driver: TableDriver, value: any) => ISaveValues | false | void;
     /**@description 撤销 */
     undo?: (driver: TableDriver, value: any) => void;
 }
 export type IAcitonServiceMap = ICacheObj<IActionService>;
+
+/**@description setRange的userRange可用值 */
+export type ISaveRange = ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false;
+/**@description 一组setRange配置 */
+export type IRangeSetAry = Array<{ type: IValueType, key: IConfigKey, value: any, range?: ISaveRange }>;
+

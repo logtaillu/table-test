@@ -8,11 +8,13 @@ import { TableProps } from 'rc-table/lib/Table';
 import React, { useState } from 'react'
 import { Resizable } from "react-resizable";
 import 'react-resizable/css/styles.css';
-import { ICellType, IRowKey } from '../tableDriver/ITableDriver';
+import { ICellType, IColConfig, IRangeSetAry, IRowConfig, IRowKey, ISaveRange } from '../tableDriver/ITableDriver';
 import { ITableService } from './ITableService';
+type ISizeChangeValue = IRowConfig & IColConfig & { range?: ISaveRange };
+
 const getResizeComponent = (Component: "tr" | "td" | "th", vertical: boolean) => {
     return (props: any) => {
-        const { resizeable = false, size, onResize,...rest } = props;
+        const { resizeable = false, size, onResize, ...rest } = props;
         const [temp, setTemp] = useState(-1);
         if (!resizeable || !size) {
             return <Component {...rest} />;
@@ -66,7 +68,7 @@ export default {
                 resizeable: driver.editable,
                 size: driver.getRangeValue("row", "rowHeight", row),
                 onResize(value: number) {
-                    driver.setRangeValue("row", "rowHeight", row);
+                    driver.exec("sizeChange", { range: row, rowHeight: value });
                 },
                 "data-rownum": index
             }
@@ -80,13 +82,21 @@ export default {
     },
     actions: {
         sizeChange: {
-            exec(driver, value) {
-                return false;
-            },
-            undo(driver, value) {
-                return {};
-            },
-        },
+            exec(driver, value: ISizeChangeValue) {
+                const confs: IRangeSetAry = [];
+                const range = value.range || false;
+                if ('autoHeight' in value) {
+                    confs.push({ type: "row", key: "autoHeight", value: value.autoHeight, range });
+                }
+                if ('rowHeight' in value) {
+                    confs.push({ type: "row", key: "rowHeight", value: value.rowHeight, range });
+                }
+                if ('colWidth' in value) {
+                    confs.push({ type: "col", key: "colWidth", value: value.colWidth, range });
+                }
+                return driver.setMultiRangeValue(confs);
+            }
+        }
 
     },
     events: []

@@ -3,9 +3,9 @@
  * 每个table有自己的driver
  */
 import { makeAutoObservable, observable } from "mobx"
-import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType, IConfigKey, IRowKey, IColKey } from "./ITableDriver"
+import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType, IConfigKey, IRowKey, IColKey, ISaveValues, IRangeSetAry, ISaveRange } from "./ITableDriver"
 import { getCellRelationToRange, getFormatedRange, getRangeCells, getRangeRelation, getTargetRange } from "./DriverFunc";
-import { getPriorityValue, getValue, setValue } from "./ValueFunc";
+import { getPriorityValue, getValue, setAndSaveValues, setValue } from "./ValueFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
 import { getCellTypeKey, getColKey, getCellKey, getRowKey } from "./keyFunc";
@@ -111,9 +111,9 @@ export default class TableDriver {
                 return;
             }
             console.log("do action", action.type);
-            // 有undo功能的action，入栈
-            if (service.undo) {
-                this.actionStack.push(action);
+            // 有undo功能的action或者返回了undo栈，入栈
+            if (service.undo || Array.isArray(result)) {
+                this.actionStack.push({...action, undo: result || []});
                 if (clearUndo) {
                     this.undoStack = [];
                 }
@@ -142,7 +142,11 @@ export default class TableDriver {
                 console.log("undo action", lastAction.type);
                 this.undoStack.push(lastAction);
                 const func = this.actionMap[lastAction.type].undo;
-                func && func(lastAction.value, this);
+                if (func) {
+                    func(lastAction.value, this);
+                } else {
+                    setAndSaveValues(this.config, lastAction.undo || []);
+                }
             }
         }
     }
@@ -253,32 +257,41 @@ export default class TableDriver {
      * @param type 类型
      * @param useGlobal 是否强制使用全局量 
      */
-    setRangeValue(type: IValueType, key: IConfigKey, value: any, userRange: ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false = false): Partial<ITableCacheConfig> {
-        const changedValue: Partial<ITableCacheConfig> = {};
+    setRangeValue(type: IValueType, key: IConfigKey, value: any, userRange: ISaveRange = false): ISaveValues {
         const selected = userRange ? getTargetRange(userRange) : this.config.selected || [];
+        const saves: ISaveValues = [];
         if (selected.length > 0) {
             const list = this.getCellListInRanges(selected);
             list.map(cell => {
-                setValue(this.config, [type, getCellTypeKey(cell, type), key], value);
+                saves.push({ value, paths: [type, getCellTypeKey(cell, type), key] });
             });
         } else {
-            setValue(this.config, [this.globalRange, type, key], value);
+            saves.push({ value, paths: [this.globalRange, type, key] });
             // 清除下层
             if (this.globalRange === "all") {
-                setValue(this.config, ["header", type, key], undefined);
-                setValue(this.config, ["body", type, key], undefined);
+                saves.push({ value: undefined, paths: ["header", type, key] });
+                saves.push({ value: undefined, paths: ["body", type, key] });
             }
             // 遍历当前type的key值，清除范围内的
             const target = this.config[type] || {};
             Object.keys(target).map(typekey => {
                 if (this.globalRange === "all" || type === "col" || typekey.includes(this.globalRange)) {
-                    setValue(this.config, [type, typekey, key], value);
+                    saves.push({ value, paths: [type, typekey, key] });
                 }
             });
         }
-        return changedValue;
+        const saveTarget = setAndSaveValues(this.config, saves);
+        return saveTarget;
     }
-    /**提供对setRangeValue的undo类型 */
+
+    setMultiRangeValue(configs: IRangeSetAry) {
+        let undoTargets: ISaveValues = [];
+        configs.map(({ type, key, value, range = false }) => {
+            const cur = this.setRangeValue(type, key, value, range);
+            undoTargets = undoTargets.concat(cur);
+        });
+        return undoTargets;
+    }
 
 
     /************************事件相关 ********************************/

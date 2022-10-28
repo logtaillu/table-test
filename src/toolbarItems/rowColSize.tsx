@@ -18,7 +18,7 @@ export const autoHeight: IToolbarItemObj = {
         return !!driver.getRangeValue("row", "autoHeight", []) ? "auto" : "fixed";
     },
     onClick: ({ value, driver }) => {
-        driver.setRangeValue("row", "autoHeight", value === "auto" ? true : false, []);
+        driver.exec("sizeChange", { autoHeight: value === "auto" ? true : false, range: [] });
     }
 };
 /**@description 行高列宽 */
@@ -28,10 +28,10 @@ export const size: IToolbarItemObj = {
     tooltip: "size",
     dropdown: ({ driver }) => {
         const changeHeight: ChangeEventHandler<HTMLInputElement> = (e) => {
-            driver.setRangeValue("row", "rowHeight", e.target.value);
+            driver.exec("sizeChange", { rowHeight: e.target.value });
         }
         const changeWidth: ChangeEventHandler<HTMLInputElement> = (e) => {
-            driver.setRangeValue("col", "colWidth", e.target.value);
+            driver.exec("sizeChange", { colWidth: e.target.value });
         } 
         return (
             <div className="p-3">

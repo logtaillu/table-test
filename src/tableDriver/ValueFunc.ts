@@ -1,3 +1,4 @@
+import { ISaveValues } from "./ITableDriver";
 
 
 /**
@@ -43,11 +44,14 @@ export function getPriorityValue(target: any, paths: Array<string[] | string>) {
  * @param target 设值目标
  * @param paths 路径
  * @param value 值
+ * @returns oldValue 旧值
  */
 export function setValue(target: any, paths: string[], value: any) {
     const len = paths.length;
+    let oldValue = undefined;
     paths.map((p, idx) => {
         if (idx === len - 1) {
+            oldValue = target[p];
             if (value === undefined) {
                 if (p in target) {
                     delete target[p];
@@ -63,6 +67,7 @@ export function setValue(target: any, paths: string[], value: any) {
             target = target[realP];
         }
     });
+    return oldValue;
 }
 /**
  * 保存值并返回保存对象
@@ -70,15 +75,13 @@ export function setValue(target: any, paths: string[], value: any) {
  * @param values 
  * @returns saveTarget 旧值对象
  */
-export function setAndSaveValues(target: any, values: Array<{ value: any; paths: string[] }>) {
-    const saveTarget: any = {};
+export function setAndSaveValues(target: any, values: ISaveValues) {
+    const saveTarget: ISaveValues = [];
     values.map(({ value, paths }) => {
-        // 获取旧值
-        const oldValue = getValue(target, paths);
+        // 保存新值并获取旧值
+        const oldValue = setValue(target, paths, value)
         // 保存旧值
-        setValue(saveTarget, paths, oldValue);
-        // 保存新值
-        setValue(target, paths, value);
+        saveTarget.push({ value: oldValue, paths });
     });
     return saveTarget;
 }
