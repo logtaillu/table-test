@@ -22,7 +22,8 @@ export default {
         columns.push({
             title: "",
             dataIndex: "serial",
-            render: (value, record, index) => index + 1
+            render: (value, record, index) => index + 1,
+            fixed: "left"
         });
         for (let i = 0; i < colCount; i++) {
             const ori = oricols[i] || {};

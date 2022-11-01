@@ -79,7 +79,7 @@ export function setAndSaveValues(target: any, values: ISaveValues) {
     const saveTarget: ISaveValues = [];
     values.map(({ value, paths }) => {
         // 保存新值并获取旧值
-        const oldValue = setValue(target, paths, value)
+        const oldValue = setValue(target, paths, value);
         // 保存旧值
         saveTarget.push({ value: oldValue, paths });
     });

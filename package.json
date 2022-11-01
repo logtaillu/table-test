@@ -44,7 +44,7 @@
     "mobx": "^6.6.2",
     "mobx-react-lite": "^3.4.0",
     "rc-dropdown": "^4.0.1",
-    "rc-table": "^7.26.0 || ~7.25.0",
+    "rc-table": "^7.26.0",
     "react": ">=16.8.6",
     "react-color": "^2.19.3",
     "react-dom": ">=16.8.6",

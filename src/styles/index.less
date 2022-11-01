@@ -6,7 +6,7 @@
 @tprefix: extable;
 @layer components{
     .toolbar-btn {
-        @apply btn btn-square btn-sm rounded-none min-w-sm w-auto p-1 align-middle;
+        @apply btn btn-square btn-sm rounded-none min-w-sm w-auto p-1 align-middle btn-primary;
     }
     .dptooltip {
         @apply tooltip tooltip-bottom;
@@ -15,7 +15,8 @@
         }
     }
     .toolbar-menu {
-        @apply menu bg-white;
+        @apply menu bg-white rounded-sm drop-shadow-md;
+        
     }
 }
 .@{tprefix}-toolbar{

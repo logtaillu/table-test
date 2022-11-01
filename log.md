@@ -1,6 +1,9 @@
 每个功能考虑service、keyevents和toolbar、说明
-1. 样式组件确定并调整
+1. 样式组件确定并调整 ok
 2. 行高/列宽调整/高度自适应-both
+toolbar: 行高/列宽设置，自动行高/固定行高设置
+events: 拖拽
+
 ***
 3. redo/undo-both
 4. 给与行号和列头-excel
