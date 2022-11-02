@@ -58,7 +58,33 @@
 }
 .@{tprefix}-table-wrapper {
     .theme();
-    // @border: var(--border-width) var(--border-type) var(--border-color);
-    // 关于如何组合tailwindcss
-    // @apply btn;
+    @border: var(--ex-border-width) var(--ex-border-type) var(--ex-border-color);
+    // resizeable handle
+    th.react-resizable,tr.react-resizable{
+        @apply relative bg-clip-padding;
+    }
+    th>.react-resizable-handle{
+        @apply cursor-col-resize bg-none p-0 bottom-0;
+        width: calc(var(--ex-resize-width) * 2 + 1px);
+        height: 100%;
+        right: calc( -1 * var(--ex-resize-width));
+        z-index: 1;
+        &:hover{
+            @apply bg-primary bg-opacity-50;
+        }
+    }
+    tr>.react-resizable-handle {
+        @apply absolute cursor-row-resize bg-none p-0 right-0;
+        z-index: 1;
+        width: 100%;
+        height: calc(var(--ex-resize-width) * 2 + 1px);
+        bottom: calc( -1 * var(--ex-resize-width));
+        &:hover{
+            @apply bg-primary bg-opacity-50;
+        }
+    }
+    // serial cell
+    .@{tprefix}-serial-cell{
+        @apply bg-slate-300;
+    }
 }

@@ -1,3 +1,4 @@
+import React from 'react'
 import { ColumnType } from "rc-table/lib/interface";
 import { mapColumn } from "../utils/columnUtil";
 import { ITableService } from "./ITableService";
@@ -21,9 +22,13 @@ export default {
         const colCount = driver.config.colCount || 0;
         const oricols = tableProps.columns || [];
         let columns: ColumnType<any>[] = [];
+        const cellcls = driver.prefix("serial-cell");
         columns.push({
             title: "",
             dataIndex: "serial",
+            className: cellcls,
+            width: 60,
+            align:"center",
             render: (value, record, index) => index + 1,
             fixed: "left",
             except: true
@@ -34,7 +39,8 @@ export default {
             if (isLeaf) {
                 const append = {
                     dataIndex: 'dataIndex' in col ? col.dataIndex : start,
-                    title: col.title || getIdxName(start)
+                    title: col.title || getIdxName(start),
+                    className: `${col.className||""}`
                 }
                 start += 1;
                 return append;
