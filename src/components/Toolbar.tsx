@@ -9,6 +9,7 @@ import ToolbarItem from '../toolbarItems/ToolbarItem';
 import classnames from "classnames";
 import { useIntl } from 'react-intl';
 import DropDown from "rc-dropdown";
+import { useDriver } from './DriverContext';
 export interface IToolBarItem {
     /**@description 控制器 */
     driver: TableDriver;
@@ -90,15 +91,17 @@ const ReactToolbarItem = observer(function (props: IToolBarItem) {
         );
         return dp(overlay);
     } else if (target.dropdown) {
-        return dp(target.dropdown(args));
+        return dp((
+            <div className='card bg-white shadow-xl rounded-md'>
+                {target.dropdown(args)}
+            </div>
+        ));
     } else {
         return btn;
     }
 });
 
 export interface IActionToolbarProps {
-    /**@description 控制器 */
-    driver: TableDriver;
     /**@description 自定义工具栏 */
     items?: IToolbarItem[];
     /**@description 自定义资源表 */
@@ -108,7 +111,8 @@ export interface IActionToolbarProps {
 }
 /**@description 工具栏 */
 export default observer(function (props: IActionToolbarProps) {
-    const { toolbar, driver, items, sources } = props;
+    const { toolbar, items, sources } = props;
+    const driver = useDriver();
     if (!toolbar || !driver.editable) {
         return null;
     }

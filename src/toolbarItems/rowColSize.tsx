@@ -3,7 +3,7 @@ import { IToolbarItemObj } from "./IToolbarItem";
 import { ImTextHeight } from "react-icons/im";
 import { AiOutlineColumnHeight } from "react-icons/ai";
 import { FormattedMessage } from "react-intl";
-import { ChangeEventHandler } from "react";
+import InputNumber from "../dataComponents/InputNumber";
 /**@description 高度自适应设置 */
 export const autoHeight: IToolbarItemObj = {
     key: "autoHeight",
@@ -14,34 +14,35 @@ export const autoHeight: IToolbarItemObj = {
         { value: "fixed", label: "fixHeight" },
     ],
     listmode: ({ driver }) => {
-        console.log(driver.getRangeValue("row", "autoHeight", []));
-        return !!driver.getRangeValue("row", "autoHeight", []) ? "auto" : "fixed";
+        return !!driver.getRangeValue("row", "autoHeight") ? "auto" : "fixed";
     },
     onClick: ({ value, driver }) => {
-        driver.exec("sizeChange", { autoHeight: value === "auto" ? true : false, range: [] });
+        driver.exec("sizeChange", { autoHeight: value === "auto" ? true : false });
     }
 };
-/**@description 行高列宽 */
+/**@description 行高列宽，使用使用范围设置 */
 export const size: IToolbarItemObj = {
     key: "size",
     icon: <AiOutlineColumnHeight />,
     tooltip: "size",
     dropdown: ({ driver }) => {
-        const changeHeight: ChangeEventHandler<HTMLInputElement> = (e) => {
-            driver.exec("sizeChange", { rowHeight: e.target.value });
+        const changeHeight = value => {
+            driver.exec("sizeChange", { rowHeight: value });
         }
-        const changeWidth: ChangeEventHandler<HTMLInputElement> = (e) => {
-            driver.exec("sizeChange", { colWidth: e.target.value });
-        } 
+        const rowHeight = driver.getRangeValue("row", "rowHeight");
+        const changeWidth = value => {
+            driver.exec("sizeChange", { colWidth: value });
+        }
+        const colWidth = driver.getRangeValue("col", "colWidth");
         return (
             <div className="p-3">
-                <label className="input-group">
+                <label className="tool-input-group p-2">
                     <span><FormattedMessage id="rowHeight" /></span>
-                    <input type="number" className="input input-bordered" onChange={changeHeight}/>
+                    <InputNumber callback={changeHeight} value={rowHeight} />
                 </label>
-                <label className="input-group">
+                <label className="tool-input-group p-2">
                     <span><FormattedMessage id="colWidth" /></span>
-                    <input type="number" className="input input-bordered" onChange={changeWidth}/>
+                    <InputNumber callback={changeWidth} value={colWidth} />
                 </label>
             </div>
         )

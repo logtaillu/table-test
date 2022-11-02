@@ -5,7 +5,7 @@ import { IExcelTableProps } from '../src/components/ExcelTable';
 const getData = (str: string, num: number) => {
     const keys = str.split("");
     let res: any[] = [];
-    for (let i = 0; i < num; i++){
+    for (let i = 0; i < num; i++) {
         let row: any = {};
         keys.map((k, idx) => row[k] = `${k}-${idx}-${num}`);
         res.push(row);
@@ -17,7 +17,11 @@ export default function () {
         toolbar: true,
         config: {
             rowCount: 5,
-            colCount: 5
+            colCount: 5,
+            all: {
+                row: { rowHeight: 40 },
+                col: { colWidth: 100 }
+            }
         },
         editable: true
     });
@@ -28,7 +32,7 @@ export default function () {
         editable: true
     });
     return (
-        <div style={{padding: 30, background:"#f5f5f5"}}>
+        <div style={{ padding: 30, background: "#f5f5f5" }}>
             <h1>data table</h1>
             <DataTable {...dataConf} />
             <h1>excel table</h1>

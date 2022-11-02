@@ -5,7 +5,7 @@
 import { makeAutoObservable, observable } from "mobx"
 import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType, IConfigKey, IRowKey, IColKey, ISaveValues, IRangeSetAry, ISaveRange } from "./ITableDriver"
 import { getCellRelationToRange, getFormatedRange, getRangeCells, getRangeRelation, getTargetRange } from "./DriverFunc";
-import { getPriorityValue, getValue, setAndSaveValues, setValue } from "./ValueFunc";
+import { getPriorityValue, getValue, setAndSaveValues } from "./ValueFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
 import { getCellTypeKey, getColKey, getCellKey, getRowKey } from "./keyFunc";
@@ -19,7 +19,8 @@ export interface ISettableProps {
 }
 const defaultConfig: () => ITableCacheConfig = () => ({
     all: {
-        row: { autoHeight: true, rowHeight: 40 }
+        row: { autoHeight: true, rowHeight: 40 },
+        col: {colWidth: 100}
     }
 });
 export default class TableDriver {
@@ -68,6 +69,9 @@ export default class TableDriver {
             this.globalRange = val
         }
     };
+    setConfigValue(key: string, value: any) {
+        this.config[key] = value;
+    }
     // 设置config同时清空操作栈
     set content(val: ITableCacheConfig | undefined) {
         this.actionStack = [];
@@ -110,10 +114,17 @@ export default class TableDriver {
             if (result === false) {
                 return;
             }
-            console.log("do action", action.type);
+            console.log("do action", action.type, action.value, action.keep);
             // 有undo功能的action或者返回了undo栈，入栈
             if (service.undo || Array.isArray(result)) {
-                this.actionStack.push({...action, undo: result || []});
+                // 是否有keep栈，不覆盖undo
+                const last = this.actionStack.length ? this.actionStack[this.actionStack.length - 1] : null;
+                if (last && last.keep === true && last.type === action.type) {
+                    last.value = action.value;
+                    last.keep = action.keep;
+                } else {
+                    this.actionStack.push({ ...action, undo: result || [] });
+                }
                 if (clearUndo) {
                     this.undoStack = [];
                 }
@@ -121,8 +132,8 @@ export default class TableDriver {
         }
     }
     // 外部使用的执行操作
-    exec(type: string, value?: any) {
-        this.doAction({ type, value });
+    exec(type: string, value?: any, keep?: boolean) {
+        this.doAction({ type, value, keep });
     }
     // 重做
     redoAction() {

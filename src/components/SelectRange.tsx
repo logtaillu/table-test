@@ -2,8 +2,8 @@ import React from 'react'
 import { observer } from 'mobx-react-lite';
 import TableDriver from '../tableDriver/TableDriver';
 import { ICellRange } from '../tableDriver/ITableDriver';
+import { useDriver } from './DriverContext';
 export interface ISelectRangeProps {
-    driver: TableDriver;
 }
 
 const getRangeStyle = (range: ICellRange, driver: TableDriver): React.CSSProperties => {
@@ -34,7 +34,7 @@ const getRangeStyle = (range: ICellRange, driver: TableDriver): React.CSSPropert
 }
 
 export default observer(function (props: ISelectRangeProps) {
-    const { driver } = props;
+    const driver = useDriver();
     
     return (
         <div className={driver.prefix("select-ranges")}>

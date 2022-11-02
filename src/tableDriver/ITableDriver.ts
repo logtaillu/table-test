@@ -102,9 +102,11 @@ export interface IActionItem {
     type: string;
     /**@description 内容*/
     value?: any;
+    /**@description 保持并覆盖上一个，但是起始内容不变*/
+    keep?: boolean;
 }
 /**@description stack操作对象 */
-export interface IActionStackItem extends IActionItem{
+export interface IActionStackItem extends IActionItem {
     undo?: ISaveValues;
 }
 export type IActionStack = IActionStackItem[];

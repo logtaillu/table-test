@@ -32,7 +32,7 @@ export function getPriorityValue(target: any, paths: Array<string[] | string>) {
     let res = undefined;
     for (let i = 0; i < paths.length; i++) {
         const current = getValue(target, paths[i]);
-        if (current !== null || current !== undefined) {
+        if (current !== null && current !== undefined) {
             res = current;
             break;
         }

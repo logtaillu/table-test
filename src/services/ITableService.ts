@@ -9,8 +9,8 @@ export interface IEventItem {
 }
 export interface ITableService {
     /**@description props处理 */
-    enrichProps: (tableProps: TableProps<any>, driver: TableDriver) => TableProps<any>;
+    enrichProps?: (tableProps: TableProps<any>, driver: TableDriver) => TableProps<any>;
     /**@description 栈操作 */
-    actions: IAcitonServiceMap;
-    events: IEventItem[];
+    actions?: IAcitonServiceMap;
+    events?: IEventItem[];
 }

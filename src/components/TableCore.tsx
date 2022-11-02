@@ -10,6 +10,7 @@ import { TableProps } from 'rc-table/lib/Table';
 import "../styles/index.less";
 import { IntlProvider } from 'react-intl';
 import messages from "../locales/index";
+import { DriverContext } from './DriverContext';
 export interface IThemeVar extends React.CSSProperties {
     "--border-color": string;
     "--border-width": string;
@@ -61,7 +62,7 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
     const { prefixCls } = tableProps;
     const [driver] = useState(() => new TableDriver({ prefixCls, lang: navigator.language || lang, editable, config: config || {}, globalRange }));
     // config对象change，重置，指object本身，内部值改变不重置
-    useUpdateEffect(() => { 
+    useUpdateEffect(() => {
         driver.content = config;
     }, [config]);
     useUpdateEffect(() => { driver.cls = prefixCls }, [prefixCls]);
@@ -87,13 +88,15 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
     }));
     return (
         <IntlProvider locale={driver.lang} defaultLocale="zh-CN" messages={getMessages(lang, locales)}>
-            <div className={driver.prefix("table-wrapper") + " " + (wrapClassName || "")} style={theme || {}}>
-                <Toolbar driver={driver} toolbar={toolbar} items={items} sources={sources} />
-                <div ref={setRef} className={driver.prefix("inner-table")}>
-                    <InnerTable driver={driver} table={tableProps} services={services} />
-                    <SelectRange driver={driver} />
+            <DriverContext.Provider value={driver}>
+                <div className={driver.prefix("table-wrapper") + " " + (wrapClassName || "")} style={theme || {}}>
+                    <Toolbar toolbar={toolbar} items={items} sources={sources} />
+                    <div ref={setRef} className={driver.prefix("inner-table")}>
+                        <InnerTable table={tableProps} services={services} />
+                        <SelectRange />
+                    </div>
                 </div>
-            </div>
+            </DriverContext.Provider>
         </IntlProvider>
     )
 }));

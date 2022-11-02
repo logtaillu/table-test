@@ -1,8 +1,9 @@
-/**
- * 最小行列数补充
- */
 import { TableProps } from "rc-table/lib/Table";
 import { ITableService } from "./ITableService";
+/**
+ * 根据colCount,rowCount，补充最小行列数
+ * used by ExcelTable
+ */
 export default {
     enrichProps: (props, driver) => {
         const { columns, data } = props;
@@ -21,6 +22,9 @@ export default {
             }
             append.columns = newcols;
         }
+        if ((columns?.length || 0) > colCount) {
+            driver.setConfigValue("colCount", columns?.length || 0);
+        }
         
         // 补充行数
         const datalen = (data || []).length;
@@ -30,6 +34,9 @@ export default {
                 newdata.push({});
             }
             append.data = newdata;
+        }
+        if (datalen > rowCount) {
+            driver.setConfigValue("rowCount", datalen);
         }
         return append;
     },

@@ -5,18 +5,47 @@
 @import "./theme.less";
 @tprefix: extable;
 @layer components{
+    // 工具栏按钮
     .toolbar-btn {
         @apply btn btn-square btn-sm rounded-none min-w-sm w-auto p-1 align-middle btn-primary;
     }
+    // 不和dropdown一起显示的tooltip
     .dptooltip {
-        @apply tooltip tooltip-bottom;
+        @apply tooltip tooltip-bottom z-10;
         &.rc-dropdown-open::before, &.rc-dropdown-open::after{
             display: none;
         }
     }
+    // 工具栏菜单
     .toolbar-menu {
         @apply menu bg-white rounded-sm drop-shadow-md;
         
+    }
+    // 输入框/组
+    .tool-input-group{
+        @apply flex items-stretch;
+        >span:first-child,>.tool-input:first-child, >.tool-input-number:first-child input{
+            @apply rounded-l-md rounded-r-none;
+        }
+        >span:last-child,>.tool-input:last-child, >.tool-input-number:last-child input{
+            @apply rounded-r-md rounded-l-none;
+        }
+        >span{
+            @apply bg-primary text-primary-content flex items-center px-2;
+        }
+    }
+    .tool-input{
+        @apply input input-sm border-primary border-opacity-30;
+        &:focus, &:hover{
+            @apply border-opacity-70 outline-none;
+        }
+        &:focus{
+            --tw-shadow-color: hsl(var(--p) / 20%);
+            box-shadow: 0 0 0 2px var(--tw-shadow-color);
+        }
+    }
+    .tool-input-number{
+
     }
 }
 .@{tprefix}-toolbar{

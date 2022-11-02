@@ -4,6 +4,7 @@
 import TableDriver from "../tableDriver/TableDriver";
 import { ICellKey } from "../tableDriver/ITableDriver";
 import { ITableService } from "./ITableService";
+import { getCellKeyObj } from "../tableDriver/keyFunc";
 export interface ISelectRangeAction {
     cellKey: ICellKey;
     clear?: boolean;
@@ -16,14 +17,9 @@ const getTargetCell = (driver: TableDriver, e: any) => {
     }
     const cellele = e.target?.closest(`td.${driver.prefix("cell")}, th.${driver.prefix("cell")}`);
     if (cellele) {
-        const trele = cellele.parentElement;
-        const cellKey: ICellKey = {
-            col: Number(cellele.dataset.colnum),
-            row: Number(trele.dataset.rownum),
-            type: cellele.tagName.toUpperCase() === "TD" ? "body" : "header"
-        };
+        const cellkeystr = cellele.dataset.cellkey;
         return {
-            cellKey,
+            cellKey: getCellKeyObj(cellkeystr),
             clear: !e.ctrlKey
         } as ISelectRangeAction;
     }

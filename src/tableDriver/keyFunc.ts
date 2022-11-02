@@ -1,11 +1,11 @@
-import { ICellKey, IRowKey, IColKey, IValueType } from "./ITableDriver";
+import { ICellKey, IRowKey, IColKey, IValueType, ICellType } from "./ITableDriver";
 
 /**
  * string类型cell key
  * @param cell 单元格
  * @returns key
  */
- export function getCellKey(cell: ICellKey) {
+export function getCellKey(cell: ICellKey) {
     return [cell.type, cell.row, cell.col].join("-");
 }
 /**
@@ -39,4 +39,21 @@ export function getCellTypeKey(cell: ICellKey, type: IValueType) {
     } else {
         return getColKey({ index: cell.col });
     }
+}
+/**
+ * 从string转换成obj的cell key
+ * @param keystr key字符串
+ */
+export function getCellKeyObj(keystr: string): ICellKey {
+    const [type, row, col] = keystr.split("-");
+    return { type: type as ICellType, row: Number(row), col: Number(col) };
+}
+
+/**
+ * 从string转换成obj的row key
+ * @param keystr key字符串
+ */
+export function getRowKeyObj(keystr: string): IRowKey {
+    const [type, index] = keystr.split("-");
+    return { type: type as ICellType, index: Number(index) };
 }
