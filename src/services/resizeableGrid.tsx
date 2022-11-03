@@ -6,14 +6,12 @@
  * used by ExcelTable, DataTable
  */
 import { observer } from "mobx-react-lite";
-import { TableProps } from 'rc-table/lib/Table';
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { Resizable } from "react-resizable";
 import 'react-resizable/css/styles.css';
-import styled from 'styled-components';
 import { useDriver } from "../components/DriverContext";
-import { ICellType, IColConfig, IRangeSetAry, IRowConfig, IRowKey, ISaveRange } from '../tableDriver/ITableDriver';
-import { getCellKey, getCellKeyObj, getRowKeyObj } from '../tableDriver/keyFunc';
+import { IColConfig, IRangeSetAry, IRowConfig, IRowKey, ISaveRange } from '../tableDriver/ITableDriver';
+import { getCellKeyObj, getRowKeyObj } from '../tableDriver/keyFunc';
 import { mapColumn } from "../utils/columnUtil";
 import { ITableService } from './ITableService';
 type ISizeChangeValue = IRowConfig & IColConfig & { range?: ISaveRange };
@@ -57,6 +55,29 @@ const ResizeableTr = observer((props: any) => {
         )
     }
 });
+const getAutoHeightComponent = (Component: "td" | "th") => {
+    return observer((props: any) => {
+        const { children, ...others } = props;
+        const driver = useDriver();
+        const key = props["data-cellkey"];
+        const cell = key ? getCellKeyObj(key) : false;
+        const autoHeight = driver.getRangeValue("row", "autoHeight", cell);
+        const rowHeight = driver.getRangeValue("row", "rowHeight", cell);
+        console.log(Component,autoHeight, cell);
+        const rowSpan = others.rowSpan || 1;
+        // 防止children是纯文本,再包一层确保在自动高度时撑开高度
+        return (
+            <Component {...others}>
+                <div className="overflow-hidden flex items-center justify-center" style={{ height: autoHeight ? "auto" : rowSpan * rowHeight }}>
+                    <div>
+                        {children}
+                    </div>
+                </div>
+            </Component>
+        )
+    })
+}
+const Thead = getAutoHeightComponent("th");
 const ResizeableTh = observer((props: any) => {
     const driver = useDriver();
     const resizeable = driver.editable;
@@ -65,7 +86,7 @@ const ResizeableTh = observer((props: any) => {
     const size = driver.getRangeValue("col", "colWidth", cell);
     // 非resize或者没有设置size
     if (!resizeable || !size || !key) {
-        return <th {...props} />;
+        return <Thead {...props} />;
     } else {
         const start = (e: any, s: any) => {
             const val = s.size.width;
@@ -85,7 +106,7 @@ const ResizeableTh = observer((props: any) => {
                 onResizeStop={stop}
 
             >
-                <th {...props} />
+                <Thead {...props} />
             </Resizable>
         )
     }
@@ -95,7 +116,10 @@ const components = {
         cell: ResizeableTh,
         row: ResizeableTr
     },
-    body: { row: ResizeableTr }
+    body: {
+        row: ResizeableTr,
+        cell: getAutoHeightComponent("td")
+    }
 };
 export default {
     enrichProps(tableProps, driver) {

@@ -54,7 +54,8 @@ export default {
             columns.push({ dataIndex: i, title: getIdxName(i) });
         }
         return {
-            columns
+            columns,
+            className: (tableProps.className || "") + " " + driver.prefix("serial-table")
         };
     }
 } as ITableService;

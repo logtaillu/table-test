@@ -1,12 +1,4 @@
 每个功能考虑service、keyevents和toolbar、说明、dataComponents后面说
-1. 样式组件确定并调整 ok
-2. 行高/列宽调整/高度自适应-both
-toolbar: 行高/列宽设置，自动行高/固定行高设置
-events: 拖拽
-
-***
-3. redo/undo-both ok
-4. 给与行号和列头-excel ok
 ***
 5. selectRange，包含行列选择功能-both
 6. 合并/拆分单元格-excel
@@ -34,3 +26,7 @@ events: 拖拽
 
 已完成：
 1. body/header/all select toolbar-data
+1. 样式组件确定并调整 ok
+3. redo/undo-both ok
+4. 给与行号和列头-excel ok
+2. 行高/列宽调整/高度自适应-both

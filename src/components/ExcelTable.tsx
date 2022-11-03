@@ -7,6 +7,7 @@ import enrichData from '../services/enrichData';
 import enrichKey from '../services/enrichKey';
 import excelSider from '../services/excelSider';
 import { ITableService } from '../services/ITableService';
+import redoundo from '../services/redoundo';
 import resizeableGrid from '../services/resizeableGrid';
 import TableCore, { ITableCoreProps } from './TableCore'
 const defaultToolbar = ['undo', 'redo', 'autoHeight', 'size'];
@@ -17,7 +18,8 @@ export default function (props: IExcelTableProps) {
     let sary: ITableService[] = [
         enrichData,
         excelSider,
-        resizeableGrid
+        resizeableGrid,
+        redoundo
     ];
     sary = sary.concat(services || []);
     sary.push(enrichKey);

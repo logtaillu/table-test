@@ -9,6 +9,7 @@ import { getPriorityValue, getValue, setAndSaveValues } from "./ValueFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
 import { getCellTypeKey, getColKey, getCellKey, getRowKey } from "./keyFunc";
+import { mergeConfig } from "../utils/columnUtil";
 export interface ISettableProps {
     config?: ITableCacheConfig
     prefixCls?: string;
@@ -76,7 +77,7 @@ export default class TableDriver {
     set content(val: ITableCacheConfig | undefined) {
         this.actionStack = [];
         this.undoStack = [];
-        this.config = val || defaultConfig();
+        this.config = mergeConfig(defaultConfig(), val, true);
     };
     set language(val: string | undefined) { val && (this.lang = val) }
     set cls(val: string | undefined) { val && (this.prefixCls = val) }

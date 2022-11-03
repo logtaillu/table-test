@@ -8,7 +8,7 @@ type IMapColumnCallback = (col: IColumn, cell: ICellKey, isLeaf: boolean) => Par
  * @param target 
  * @returns 
  */
-export function mergeConfig(col, target) {
+export function mergeConfig(col, target, mergeObject = false) {
     let res = { ...col };
     Object.keys(target).map(key => {
         const cur = target[key];
@@ -18,6 +18,8 @@ export function mergeConfig(col, target) {
                 const originValue = orifunc(...args);
                 return { ...originValue, ...cur(...args) };
             }
+        } else if (mergeObject && res[key] && typeof (cur) === "object" && !Array.isArray(cur)) {
+            res[key] = mergeConfig(res[key], cur, true);
         } else {
             res[key] = cur;
         }
