@@ -39,7 +39,11 @@ export interface IRowConfig {
 }
 /**@description 单元格配置 */
 export interface ICellConfig {
-
+    /**@description 样式变量 */
+    cssvars?: {
+        /**@description 字号 */
+        "--cell-font-size": string;
+    }
 }
 /**@description 可用字段 */
 export type IConfigKey = keyof ICellConfig | keyof IRowConfig | keyof IColConfig;

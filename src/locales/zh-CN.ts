@@ -10,5 +10,6 @@ export default {
     "fixHeight": "固定单元格高度",
     "size": "行高和列宽设置",
     "rowHeight": "行高",
-    "colWidth": "列宽"
+    "colWidth": "列宽",
+    "fontSize": "字号"
 }
