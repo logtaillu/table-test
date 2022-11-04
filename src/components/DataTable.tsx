@@ -7,15 +7,17 @@ import enrichKey from '../services/enrichKey';
 import { ITableService } from '../services/ITableService';
 import redoundo from '../services/redoundo';
 import resizeableGrid from '../services/resizeableGrid';
+import styleSetter from '../services/styleSetter';
 import TableCore, { ITableCoreProps } from './TableCore';
-const defaultToolbar = ['undo', 'redo', 'globalRange', 'autoHeight', 'size'];
+const defaultToolbar = ['undo', 'redo', 'globalRange', 'autoHeight', 'size', 'fontSize'];
 export interface IDataTableProps extends ITableCoreProps {
 }
 export default function (props: IDataTableProps) {
     const { services, ...coreProps } = props;
     let sary: ITableService[] = [
         resizeableGrid,
-        redoundo
+        redoundo,
+        styleSetter
     ];
     sary = sary.concat(services || []);
     sary.push(enrichKey);

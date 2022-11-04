@@ -21,7 +21,12 @@ export interface ISettableProps {
 const defaultConfig: () => ITableCacheConfig = () => ({
     all: {
         row: { autoHeight: true, rowHeight: 40 },
-        col: {colWidth: 100}
+        col: { colWidth: 100 },
+        cell: {
+            cssvars: {
+                "--cell-font-size": "12px"
+            }
+        }
     }
 });
 export default class TableDriver {
@@ -77,7 +82,7 @@ export default class TableDriver {
     set content(val: ITableCacheConfig | undefined) {
         this.actionStack = [];
         this.undoStack = [];
-        this.config = mergeConfig(defaultConfig(), val, true);
+        this.config = mergeConfig(defaultConfig(), val);
     };
     set language(val: string | undefined) { val && (this.lang = val) }
     set cls(val: string | undefined) { val && (this.prefixCls = val) }
@@ -227,7 +232,8 @@ export default class TableDriver {
      * @param type 类型
      * @param useGlobal 是否强制使用全局量 
      */
-    getRangeValue(type: IValueType, key: IConfigKey, userRange: ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false = false) {
+    getRangeValue(type: IValueType, key: IConfigKey | IConfigKey[], userRange: ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false = false) {
+        const keys = Array.isArray(key) ? key : [key];
         const selected = userRange ? getTargetRange(userRange) : this.config.selected || [];
         let range = this.globalRange;
         if (selected.length > 0) {
@@ -236,9 +242,9 @@ export default class TableDriver {
             if (list.length) {
                 const getCellValue = (cell: ICellKey) => {
                     return getPriorityValue(this.config, [
-                        [type, getCellTypeKey(cell, type), key],
-                        [cell.type, type, key],
-                        ["all", type, key]
+                        [type, getCellTypeKey(cell, type), ...keys],
+                        [cell.type, type, ...keys],
+                        ["all", type, ...keys]
                     ]);
                 }
                 // 是否所有单元格值相同
@@ -255,11 +261,11 @@ export default class TableDriver {
             }
         }
         if (range === "all") {
-            return getValue(this.config, [range, type, key]);
+            return getValue(this.config, [range, type, ...keys]);
         } else {
             return getPriorityValue(this.config, [
-                [range, type, key],
-                ["all", type, key]
+                [range, type, ...keys],
+                ["all", type, ...keys]
             ]);
         }
     }
@@ -269,26 +275,27 @@ export default class TableDriver {
      * @param type 类型
      * @param useGlobal 是否强制使用全局量 
      */
-    setRangeValue(type: IValueType, key: IConfigKey, value: any, userRange: ISaveRange = false): ISaveValues {
+    setRangeValue(type: IValueType, key: IConfigKey | IConfigKey[], value: any, userRange: ISaveRange = false): ISaveValues {
+        const keys = Array.isArray(key) ? key : [key];
         const selected = userRange ? getTargetRange(userRange) : this.config.selected || [];
         const saves: ISaveValues = [];
         if (selected.length > 0) {
             const list = this.getCellListInRanges(selected);
             list.map(cell => {
-                saves.push({ value, paths: [type, getCellTypeKey(cell, type), key] });
+                saves.push({ value, paths: [type, getCellTypeKey(cell, type), ...keys] });
             });
         } else {
-            saves.push({ value, paths: [this.globalRange, type, key] });
+            saves.push({ value, paths: [this.globalRange, type, ...keys] });
             // 清除下层
             if (this.globalRange === "all") {
-                saves.push({ value: undefined, paths: ["header", type, key] });
-                saves.push({ value: undefined, paths: ["body", type, key] });
+                saves.push({ value: undefined, paths: ["header", type, ...keys] });
+                saves.push({ value: undefined, paths: ["body", type, ...keys] });
             }
             // 遍历当前type的key值，清除范围内的
             const target = this.config[type] || {};
             Object.keys(target).map(typekey => {
                 if (this.globalRange === "all" || type === "col" || typekey.includes(this.globalRange)) {
-                    saves.push({ value, paths: [type, typekey, key] });
+                    saves.push({ value, paths: [type, typekey, ...keys] });
                 }
             });
         }

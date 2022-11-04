@@ -37,16 +37,18 @@ export interface IRowConfig {
     /**@description 是否自动高度 */
     autoHeight?: boolean;
 }
+/**@description cell样式变量 */
+export interface ICellCssVars {
+    /**@description 字号 */
+    "--cell-font-size": string;
+}
 /**@description 单元格配置 */
 export interface ICellConfig {
     /**@description 样式变量 */
-    cssvars?: {
-        /**@description 字号 */
-        "--cell-font-size": string;
-    }
+    cssvars?: ICellCssVars;
 }
 /**@description 可用字段 */
-export type IConfigKey = keyof ICellConfig | keyof IRowConfig | keyof IColConfig;
+export type IConfigKey = keyof ICellConfig | keyof IRowConfig | keyof IColConfig | keyof ICellCssVars;
 
 export type ICacheObj<T> = Record<string, T>;
 
@@ -128,5 +130,5 @@ export type IAcitonServiceMap = ICacheObj<IActionService>;
 /**@description setRange的userRange可用值 */
 export type ISaveRange = ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false;
 /**@description 一组setRange配置 */
-export type IRangeSetAry = Array<{ type: IValueType, key: IConfigKey, value: any, range?: ISaveRange }>;
+export type IRangeSetAry = Array<{ type: IValueType, key: IConfigKey | IConfigKey[], value: any, range?: ISaveRange }>;
 

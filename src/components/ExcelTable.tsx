@@ -9,8 +9,9 @@ import excelSider from '../services/excelSider';
 import { ITableService } from '../services/ITableService';
 import redoundo from '../services/redoundo';
 import resizeableGrid from '../services/resizeableGrid';
+import styleSetter from '../services/styleSetter';
 import TableCore, { ITableCoreProps } from './TableCore'
-const defaultToolbar = ['undo', 'redo', 'autoHeight', 'size'];
+const defaultToolbar = ['undo', 'redo', 'autoHeight', 'size', 'fontSize'];
 export interface IExcelTableProps extends ITableCoreProps {
 }
 export default function (props: IExcelTableProps) {
@@ -19,7 +20,8 @@ export default function (props: IExcelTableProps) {
         enrichData,
         excelSider,
         resizeableGrid,
-        redoundo
+        redoundo,
+        styleSetter
     ];
     sary = sary.concat(services || []);
     sary.push(enrichKey);

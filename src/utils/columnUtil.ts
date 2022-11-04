@@ -3,12 +3,12 @@ import { ICellKey } from "../tableDriver/ITableDriver";
 type IColumn = ColumnGroupType<any> | ColumnType<any>;
 type IMapColumnCallback = (col: IColumn, cell: ICellKey, isLeaf: boolean) => Partial<IColumn>;
 /**
- * 参数合并，主要处理函数
+ * 参数合并，主要处理函数和object
  * @param col 
  * @param target 
  * @returns 
  */
-export function mergeConfig(col, target, mergeObject = false) {
+export function mergeConfig(col, target) {
     let res = { ...col };
     Object.keys(target).map(key => {
         const cur = target[key];
@@ -18,8 +18,8 @@ export function mergeConfig(col, target, mergeObject = false) {
                 const originValue = orifunc(...args);
                 return { ...originValue, ...cur(...args) };
             }
-        } else if (mergeObject && res[key] && typeof (cur) === "object" && !Array.isArray(cur)) {
-            res[key] = mergeConfig(res[key], cur, true);
+        } else if (res[key] && typeof (cur) === "object" && !Array.isArray(cur) && !('$$typeof' in cur) && !('$$typeof' in res[key])) {
+            res[key] = mergeConfig(res[key], cur);
         } else {
             res[key] = cur;
         }

@@ -1,4 +1,3 @@
-import { mapColumn } from "../utils/columnUtil";
 import { ITableService } from "./ITableService";
 
 /**redo/undo events

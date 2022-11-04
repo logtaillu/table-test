@@ -7,9 +7,9 @@ export const fontSize: IToolbarItemObj = {
     key: "fontSize",
     icon: <ImFontSize />,
     tooltip: "fontSize",
-    listmode: ({ driver }) => driver.getRangeValue("cell", "cssvars"),
-    source: defaultFontSizes.map(k => ({ value: k, label: k })),
+    listmode: ({ driver }) => driver.getRangeValue("cell", ["cssvars","--cell-font-size"]),
+    source: defaultFontSizes.map(k => ({ value: k + "px", label: k.toString() })),
     onClick: ({ value, driver }) => {
-        // driver.exec("sizeChange", { autoHeight: value === "auto" ? true : false });
+        driver.exec("styleChange", { "--cell-font-size": value });
     }
 }
