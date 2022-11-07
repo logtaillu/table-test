@@ -13,5 +13,9 @@ export default {
     "colWidth": "列宽",
     "fontSize": "字号",
     "fontFamily": "字体",
-    "fontColor": "颜色"
+    "fontColor": "颜色",
+    'alignLeft': "居左",
+    'alignCenter': "居中",
+    "alignRight": "居右",
+    'verticalAlign': "垂直对齐"
 }

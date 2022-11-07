@@ -8,17 +8,19 @@ import TableDriver from "../tableDriver/TableDriver";
  * 可以设置disabled和active状态
  * 能做source覆盖
  */
-export interface IToolbarArgs {
+export interface IToolbarArgsNoValue {
     driver: TableDriver;
     intl: IntlShape;
     source: any;
-    /**@description select list模式才有的value传参 */
-    value?: any;
     setValue: (value: any) => void;
 }
-export type IToolbarFunc<T> = (args: IToolbarArgs) => T;
+export interface IToolbarArgs extends  IToolbarArgsNoValue{
+    /**@description 当前值 */
+    value: any;
+}
+export type IToolbarFunc<T, P = IToolbarArgs> = (args: P) => T;
 export interface IToolbarItemObj {
-    /**@description 标识 */
+    /**@description 唯一标识，合并配置时做参考 */
     key: string;
     /**@description 资源列表 */
     source?: any;
@@ -35,7 +37,9 @@ export interface IToolbarItemObj {
     /**@description 自定义dropdown模式 */
     dropdown?: IToolbarFunc<React.ReactElement>;
     /**@description dropdown/list模式，获取当前值函数 */
-    getValue?: IToolbarFunc<any>;
+    getValue?: IToolbarFunc<any, IToolbarArgsNoValue>;
+    /**@description 是否按钮列表 @default false */
+    btnlist?: boolean;
 }
 
 export type IToolbarItem = IToolbarItemObj | string;

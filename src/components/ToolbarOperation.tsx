@@ -19,7 +19,7 @@ export default observer(function (props: IToolBarItem) {
     const [open, setOpen] = useState(false);
     const [temp, setTemp] = useState(null);
     const intl = useIntl();
-    // 合并
+    // 合并配置
     if (sources && sources[target.key]) {
         if (Array.isArray(sources[target.key])) {
             target = { ...target, source: sources[target.key] };
@@ -28,7 +28,10 @@ export default observer(function (props: IToolBarItem) {
         }
     }
     const mode = target.dropdown ? "dropdown" : target.getValue ? "list" : "btn";
-    const args = { driver, source: target.source, intl, setValue: setTemp, value: temp };
+    // 获取通用传参
+    const argsNoValue = { driver, source: target.source, intl, setValue: setTemp, value: temp };
+    const dataValue = open && temp && mode === "dropdown" ? temp : target.getValue ? target.getValue(argsNoValue) : null;
+    const args = { ...argsNoValue, value: dataValue };
     // 关闭
     const clickAndClose = (userArgs = {}) => {
         if (target.onClick) {
@@ -60,8 +63,8 @@ export default observer(function (props: IToolBarItem) {
         if (typeof (func) === "function") {
             return func(args);
         } else {
-            if (func === true && target.getValue) {
-                func = target.getValue(args);
+            if (func === true) {
+                func = dataValue;
                 // 列表模式，找label值
                 if (mode === "list") {
                     const activeItem = (target.source || []).find(s => s.value === func);
@@ -93,15 +96,28 @@ export default observer(function (props: IToolBarItem) {
     );
     // 下拉模式(dropdown)
     if (target.dropdown) {
-        const value = open && temp ? temp : target.getValue ? target.getValue(args) : null;
         return dp((
             <div className='card bg-white shadow-xl rounded-md'>
-                {target.dropdown({ ...args, value })}
+                {target.dropdown(args)}
             </div>
         ));
     } else if (target.getValue) {
         // 下拉列表
-        const overlay = (
+        const overlay = target.btnlist ? (
+            <div className='btn-group btn-group-vertical'>
+                {(target.source || []).map(({ value, label }: { value: any, label: string }) => {
+                    const click = () => {
+                        clickAndClose({ value });
+                    }
+                    const cls = classnames({ "btn-active": dataValue === value, "toolbar-btn": true });
+                    return (
+                        <button className={cls} key={value} onClick={click}>
+                            {typeof (label) === "string" ? intl.formatMessage({ id: label, defaultMessage: label }) : label}
+                        </button>
+                    )
+                })}
+            </div>
+        ) : (
             <ul className='toolbar-menu'>
                 {(target.source || []).map(({ value, label }: { value: any, label: string }) => {
                     const click = () => {
@@ -109,7 +125,7 @@ export default observer(function (props: IToolBarItem) {
                     }
                     return (
                         <li key={value} value={value} onClick={click}>
-                            <a className={classnames({ "py-4px": true, active: target.getValue ? target.getValue(args) === value : false })}>{intl.formatMessage({ id: label, defaultMessage: label })}</a>
+                            <a className={classnames({ "py-4px": true, active: dataValue === value })}>{typeof (label) === "string" ? intl.formatMessage({ id: label, defaultMessage: label }) : label}</a>
                         </li>
                     )
                 })}

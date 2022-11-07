@@ -11,6 +11,14 @@
     .toolbar-btn {
         @apply btn btn-square btn-sm rounded-none min-w-sm w-auto p-1 align-middle btn-primary;
     }
+    .btn-group.btn-group-vertical .toolbar-btn{
+        &:first-child:not(:last-child){
+            @apply rounded-t-s;
+        }
+        &:last-child:not(:first-child){
+            @apply rounded-b-s;
+        }
+    }
 
     // 不和dropdown一起显示的tooltip
     .dptooltip {

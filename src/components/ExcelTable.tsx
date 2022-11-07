@@ -11,7 +11,7 @@ import redoundo from '../services/redoundo';
 import resizeableGrid from '../services/resizeableGrid';
 import styleSetter from '../services/styleSetter';
 import TableCore, { ITableCoreProps } from './TableCore'
-const defaultToolbar = ['undo', 'redo', 'autoHeight', 'size', 'fontSize', 'fontFamily', 'fontColor'];
+const defaultToolbar = ['undo', 'redo', 'autoHeight', 'size', 'fontSize', 'fontFamily', 'fontColor', 'alignLeft', 'alignCenter', 'alignRight', 'verticalAlign'];
 export interface IExcelTableProps extends ITableCoreProps {
 }
 export default function (props: IExcelTableProps) {

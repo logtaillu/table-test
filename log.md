@@ -3,8 +3,6 @@
 5. selectRange，包含行列选择功能-both
 6. 合并/拆分单元格-excel
 ***
-6. 文字对齐text align/vertical align-both
-***
 7. 边框线[颜色/样式/线宽/有框范围]-both
 8. 行列（插入/删除）-excel
 ***
@@ -30,6 +28,7 @@
 4. 给与行号和列头-excel ok
 2. 行高/列宽调整/高度自适应-both
 5. 字体/字号/颜色-both
+6. 文字对齐text align/vertical align-both
 
 
 样式添加位置：
