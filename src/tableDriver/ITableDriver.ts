@@ -1,5 +1,5 @@
 import TableDriver from "./TableDriver";
-
+import { defaultCssVars } from "./getDefaultConfig";
 export type ICellType = "body" | "header";
 export type IGlobalRange = "body" | "header" | "all";
 export type IValueType = "col" | "row" | "cell";
@@ -38,14 +38,11 @@ export interface IRowConfig {
     autoHeight?: boolean;
 }
 /**@description cell样式变量 */
-export interface ICellCssVars {
-    /**@description 字号 */
-    "--cell-font-size": string;
-}
+export type ICellCssVars = typeof defaultCssVars;
 /**@description 单元格配置 */
 export interface ICellConfig {
     /**@description 样式变量 */
-    cssvars?: ICellCssVars;
+    cssvars?: Partial<ICellCssVars>;
 }
 /**@description 可用字段 */
 export type IConfigKey = keyof ICellConfig | keyof IRowConfig | keyof IColConfig | keyof ICellCssVars;

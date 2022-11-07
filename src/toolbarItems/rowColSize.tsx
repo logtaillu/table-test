@@ -13,7 +13,7 @@ export const autoHeight: IToolbarItemObj = {
         { value: "auto", label: "autoHeight" },
         { value: "fixed", label: "fixHeight" },
     ],
-    listmode: ({ driver }) => {
+    getValue: ({ driver }) => {
         return !!driver.getRangeValue("row", "autoHeight") ? "auto" : "fixed";
     },
     onClick: ({ value, driver }) => {

@@ -9,7 +9,7 @@ import redoundo from '../services/redoundo';
 import resizeableGrid from '../services/resizeableGrid';
 import styleSetter from '../services/styleSetter';
 import TableCore, { ITableCoreProps } from './TableCore';
-const defaultToolbar = ['undo', 'redo', 'globalRange', 'autoHeight', 'size', 'fontSize'];
+const defaultToolbar = ['undo', 'redo', 'globalRange', 'autoHeight', 'size', 'fontSize', 'fontFamily', 'fontColor'];
 export interface IDataTableProps extends ITableCoreProps {
 }
 export default function (props: IDataTableProps) {

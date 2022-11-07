@@ -10,6 +10,7 @@ import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
 import { getCellTypeKey, getColKey, getCellKey, getRowKey } from "./keyFunc";
 import { mergeConfig } from "../utils/columnUtil";
+import { getDefaultConfig } from "./getDefaultConfig";
 export interface ISettableProps {
     config?: ITableCacheConfig
     prefixCls?: string;
@@ -18,17 +19,6 @@ export interface ISettableProps {
     globalRange?: IGlobalRange;
     headerDeep?: number;
 }
-const defaultConfig: () => ITableCacheConfig = () => ({
-    all: {
-        row: { autoHeight: true, rowHeight: 40 },
-        col: { colWidth: 100 },
-        cell: {
-            cssvars: {
-                "--cell-font-size": "12px"
-            }
-        }
-    }
-});
 export default class TableDriver {
     /*******************常量定义 **********************/
     // 操作栈
@@ -82,7 +72,7 @@ export default class TableDriver {
     set content(val: ITableCacheConfig | undefined) {
         this.actionStack = [];
         this.undoStack = [];
-        this.config = mergeConfig(defaultConfig(), val);
+        this.config = mergeConfig(getDefaultConfig(), val);
     };
     set language(val: string | undefined) { val && (this.lang = val) }
     set cls(val: string | undefined) { val && (this.prefixCls = val) }

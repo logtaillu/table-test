@@ -11,5 +11,7 @@ export default {
     "size": "行高和列宽设置",
     "rowHeight": "行高",
     "colWidth": "列宽",
-    "fontSize": "字号"
+    "fontSize": "字号",
+    "fontFamily": "字体",
+    "fontColor": "颜色"
 }

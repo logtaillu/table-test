@@ -1,5 +1,5 @@
 // 工具栏组件表，目前不做observe控制
-import { fontSize } from "./font";
+import * as fonts from "./font";
 import { globalRange } from "./globalRange";
 import { IToolbarItem, IToolbarItemObj } from "./IToolbarItem";
 import { redo, undo } from "./redoundo";
@@ -7,7 +7,7 @@ import { autoHeight, size } from "./rowColSize";
 
 class ToolbarItemControler {
     private itemMap: Record<string, IToolbarItemObj> = {
-        redo, undo, globalRange, autoHeight, size, fontSize
+        redo, undo, globalRange, autoHeight, size, ...fonts
     };
     // 注册
     register(items: IToolbarItemObj[]) {

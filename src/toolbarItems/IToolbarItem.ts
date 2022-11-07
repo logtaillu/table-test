@@ -12,9 +12,9 @@ export interface IToolbarArgs {
     driver: TableDriver;
     intl: IntlShape;
     source: any;
-    close: () => void;
     /**@description select list模式才有的value传参 */
     value?: any;
+    setValue: (value: any) => void;
 }
 export type IToolbarFunc<T> = (args: IToolbarArgs) => T;
 export interface IToolbarItemObj {
@@ -24,18 +24,18 @@ export interface IToolbarItemObj {
     source?: any;
     /**@description 提示语 */
     tooltip: string | IToolbarFunc<string>;
-    /**@description 图标 */
-    icon: React.ReactElement | IToolbarFunc<React.ReactElement>;
+    /**@description 图标，特殊值value代表取getValue的值 */
+    icon: React.ReactElement | IToolbarFunc<React.ReactElement> | true;
     /**@description 禁用状态 */
     disabled?: IToolbarFunc<boolean>;
     /**@description 高亮状态 */
     active?: IToolbarFunc<boolean>;
-    /**@description 点击事件 */
+    /**@description 点击事件，btn模式点击按钮触发，list模式选择触发，dropdown模式close触发 */
     onClick?: IToolbarFunc<void>;
-    /**@description 下拉模式，此时不需要onClick */
+    /**@description 自定义dropdown模式 */
     dropdown?: IToolbarFunc<React.ReactElement>;
-    /**@description 选择列表模式，启用时设置getActiveValue函数 */
-    listmode?: IToolbarFunc<any>;
+    /**@description dropdown/list模式，获取当前值函数 */
+    getValue?: IToolbarFunc<any>;
 }
 
 export type IToolbarItem = IToolbarItemObj | string;

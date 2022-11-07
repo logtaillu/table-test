@@ -3,6 +3,7 @@
  * a. 即时生效，end的时候pushStack
  * b. 列宽配在th上，行高配在tr上
  * c. 自动高度需要给cell
+ * d. 样式的生效
  * used by ExcelTable, DataTable
  */
 import { observer } from "mobx-react-lite";
@@ -12,6 +13,7 @@ import 'react-resizable/css/styles.css';
 import { useDriver } from "../components/DriverContext";
 import { IColConfig, IRangeSetAry, IRowConfig, IRowKey, ISaveRange } from '../tableDriver/ITableDriver';
 import { getCellKeyObj, getRowKeyObj } from '../tableDriver/keyFunc';
+import { getValue } from "../tableDriver/ValueFunc";
 import { mapColumn } from "../utils/columnUtil";
 import { ITableService } from './ITableService';
 type ISizeChangeValue = IRowConfig & IColConfig & { range?: ISaveRange };
@@ -57,18 +59,20 @@ const ResizeableTr = observer((props: any) => {
 });
 const getAutoHeightComponent = (Component: "td" | "th") => {
     return observer((props: any) => {
-        const { children, ...others } = props;
+        const { children, className, style, ...others } = props;
         const driver = useDriver();
         const key = props["data-cellkey"];
         const cell = key ? getCellKeyObj(key) : false;
         const autoHeight = driver.getRangeValue("row", "autoHeight", cell);
         const rowHeight = driver.getRangeValue("row", "rowHeight", cell);
-        console.log(Component,autoHeight, cell);
         const rowSpan = others.rowSpan || 1;
+        const font = driver.getRangeValue("cell", ["cssvars", "--cell-font-size"], cell);
+        const fontcss = font >= 12 ? "normal-font" : "small-font";
+        const cellvars = getValue(driver.config, ["cell", key, "cssvars"]);
         // 防止children是纯文本,再包一层确保在自动高度时撑开高度
         return (
-            <Component {...others}>
-                <div className="overflow-hidden flex items-center justify-center" style={{ height: autoHeight ? "auto" : rowSpan * rowHeight }}>
+            <Component {...others} className={`${fontcss} ${className||""}`} style={{...style, ...cellvars}}>
+                <div className="overflow-hidden" style={{ height: autoHeight ? "auto" : rowSpan * rowHeight }}>
                     <div>
                         {children}
                     </div>
