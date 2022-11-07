@@ -32,7 +32,6 @@
 
 
 样式添加位置：
-2. theme.less 默认值
-3. index.less 值使用
+2. theme.less 默认值+值使用
 4. getDefaultConfig 添加默认值
 5. locale translate

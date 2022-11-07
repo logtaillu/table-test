@@ -5,7 +5,8 @@ export const defaultCssVars = {
     "--cell-font-family": "Microsoft YaHei",
     "--cell-font-color": "#666",
     "--cell-text-align": "center",
-    "--cell-vertical-align": "middle"
+    "--cell-vertical-align": "middle",
+    "--cell-background": "transparent"
 };
 export const getDefaultConfig: () => ITableCacheConfig = () => ({
     all: {

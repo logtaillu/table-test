@@ -17,5 +17,6 @@ export default {
     'alignLeft': "居左",
     'alignCenter': "居中",
     "alignRight": "居右",
-    'verticalAlign': "垂直对齐"
+    'verticalAlign': "垂直对齐",
+    "backgroundColor": "背景色"
 }

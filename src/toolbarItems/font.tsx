@@ -1,7 +1,8 @@
 import React from 'react'
-import { ImFontSize, ImFont, ImTextColor } from 'react-icons/im'
+// import { ImFontSize, ImFont, ImTextColor } from 'react-icons/im'
 import { IToolbarItemObj } from './IToolbarItem'
 import { ChromePicker } from 'react-color';
+import { AiOutlineBgColors, AiOutlineFontColors } from 'react-icons/ai';
 // 字号
 const defaultFontSizes = [6, 8, 9, 10, 12, 14, 16, 18, 20, 24, 30, 36, 48, 64];
 export const fontSize: IToolbarItemObj = {
@@ -38,7 +39,7 @@ export const fontFamily: IToolbarItemObj = {
 // 颜色
 export const fontColor: IToolbarItemObj = {
     key: "fontColor",
-    icon: <ImTextColor />,
+    icon: <AiOutlineFontColors />,
     tooltip: "fontColor",
     dropdown: ({ driver, value, setValue }) => {
         const change = (color, events) => {
@@ -49,5 +50,35 @@ export const fontColor: IToolbarItemObj = {
     getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-color"]),
     onClick: ({ value, driver }) => {
         driver.exec("styleChange", { "--cell-font-color": value });
+    }
+}
+// 背景色
+export const backgroundColor: IToolbarItemObj = {
+    key: "backgroundColor",
+    tooltip: "backgroundColor",
+    icon: <AiOutlineBgColors />,
+    dropdown: ({ driver, value, setValue }) => {
+        const change = (color, events) => {
+            setValue(`rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`);
+        }
+        const swapChange = e => {
+            const checked = e.target.checked;
+            setValue(checked ? "transparent" : "#fff");
+        }
+        return (
+            <div>
+                <div className="form-control">
+                    <label className="label cursor-pointer">
+                        <span className="label-text">透明</span>
+                        <input type="checkbox" className="toggle toggle-primary" checked={value === "transparent"} onClick={swapChange} />
+                    </label>
+                </div>
+                <ChromePicker color={value} onChange={change} />
+            </div>
+        );
+    },
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-background"]),
+    onClick: ({ value, driver }) => {
+        driver.exec("styleChange", { "--cell-background": value });
     }
 }

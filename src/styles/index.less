@@ -127,20 +127,4 @@
     &-serial-table &-thead tr th {
         @apply bg-slate-300;
     }
-
-    /* cell */
-    table tr th,
-    table tr td {
-        font-size: var(--cell-font-size)px;
-        font-family: var(--cell-font-family);
-        color: var(--cell-font-color);
-        text-align: var(--cell-text-align);
-        vertical-align: var(--cell-vertical-align);
-        &.small-font {
-            font-size: 12px;
-            >div {
-                -webkit-transform: scale(calc(var(--cell-font-size) / 12));
-            }
-        }
-    }
 }

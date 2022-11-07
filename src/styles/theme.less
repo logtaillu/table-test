@@ -1,11 +1,30 @@
 // 样式变量
-.theme(){
+.theme() {
     // cell样式
     --cell-font-size: 12;
     --cell-font-family: Microsoft YaHei;
     --cell-font-color: #666;
     --cell-vertical-align: middle;
     --cell-text-align: center;
+    --cell-background: transparent;
     // 其他
     --ex-resize-width: 1px; // resize handle宽度
+
+    /* cell */
+    table tr th,
+    table tr td {
+        font-size: var(--cell-font-size)px;
+        font-family: var(--cell-font-family);
+        color: var(--cell-font-color);
+        text-align: var(--cell-text-align);
+        vertical-align: var(--cell-vertical-align);
+        background-color: var(--cell-background);
+        &.small-font {
+            font-size: 12px;
+
+            >div {
+                -webkit-transform: scale(calc(var(--cell-font-size) / 12));
+            }
+        }
+    }
 }
