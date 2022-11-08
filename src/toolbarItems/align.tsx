@@ -8,7 +8,6 @@ const getTextAlign = (curval: string, icon): IToolbarItemObj => {
         key: key,
         icon,
         active: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-text-align"]) === curval,
-        tooltip: key,
         onClick: ({ driver }) => {
             driver.exec("styleChange", { "--cell-text-align": curval });
         }
@@ -22,7 +21,6 @@ export const alignCenter = getTextAlign("center", <ImParagraphCenter />);
 export const verticalAlign: IToolbarItemObj = {
     key: "verticalAlign",
     icon: true,
-    tooltip: "verticalAlign",
     source: [
         { label: <AiOutlineVerticalAlignTop />, value: "top" },
         { label: <AiOutlineVerticalAlignMiddle />, value: "middle" },

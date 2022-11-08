@@ -6,7 +6,10 @@ export const defaultCssVars = {
     "--cell-font-color": "#666",
     "--cell-text-align": "center",
     "--cell-vertical-align": "middle",
-    "--cell-background": "transparent"
+    "--cell-background": "transparent",
+    "--cell-font-weight": "normal",
+    "--cell-font-style": "normal",
+    "--cell-text-decoration": "none"
 };
 export const getDefaultConfig: () => ITableCacheConfig = () => ({
     all: {

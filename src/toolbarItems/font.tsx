@@ -3,13 +3,13 @@ import React from 'react'
 import { IToolbarItemObj } from './IToolbarItem'
 import { ChromePicker } from 'react-color';
 import { AiOutlineBgColors, AiOutlineFontColors } from 'react-icons/ai';
+import { ImBold, ImItalic, ImUnderline } from 'react-icons/im';
 // 字号
 const defaultFontSizes = [6, 8, 9, 10, 12, 14, 16, 18, 20, 24, 30, 36, 48, 64];
 export const fontSize: IToolbarItemObj = {
     key: "fontSize",
     icon: true,
     // icon: <ImFontSize />,
-    tooltip: "fontSize",
     getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-size"]),
     source: defaultFontSizes.map(k => ({ value: k, label: k.toString() })),
     onClick: ({ value, driver }) => {
@@ -28,7 +28,6 @@ export const fontFamily: IToolbarItemObj = {
     key: "fontFamily",
     icon: true,
     // icon: <ImFont />,
-    tooltip: "fontFamily",
     getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-family"]),
     source: defaultFontFamily,
     onClick: ({ value, driver }) => {
@@ -40,7 +39,6 @@ export const fontFamily: IToolbarItemObj = {
 export const fontColor: IToolbarItemObj = {
     key: "fontColor",
     icon: <AiOutlineFontColors />,
-    tooltip: "fontColor",
     dropdown: ({ driver, value, setValue }) => {
         const change = (color, events) => {
             setValue(`rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`);
@@ -82,3 +80,33 @@ export const backgroundColor: IToolbarItemObj = {
         driver.exec("styleChange", { "--cell-background": value });
     }
 }
+// 粗体font-weight: bold;
+export const bold: IToolbarItemObj = {
+    key: "bold",
+    icon: <ImBold />,
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-weight"]),
+    active: ({ driver, value }) => value === "bold",
+    onClick: ({ driver, value }) => {
+        driver.exec("styleChange", { "--cell-font-weight": value === "bold" ? "normal" : "bold" });
+    }
+};
+// 斜体font-style: italic;
+export const italic: IToolbarItemObj = {
+    key: "italic",
+    icon: <ImItalic />,
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-style"]),
+    active: ({ driver, value }) => value === "italic",
+    onClick: ({ driver, value }) => {
+        driver.exec("styleChange", { "--cell-font-style": value === "italic" ? "normal" : "italic" });
+    }
+};
+// 下划线text-decoration: underline;
+export const underline: IToolbarItemObj = {
+    key: "underline",
+    icon: <ImUnderline />,
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-text-decoration"]),
+    active: ({ driver, value }) => value === "underline",
+    onClick: ({ driver, value }) => {
+        driver.exec("styleChange", { "--cell-text-decoration": value === "underline" ? "none" : "underline" });
+    }
+};

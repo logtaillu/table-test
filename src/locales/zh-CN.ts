@@ -18,5 +18,8 @@ export default {
     'alignCenter': "居中",
     "alignRight": "居右",
     'verticalAlign': "垂直对齐",
-    "backgroundColor": "背景色"
+    "backgroundColor": "背景色",
+    "bold": "粗体",
+    "italic": "斜体",
+    "underline": "下划线"
 }

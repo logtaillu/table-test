@@ -29,6 +29,7 @@
 2. 行高/列宽调整/高度自适应-both
 5. 字体/字号/颜色-both
 6. 文字对齐text align/vertical align-both
+7. 粗体/斜体/下划线-both
 
 
 样式添加位置：

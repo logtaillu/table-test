@@ -27,7 +27,7 @@ export default observer(function (props: IToolBarItem) {
             target = { ...target, ...sources[target.key] };
         }
     }
-    const mode = target.dropdown ? "dropdown" : target.getValue ? "list" : "btn";
+    const mode = target.dropdown ? "dropdown" : target.source ? "list" : "btn";
     // 获取通用传参
     const argsNoValue = { driver, source: target.source, intl, setValue: setTemp, value: temp };
     const dataValue = open && temp && mode === "dropdown" ? temp : target.getValue ? target.getValue(argsNoValue) : null;
@@ -74,7 +74,7 @@ export default observer(function (props: IToolBarItem) {
                 }
             }
             if (typeof (func) === "string") {
-                const val = intl.formatMessage({ id: func });
+                const val = intl.formatMessage({ id: func, defaultMessage: func });
                 return str ? val : <span className="px-2">{val}</span>;
             } else {
                 return func;
@@ -82,7 +82,7 @@ export default observer(function (props: IToolBarItem) {
         }
     }
     const btn = (
-        <div className="dptooltip" data-tip={getValue(target.tooltip, true)} key={target.key} tabIndex={0}>
+        <div className="dptooltip" data-tip={getValue(target.tooltip || target.key, true)} key={target.key} tabIndex={0}>
             <button className={cls} onClick={mode === "btn" ? clickAndClose : undefined}>
                 {getValue(target.icon)}
             </button>
@@ -101,7 +101,7 @@ export default observer(function (props: IToolBarItem) {
                 {target.dropdown(args)}
             </div>
         ));
-    } else if (target.getValue) {
+    } else if (target.source) {
         // 下拉列表
         const overlay = target.btnlist ? (
             <div className='btn-group btn-group-vertical'>

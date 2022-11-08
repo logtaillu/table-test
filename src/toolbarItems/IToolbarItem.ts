@@ -24,8 +24,8 @@ export interface IToolbarItemObj {
     key: string;
     /**@description 资源列表 */
     source?: any;
-    /**@description 提示语 */
-    tooltip: string | IToolbarFunc<string>;
+    /**@description 提示语，没有则取key*/
+    tooltip?: string | IToolbarFunc<string>;
     /**@description 图标，特殊值value代表取getValue的值 */
     icon: React.ReactElement | IToolbarFunc<React.ReactElement> | true;
     /**@description 禁用状态 */

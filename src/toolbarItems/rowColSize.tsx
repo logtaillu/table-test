@@ -24,7 +24,6 @@ export const autoHeight: IToolbarItemObj = {
 export const size: IToolbarItemObj = {
     key: "size",
     icon: <AiOutlineColumnHeight />,
-    tooltip: "size",
     dropdown: ({ driver }) => {
         const changeHeight = value => {
             driver.exec("sizeChange", { rowHeight: value });
