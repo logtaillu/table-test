@@ -41,4 +41,11 @@ both
 外围有上or左[col===0/row===0]
 body/header接缝处，相同样式，
 css控制只展示一个
-都是cell维度，不处理增加或减少列自适应的情况
+type 类型=>哪些边是0哪些边有宽度
+style 样式
+width 有宽度的情况下，宽度
+color 颜色
+select range情况:
+range内对cell判断并设置cssvar
+无select range情况:
+设置type/color/width/style，cell各自提取cssvar
