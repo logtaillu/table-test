@@ -7,9 +7,9 @@ const getTextAlign = (curval: string, icon): IToolbarItemObj => {
     return {
         key: key,
         icon,
-        active: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-text-align"]) === curval,
+        active: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-align-h"]) === curval,
         onClick: ({ driver }) => {
-            driver.exec("styleChange", { "--cell-text-align": curval });
+            driver.exec("styleChange", { "--cell-align-h": curval });
         }
     }
 }
@@ -26,9 +26,9 @@ export const verticalAlign: IToolbarItemObj = {
         { label: <AiOutlineVerticalAlignMiddle />, value: "middle" },
         { label: <AiOutlineVerticalAlignBottom />, value: "bottom" }
     ],
-    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-vertical-align"]),
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-align-v"]),
     onClick: ({ driver, value }) => {
-        driver.exec("styleChange", { "--cell-vertical-align": value });
+        driver.exec("styleChange", { "--cell-align-v": value });
     },
     btnlist: true
 }

@@ -1,10 +1,8 @@
-每个功能考虑service、keyevents和toolbar、说明、dataComponents后面说
-***
-5. selectRange，包含行列选择功能-both
-6. 合并/拆分单元格-excel
-***
-7. 边框线[颜色/样式/线宽/有框范围]-both
-8. 行列（插入/删除）-excel
+both
+1. border
+2. selectRange,，包含行列选择功能
+3. 合并/拆分单元格
+4.  行列（插入/删除）
 ***
 9. drag/drop-excel
 10. sort-data
@@ -36,3 +34,11 @@
 2. theme.less 默认值+值使用
 4. getDefaultConfig 添加默认值
 5. locale translate
+
+关于边框：
+1. 边框持有
+普通单元格只有右&下
+外围有上or左[col===0/row===0]
+body/header接缝处，相同样式，
+css控制只展示一个
+都是cell维度，不处理增加或减少列自适应的情况

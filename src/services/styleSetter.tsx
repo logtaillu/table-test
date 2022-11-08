@@ -1,9 +1,8 @@
 import { useDriver } from "../components/DriverContext";
-import { ICellType, IConfigKey, IRangeSetAry } from "../tableDriver/ITableDriver";
+import { IBorderType, ICellCssVars, ICellKey, ICellType, IConfigKey, IRangeSetAry } from "../tableDriver/ITableDriver";
 import { observer } from "mobx-react-lite";
 import { getValue } from "../tableDriver/ValueFunc";
 import { ITableService } from "./ITableService";
-
 /**样式设置和实现
  * 样式用cssvar形式，给每层设置cssvar style
  * used by ExcelTable,DataTable
@@ -25,6 +24,18 @@ const components = {
         wrapper: getWrapper("body")
     }
 };
+
+
+// border相关
+/**
+ * 1. get selected range or all range
+ * 2. foreach cell
+ * 3. use cellkey and setValue and border type to get config set ary
+ * 4. merged cell 需要判断是否在边上
+ */
+
+
+
 export default {
     enrichProps(tableProps, driver) {
         return {
@@ -35,7 +46,7 @@ export default {
         };
     },
     actions: {
-        /**样式改变设置 */
+        // 样式改变设置 
         styleChange: {
             exec(driver, value) {
                 const confs: IRangeSetAry = [];
@@ -46,6 +57,11 @@ export default {
                 });
                 return driver.setMultiRangeValue(confs);
             },
+        },
+        // 边框类型设置
+        setBorderType: {
+            exec(driver, value: {value: IBorderType , range?}) { 
+            }
         }
     }
 } as ITableService;

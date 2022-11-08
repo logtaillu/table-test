@@ -21,5 +21,9 @@ export default {
     "backgroundColor": "背景色",
     "bold": "粗体",
     "italic": "斜体",
-    "underline": "下划线"
+    "underline": "下划线",
+    "borderColor": "边框线颜色",
+    "borderStyle": "边框线样式",
+    "borderWidth": "边框线宽度",
+    "borderType": "边框线范围"
 }

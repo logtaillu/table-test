@@ -33,7 +33,12 @@
     // 工具栏菜单
     .toolbar-menu {
         @apply menu bg-white rounded-sm drop-shadow-md;
-
+        >li{
+            @apply items-center;
+        }
+        >li>a{
+            @apply py-4px;
+        }
     }
 
     // 输入框/组
@@ -70,7 +75,9 @@
             box-shadow: 0 0 0 2px var(--tw-shadow-color);
         }
     }
-
+    .tool-line {
+        @apply border-black my-2 border-t-2 w-16;
+    }
     .tool-input-number {}
 }
 
@@ -86,12 +93,21 @@
 
 .@{tprefix} {
     @apply relative box-border;
-
+    &-rtl {
+        direction: rtl;
+    }
     &-table-wrapper {
-        /* table theme */
+        // table theme
         .theme();
+        // table基础
+        table{
+            @apply border-spacing-0;
+        }
+        th,td{
+            @apply relative box-border break-words transition-shadow;
+        }
 
-        /* resizeable handle */
+        // resizeable handle
         th.react-resizable,
         tr.react-resizable {
             @apply relative bg-clip-padding;
@@ -126,5 +142,9 @@
     &-serial-cell,
     &-serial-table &-thead tr th {
         @apply bg-slate-300;
+    }
+    // toolbar
+    &-toolbar{
+        @apply py-2;
     }
 }

@@ -27,7 +27,7 @@ const ResizeableTr = observer((props: any) => {
     const [temp, setTemp] = useState(-1);
     // 非resize或者没有设置size
     if (!resizeable || !size) {
-        return <tr {...props} />;
+        return <tr {...props} height={size} />;
     } else {
         const start = (e: any, s: any) => {
             const val = s.size.height;
@@ -66,7 +66,7 @@ const getAutoHeightComponent = (Component: "td" | "th") => {
         const autoHeight = driver.getRangeValue("row", "autoHeight", cell);
         const rowHeight = driver.getRangeValue("row", "rowHeight", cell);
         const rowSpan = others.rowSpan || 1;
-        const font = driver.getRangeValue("cell", ["cssvars", "--cell-font-size"], cell);
+        const font = driver.getRangeValue("cell", ["cssvars", "--cell-f-size"], cell);
         const fontcss = font >= 12 ? "normal-font" : "small-font";
         const cellvars = getValue(driver.config, ["cell", key, "cssvars"]);
         // 防止children是纯文本,再包一层确保在自动高度时撑开高度

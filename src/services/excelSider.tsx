@@ -19,6 +19,9 @@ const getIdxName = (idx: number) => {
 }
 export default {
     enrichProps(tableProps, driver) {
+        if (!driver.editable) {
+            return { showHeader: false };
+        }
         const colCount = driver.config.colCount || 0;
         const oricols = tableProps.columns || [];
         let columns: ColumnType<any>[] = [];

@@ -125,7 +125,7 @@ export default observer(function (props: IToolBarItem) {
                     }
                     return (
                         <li key={value} value={value} onClick={click}>
-                            <a className={classnames({ "py-4px": true, active: dataValue === value })}>{typeof (label) === "string" ? intl.formatMessage({ id: label, defaultMessage: label }) : label}</a>
+                            <a className={classnames({ active: dataValue === value })}>{typeof (label) === "string" ? intl.formatMessage({ id: label, defaultMessage: label }) : label}</a>
                         </li>
                     )
                 })}

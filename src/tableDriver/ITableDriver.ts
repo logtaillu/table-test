@@ -129,3 +129,12 @@ export type ISaveRange = ICellRange[] | ICellRange | ICellKey | IRowKey | IColKe
 /**@description 一组setRange配置 */
 export type IRangeSetAry = Array<{ type: IValueType, key: IConfigKey | IConfigKey[], value: any, range?: ISaveRange }>;
 
+/**@description 边框类型 */
+/**
+ * all 全部有
+ * none 全部没有
+ * left/top/right/bottom 添加单项
+ * outliner/inner 添加外框/内部
+ * horizontal/vertical 水平/纵向
+ */
+export type IBorderType = "all" | "none" | "left" | "top" | "right" | "bottom" | "outter" | "inner" | "horinzontal" | "vertical";

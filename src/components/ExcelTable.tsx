@@ -11,7 +11,7 @@ import redoundo from '../services/redoundo';
 import resizeableGrid from '../services/resizeableGrid';
 import styleSetter from '../services/styleSetter';
 import TableCore, { ITableCoreProps } from './TableCore'
-const defaultToolbar = ['undo', 'redo', 'autoHeight', 'size', 'fontSize', 'fontFamily', 'fontColor', 'bold', 'italic', 'underline', 'backgroundColor', 'alignLeft', 'alignCenter', 'alignRight', 'verticalAlign'];
+const defaultToolbar = ['undo', 'redo', 'autoHeight', 'size', 'fontSize', 'fontFamily', 'fontColor', 'bold', 'italic', 'underline', 'backgroundColor', 'alignLeft', 'alignCenter', 'alignRight', 'verticalAlign', 'borderType', 'borderColor', 'borderStyle', 'borderWidth'];
 export interface IExcelTableProps extends ITableCoreProps {
 }
 export default function (props: IExcelTableProps) {
@@ -26,6 +26,7 @@ export default function (props: IExcelTableProps) {
     sary = sary.concat(services || []);
     sary.push(enrichKey);
     return <TableCore
+        tableLayout='fixed'
         items={defaultToolbar}
         {...coreProps}
         services={sary}

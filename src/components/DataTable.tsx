@@ -21,5 +21,5 @@ export default function (props: IDataTableProps) {
     ];
     sary = sary.concat(services || []);
     sary.push(enrichKey);
-    return <TableCore items={defaultToolbar} {...coreProps} services={sary} />;
+    return <TableCore tableLayout='fixed' items={defaultToolbar} {...coreProps} services={sary} />;
 }

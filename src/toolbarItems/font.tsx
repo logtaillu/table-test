@@ -4,16 +4,17 @@ import { IToolbarItemObj } from './IToolbarItem'
 import { ChromePicker } from 'react-color';
 import { AiOutlineBgColors, AiOutlineFontColors } from 'react-icons/ai';
 import { ImBold, ImItalic, ImUnderline } from 'react-icons/im';
+import ColorPicker from '../dataComponents/ColorPicker';
 // 字号
 const defaultFontSizes = [6, 8, 9, 10, 12, 14, 16, 18, 20, 24, 30, 36, 48, 64];
 export const fontSize: IToolbarItemObj = {
     key: "fontSize",
     icon: true,
     // icon: <ImFontSize />,
-    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-size"]),
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-f-size"]),
     source: defaultFontSizes.map(k => ({ value: k, label: k.toString() })),
     onClick: ({ value, driver }) => {
-        driver.exec("styleChange", { "--cell-font-size": value });
+        driver.exec("styleChange", { "--cell-f-size": value });
     }
 }
 // 字体
@@ -28,10 +29,10 @@ export const fontFamily: IToolbarItemObj = {
     key: "fontFamily",
     icon: true,
     // icon: <ImFont />,
-    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-family"]),
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-f-family"]),
     source: defaultFontFamily,
     onClick: ({ value, driver }) => {
-        driver.exec("styleChange", { "--cell-font-family": value });
+        driver.exec("styleChange", { "--cell-f-family": value });
     }
 }
 
@@ -40,14 +41,11 @@ export const fontColor: IToolbarItemObj = {
     key: "fontColor",
     icon: <AiOutlineFontColors />,
     dropdown: ({ driver, value, setValue }) => {
-        const change = (color, events) => {
-            setValue(`rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`);
-        }
-        return <ChromePicker color={value} onChange={change} />;
+        return <ColorPicker value={value} onChange={setValue} />;
     },
-    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-color"]),
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-f-color"]),
     onClick: ({ value, driver }) => {
-        driver.exec("styleChange", { "--cell-font-color": value });
+        driver.exec("styleChange", { "--cell-f-color": value });
     }
 }
 // 背景色
@@ -56,57 +54,40 @@ export const backgroundColor: IToolbarItemObj = {
     tooltip: "backgroundColor",
     icon: <AiOutlineBgColors />,
     dropdown: ({ driver, value, setValue }) => {
-        const change = (color, events) => {
-            setValue(`rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`);
-        }
-        const swapChange = e => {
-            const checked = e.target.checked;
-            setValue(checked ? "transparent" : "#fff");
-        }
-        return (
-            <div>
-                <div className="form-control">
-                    <label className="label cursor-pointer">
-                        <span className="label-text">透明</span>
-                        <input type="checkbox" className="toggle toggle-primary" checked={value === "transparent"} onClick={swapChange} />
-                    </label>
-                </div>
-                <ChromePicker color={value} onChange={change} />
-            </div>
-        );
+        return <ColorPicker value={value} onChange={setValue} clearable={true} />;
     },
-    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-background"]),
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-bg"]),
     onClick: ({ value, driver }) => {
-        driver.exec("styleChange", { "--cell-background": value });
+        driver.exec("styleChange", { "--cell-bg": value });
     }
 }
 // 粗体font-weight: bold;
 export const bold: IToolbarItemObj = {
     key: "bold",
     icon: <ImBold />,
-    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-weight"]),
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-f-weight"]),
     active: ({ driver, value }) => value === "bold",
     onClick: ({ driver, value }) => {
-        driver.exec("styleChange", { "--cell-font-weight": value === "bold" ? "normal" : "bold" });
+        driver.exec("styleChange", { "--cell-f-weight": value === "bold" ? "normal" : "bold" });
     }
 };
 // 斜体font-style: italic;
 export const italic: IToolbarItemObj = {
     key: "italic",
     icon: <ImItalic />,
-    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-font-style"]),
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-f-style"]),
     active: ({ driver, value }) => value === "italic",
     onClick: ({ driver, value }) => {
-        driver.exec("styleChange", { "--cell-font-style": value === "italic" ? "normal" : "italic" });
+        driver.exec("styleChange", { "--cell-f-style": value === "italic" ? "normal" : "italic" });
     }
 };
 // 下划线text-decoration: underline;
 export const underline: IToolbarItemObj = {
     key: "underline",
     icon: <ImUnderline />,
-    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-text-decoration"]),
+    getValue: ({ driver }) => driver.getRangeValue("cell", ["cssvars", "--cell-decoration"]),
     active: ({ driver, value }) => value === "underline",
     onClick: ({ driver, value }) => {
-        driver.exec("styleChange", { "--cell-text-decoration": value === "underline" ? "none" : "underline" });
+        driver.exec("styleChange", { "--cell-decoration": value === "underline" ? "none" : "underline" });
     }
 };
