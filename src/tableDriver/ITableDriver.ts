@@ -44,15 +44,33 @@ export interface ICellConfig {
     /**@description 样式变量 */
     cssvars?: Partial<ICellCssVars>;
 }
+
+
+/**@description 边框类型 */
+/**
+ * all 全部有
+ * none 全部没有
+ * left/top/right/bottom 添加单项
+ * outliner/inner 添加外框/内部
+ * horizontal/vertical 水平/纵向
+ */
+export type IBorderType = "all" | "none" | "left" | "top" | "right" | "bottom" | "outter" | "inner" | "horinzontal" | "vertical";
+/**@description 全局配置里持有的特殊配置 */
+export interface IGlobalBorderConfig {
+    bordeType?: IBorderType;
+    borderWidth?: string;
+    borderColor?: string;
+    borderStyle?: string;
+}
+
 /**@description 可用字段 */
-export type IConfigKey = keyof ICellConfig | keyof IRowConfig | keyof IColConfig | keyof ICellCssVars;
+export type IConfigKey = keyof ICellConfig | keyof IRowConfig | keyof IColConfig | keyof ICellCssVars | keyof IGlobalBorderConfig;
 
 export type ICacheObj<T> = Record<string, T>;
-
 /**@description 单个n合一配置 */
 export interface IGlobalCacheConfig {
     row?: IRowConfig;
-    cell?: ICellConfig;
+    cell?: ICellConfig & IGlobalBorderConfig;
     col?: IColConfig;
 }
 
@@ -128,13 +146,3 @@ export type IAcitonServiceMap = ICacheObj<IActionService>;
 export type ISaveRange = ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false;
 /**@description 一组setRange配置 */
 export type IRangeSetAry = Array<{ type: IValueType, key: IConfigKey | IConfigKey[], value: any, range?: ISaveRange }>;
-
-/**@description 边框类型 */
-/**
- * all 全部有
- * none 全部没有
- * left/top/right/bottom 添加单项
- * outliner/inner 添加外框/内部
- * horizontal/vertical 水平/纵向
- */
-export type IBorderType = "all" | "none" | "left" | "top" | "right" | "bottom" | "outter" | "inner" | "horinzontal" | "vertical";

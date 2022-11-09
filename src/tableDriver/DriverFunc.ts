@@ -1,12 +1,13 @@
 /**
  * 不涉及内部状态的辅助函数
  */
-import { ICellKey, ICellRange, IColKey, IRangeRelation, IRowKey } from "./ITableDriver";
+import { ICellKey, ICellRange, IColKey, IGlobalRange, IRangeRelation, IRowKey } from "./ITableDriver";
 import { getCellKey } from "./keyFunc";
+import TableDriver from "./TableDriver";
 
 
 /**
- * 对比，0等于，1大于，-1小于
+ * 对比，0等于，1大于，-1小于，用于对比单元格关系
  * @param a 单元格
  * @param b 单元格
  * @param type 对比类型，row行col列
@@ -162,4 +163,26 @@ export function getTargetRange(target: ICellRange[] | ICellRange | ICellKey | IR
         const cell: ICellKey = { row: target.index, type: "body", col: 0 };
         return [{ from: cell, to: cell }];
     }
+}
+
+export function getMergedTarget(merged: ICellRange[], cell: ICellKey): ICellRange | null {
+    const target = merged.find(current => {
+        return getCellRelationToRange(cell, current) !== "out";
+    });
+    return target ? getFormatedRange(target) : null;
+}
+/**
+ * 处理合并单元格后的range
+* @param range 范围
+* @param useMerged 是否使用合并后单元格
+* @returns 格式化范围
+ */
+export function getRangeHandleMerged(merged: ICellRange[], range: ICellRange, useMerged: boolean): ICellRange {
+    let { from, to } = getFormatedRange(range);
+    // 考虑非最小格的情况，找到包含右下角的
+    const target = getMergedTarget(merged, to);
+    if (target) {
+        to = useMerged ? target.from : target.to;
+    }
+    return { from, to };
 }

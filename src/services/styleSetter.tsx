@@ -1,5 +1,5 @@
 import { useDriver } from "../components/DriverContext";
-import { IBorderType, ICellCssVars, ICellKey, ICellType, IConfigKey, IRangeSetAry } from "../tableDriver/ITableDriver";
+import { IBorderType, ICellCssVars, ICellKey, ICellType, IConfigKey, IGlobalBorderConfig, IRangeSetAry } from "../tableDriver/ITableDriver";
 import { observer } from "mobx-react-lite";
 import { getValue } from "../tableDriver/ValueFunc";
 import { ITableService } from "./ITableService";
@@ -58,9 +58,24 @@ export default {
                 return driver.setMultiRangeValue(confs);
             },
         },
-        // 边框类型设置
-        setBorderType: {
-            exec(driver, value: {value: IBorderType , range?}) { 
+        // 边框设置
+        borderChange: {
+            exec(driver, value: Partial<IGlobalBorderConfig>) {
+                const confs: IRangeSetAry = [];
+                const keys = Object.keys(value) as Array<keyof IGlobalBorderConfig>;
+                if (driver.selected) {
+                    (driver.config.selected || []).map(range => {
+                        const cells = driver.getCellListInRanges([range]);
+                        cells.map(cell => {
+                            // type: 设置哪些边=>实际要设置哪些边
+                            // width：对不为0的边生效，考虑边缘格子
+                            // color/style=>对range内的边生效，考虑边缘格子
+                        });// end map cell
+                    }) // end map range
+                } else {
+                    keys.map(key => confs.push({ type: "cell", key: [key], value: value[key] }))
+                }
+                return driver.setMultiRangeValue(confs);
             }
         }
     }

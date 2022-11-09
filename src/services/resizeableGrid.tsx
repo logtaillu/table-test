@@ -9,11 +9,11 @@
 import { observer } from "mobx-react-lite";
 import React, { useState } from 'react'
 import { Resizable } from "react-resizable";
-import 'react-resizable/css/styles.css';
 import { useDriver } from "../components/DriverContext";
 import { IColConfig, IRangeSetAry, IRowConfig, IRowKey, ISaveRange } from '../tableDriver/ITableDriver';
 import { getCellKeyObj, getRowKeyObj } from '../tableDriver/keyFunc';
 import { getValue } from "../tableDriver/ValueFunc";
+import { getCellCssVars } from "../utils/borderUtil";
 import { mapColumn } from "../utils/columnUtil";
 import { ITableService } from './ITableService';
 type ISizeChangeValue = IRowConfig & IColConfig & { range?: ISaveRange };
@@ -68,10 +68,10 @@ const getAutoHeightComponent = (Component: "td" | "th") => {
         const rowSpan = others.rowSpan || 1;
         const font = driver.getRangeValue("cell", ["cssvars", "--cell-f-size"], cell);
         const fontcss = font >= 12 ? "normal-font" : "small-font";
-        const cellvars = getValue(driver.config, ["cell", key, "cssvars"]);
+        const cellvars = cell ? getCellCssVars(driver, cell) : {};
         // 防止children是纯文本,再包一层确保在自动高度时撑开高度
         return (
-            <Component {...others} className={`${fontcss} ${className||""}`} style={{...style, ...cellvars}}>
+            <Component {...others} className={`${fontcss} ${className || ""}`} style={{ ...style, ...cellvars }}>
                 <div className="overflow-hidden" style={{ height: autoHeight ? "auto" : rowSpan * rowHeight }}>
                     <div>
                         {children}

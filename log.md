@@ -37,15 +37,19 @@ both
 
 关于边框：
 1. 边框持有
-普通单元格只有右&下
-外围有上or左[col===0/row===0]
-body/header接缝处，相同样式，
+a. 普通单元格只有右&下
+b. 左侧(col=0)持有左
+c. 顶部row=0有上
+d. 表头底部type=header&row=0，在只有header的时候才展示，但是当作2个边框设置
 css控制只展示一个
+变量：
 type 类型=>哪些边是0哪些边有宽度
 style 样式
 width 有宽度的情况下，宽度
 color 颜色
-select range情况:
-range内对cell判断并设置cssvar
-无select range情况:
-设置type/color/width/style，cell各自提取cssvar
+先做global/body/header的border设置
+global body/header cell
+global 和body/header的关系=>虽然范围不同，直接覆盖
+
+遗留问题：
+没有改动的动作触发

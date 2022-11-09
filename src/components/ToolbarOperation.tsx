@@ -30,12 +30,15 @@ export default observer(function (props: IToolBarItem) {
     const mode = target.dropdown ? "dropdown" : target.source ? "list" : "btn";
     // 获取通用传参
     const argsNoValue = { driver, source: target.source, intl, setValue: setTemp, value: temp };
-    const dataValue = open && temp && mode === "dropdown" ? temp : target.getValue ? target.getValue(argsNoValue) : null;
+    const targetValue = target.getValue ? target.getValue(argsNoValue) : null;
+    const dataValue = open && temp && mode === "dropdown" ? temp : targetValue;
     const args = { ...argsNoValue, value: dataValue };
     // 关闭
     const clickAndClose = (userArgs = {}) => {
+        const params = { ...args, ...userArgs };
+        // 如果有getValue，对比下value
         if (target.onClick) {
-            target.onClick({ ...args, ...userArgs });
+            target.onClick(params);
         }
         if (mode !== "btn") {
             setOpen(false);

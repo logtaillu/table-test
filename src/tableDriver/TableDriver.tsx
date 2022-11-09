@@ -4,7 +4,7 @@
  */
 import { makeAutoObservable, observable } from "mobx"
 import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType, IConfigKey, IRowKey, IColKey, ISaveValues, IRangeSetAry, ISaveRange } from "./ITableDriver"
-import { getCellRelationToRange, getFormatedRange, getRangeCells, getRangeRelation, getTargetRange } from "./DriverFunc";
+import { getFormatedRange, getRangeCells, getRangeHandleMerged, getRangeRelation, getTargetRange } from "./DriverFunc";
 import { getPriorityValue, getValue, setAndSaveValues } from "./ValueFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
@@ -166,6 +166,10 @@ export default class TableDriver {
     get redoEnable() {
         return this.undoStack.length > 0;
     }
+
+    get selected() {
+        return (this.config.selected || []).length > 0;
+    }
     /************************范围(range)操作 ********************************/
     // 获取格式化的选择范围
     get selectedRanges(): ICellRange[] {
@@ -175,31 +179,11 @@ export default class TableDriver {
     get mergedRanges(): ICellRange[] {
         return (this.config.merged || []).map(range => getFormatedRange(range));
     }
-    // 获取右下角的合并单元格处理后的range，返回格式化range
-    /**
-     * 
-     * @param range 范围
-     * @param useMerged 是否使用合并后单元格
-     * @returns 格式化范围
-     */
-    getRangeHandleMerged(range: ICellRange, useMerged: boolean): ICellRange {
-        const merged = this.config.merged || [];
-        let { from, to } = getFormatedRange(range);
-        // 考虑非最小格的情况，找到包含右下角的
-        const target = merged.find(current => {
-            return getCellRelationToRange(to, current) !== "out";
-        });
-        if (target) {
-            const trange = getFormatedRange(target);
-            to = useMerged ? trange.from : trange.to;
-        }
-        return { from, to };
-    }
 
     // 只有在展示时使用，需要用合并后的单元格，对于右下角，需要转换
     get selectedShowRanges() {
         return (this.config.selected || []).map(range => {
-            return this.getRangeHandleMerged(range, true);
+            return getRangeHandleMerged(this.config.merged || [], range, true);
         });
     }
 
@@ -209,7 +193,7 @@ export default class TableDriver {
      * @returns 单元格列表
      */
     getCellListInRanges(ranges: ICellRange[]): ICellKey[] {
-        const minCellRanges = ranges.map(range => this.getRangeHandleMerged(range, false));
+        const minCellRanges = ranges.map(range => getRangeHandleMerged(this.config.merged || [], range, false));
         return getRangeCells(minCellRanges, this.headerDeep);
     }
     // 1. 范围优先级：selecRange > body/header > all

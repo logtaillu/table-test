@@ -1,6 +1,8 @@
 import { ITableCacheConfig } from "./ITableDriver";
-
-export const defaultCssVars = {
+const bordeColor = "cornflowerblue";
+const borderWidth = "1px";
+const borderStyle = "solid";
+const baseCssVars = {
     "--cell-f-size": 12, // 因为scale计算，这里用number
     "--cell-f-family": "Microsoft YaHei",
     "--cell-f-color": "#666",
@@ -10,25 +12,32 @@ export const defaultCssVars = {
     "--cell-f-weight": "normal",
     "--cell-f-style": "normal",
     "--cell-decoration": "none",
-    "--cell-b-width-t": "1px",
-    "--cell-b-style-t": "solid",
-    "--cell-b-color-t": "cornflowerblue",
-    "--cell-b-width-l": "1px",
-    "--cell-b-style-l": "solid",
-    "--cell-b-color-l": "cornflowerblue",
-    "--cell-b-width-r": "1px",
-    "--cell-b-style-r": "solid",
-    "--cell-b-color-r": "cornflowerblue",
-    "--cell-b-width-b": "1px",
-    "--cell-b-style-b": "solid",
-    "--cell-b-color-b": "cornflowerblue",
+};
+export const defaultCssVars = {
+    ...baseCssVars,
+    "--cell-b-width-t": borderWidth,
+    "--cell-b-style-t": borderStyle,
+    "--cell-b-color-t": bordeColor,
+    "--cell-b-width-l": borderWidth,
+    "--cell-b-style-l": borderStyle,
+    "--cell-b-color-l": bordeColor,
+    "--cell-b-width-r": borderWidth,
+    "--cell-b-style-r": borderStyle,
+    "--cell-b-color-r": bordeColor,
+    "--cell-b-width-b": borderWidth,
+    "--cell-b-style-b": borderStyle,
+    "--cell-b-color-b": bordeColor,
 };
 export const getDefaultConfig: () => ITableCacheConfig = () => ({
     all: {
         row: { autoHeight: true, rowHeight: 40 },
         col: { colWidth: 100 },
         cell: {
-            cssvars: {...defaultCssVars}
+            cssvars: { ...baseCssVars },
+            bordeType: "all",
+            borderColor: bordeColor,
+            borderStyle: borderStyle,
+            borderWidth: borderWidth
         }
     }
 });

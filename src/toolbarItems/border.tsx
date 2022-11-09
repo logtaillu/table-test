@@ -1,7 +1,7 @@
 import React from 'react'
 import { IToolbarItemObj } from './IToolbarItem'
 import { MdBorderColor, MdBorderStyle } from "react-icons/md";
-import { BsBorder, BsBorderAll, BsBorderCenter, BsBorderInner, BsBorderLeft, BsBorderMiddle, BsBorderOuter, BsBorderRight, BsBorderTop, BsBorderWidth } from "react-icons/bs";
+import { BsBorder, BsBorderAll, BsBorderBottom, BsBorderCenter, BsBorderInner, BsBorderLeft, BsBorderMiddle, BsBorderOuter, BsBorderRight, BsBorderTop, BsBorderWidth } from "react-icons/bs";
 import ColorPicker from '../dataComponents/ColorPicker';
 // 边框线类型
 export const borderType: IToolbarItemObj = {
@@ -11,15 +11,19 @@ export const borderType: IToolbarItemObj = {
     source: [
         { value: "all", label: <BsBorderAll /> },
         { value: "none", label: <BsBorder /> },
-        { value: "left", label: <BsBorderLeft /> },
         { value: "top", label: <BsBorderTop /> },
         { value: "right", label: <BsBorderRight /> },
-        { value: "bottom", label: <BsBorderAll /> },
+        { value: "bottom", label: <BsBorderBottom /> },
+        { value: "left", label: <BsBorderLeft /> },
         { value: "outter", label: <BsBorderOuter /> },
         { value: "inner", label: <BsBorderInner /> },
         { value: "horinzontal", label: <BsBorderCenter /> },
         { value: "vertical", label: <BsBorderMiddle /> },
-    ]
+    ],
+    getValue: ({ driver }) => driver.selected ? undefined : driver.getRangeValue("cell", "bordeType"),
+    onClick: ({ driver, value }) => {
+        driver.exec("borderChange", { bordeType: value });
+    },
 }
 
 /**
@@ -47,22 +51,31 @@ export const borderStyle: IToolbarItemObj = {
             value: "dotted",
             label: <div className="border-dotted tool-line" />
         }
-    ]
+    ],
+    getValue: ({ driver }) => driver.selected ? undefined : driver.getRangeValue("cell", "borderStyle"),
+    onClick: ({ driver, value }) => {
+        driver.exec("borderChange", { borderStyle: value });
+    },
 }
 // 边框线粗细
 export const borderWidth: IToolbarItemObj = {
     key: "borderWidth",
     icon: <BsBorderWidth />,
-    source: [1, 2, 3].map(w => ({ value: w + "px", label: <div className='tool-line border-solid' style={{ borderTopWidth: w }} /> }))
+    source: [1, 2, 3].map(w => ({ value: w + "px", label: <div className='tool-line border-solid' style={{ borderTopWidth: w }} /> })),
+    getValue: ({ driver }) => driver.selected ? undefined : driver.getRangeValue("cell", "borderWidth"),
+    onClick: ({ driver, value }) => {
+        driver.exec("borderChange", { borderWidth: value });
+    },
 }
 // 边框线颜色
 export const borderColor: IToolbarItemObj = {
     key: "borderColor",
     icon: <MdBorderColor />,
     dropdown: ({ driver, value, setValue }) => {
-        return <ColorPicker onChange={setValue} clearable={true} />;
+        return <ColorPicker value={value} onChange={setValue} clearable={true} />;
     },
     onClick: ({ driver, value }) => {
-        // driver.exec({});
-    }
+        driver.exec("borderChange", { borderColor: value });
+    },
+    getValue: ({ driver }) => driver.selected ? undefined : driver.getRangeValue("cell", "borderColor")
 }
