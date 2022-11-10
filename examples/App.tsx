@@ -23,7 +23,9 @@ export default function () {
                 col: { colWidth: 100 }
             }
         },
-        editable: true
+        editable: true,
+        data: getData("abcde", 6),
+        columns: "abcde".split("").map(k => ({ title: k, dataIndex: k })),
     });
     const [dataConf] = useState<IDataTableProps>({
         toolbar: true,

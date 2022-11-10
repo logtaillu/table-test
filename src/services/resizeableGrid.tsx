@@ -72,7 +72,7 @@ const getAutoHeightComponent = (Component: "td" | "th") => {
         // 防止children是纯文本,再包一层确保在自动高度时撑开高度
         return (
             <Component {...others} className={`${fontcss} ${className || ""}`} style={{ ...style, ...cellvars }}>
-                <div className="overflow-hidden" style={{ height: autoHeight ? "auto" : rowSpan * rowHeight }}>
+                <div className="overflow-hidden" style={{ maxHeight: autoHeight ? "auto" : `calc( ${rowSpan * rowHeight}px - var(--cell-b-width-t) - var(--cell-b-width-b) )` }}>
                     <div>
                         {children}
                     </div>

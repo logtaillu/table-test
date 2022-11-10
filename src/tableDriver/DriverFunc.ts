@@ -142,6 +142,33 @@ export function getRangeCells(formattedRanges: ICellRange[], deep: number): ICel
     cellMap.forEach((value) => cells.push(value));
     return cells;
 }
+
+/**
+ * 计算单元格间的长度
+ * @param driver 控制器
+ * @param from 起始格子
+ * @param to 终止格子(如果from=null则不包含，否则包含)
+ * @param type 方向
+ */
+export function getLength(driver: TableDriver, from: ICellKey | null, to: ICellKey, type: "row" | "col") {
+    let value = 0;
+    const existFrom = !!from;
+    const startCell: ICellKey = {
+        row: 0,
+        col: 0,
+        type: driver.headerDeep > 0 ? "header" : "body"
+    };
+    from = from || startCell;
+    const isRow = type === "row";
+    const cells = getRangeCells([isRow ? { from, to: { ...to, col: from.col } } : { from, to: { ...to, row: from.row } }], driver.headerDeep);
+    cells.map(cell => {
+        if (existFrom || compareCell(cell, to, type) !== 0) {
+            const len = driver.getRangeValue(type, isRow ? "rowHeight" : "colWidth", cell) || 0;
+            value += len;
+        }
+    })
+    return value;
+}
 /**
  * @description 从单个行/列等获取目标范围
  */

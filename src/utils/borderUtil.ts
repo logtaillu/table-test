@@ -15,15 +15,15 @@ function getCellPostionToRange(driver: TableDriver, cell: ICellKey, range: ICell
     // 1. 获取cell range[formated, no merged cell]
     let cellrange: ICellRange;
     const getCount = val => Math.max(val - 1, 0);
-    if (range === "header" || (range === "all" && !driver.config.rowCount)) {
-        cellrange = {
-            from: { row: 0, col: 0, type: "header" },
-            to: { row: getCount(driver.headerDeep), col: getCount(driver.config.colCount || 0), type: "header" }
-        };
-    } else if (range === "body" || (range === "all" && !driver.headerDeep)) {
+    if (range === "body" || (range === "all" && !driver.headerDeep)) {
         cellrange = {
             from: { row: 0, col: 0, type: "body" },
             to: { row: getCount(driver.config.rowCount || 0), col: getCount(driver.config.colCount || 0), type: "body" }
+        };
+    } else if (range === "header" || (range === "all" && !driver.config.rowCount)) {
+        cellrange = {
+            from: { row: 0, col: 0, type: "header" },
+            to: { row: getCount(driver.headerDeep), col: getCount(driver.config.colCount || 0), type: "header" }
         };
     } else if (range === "all") {
         cellrange = {

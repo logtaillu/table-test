@@ -19,7 +19,7 @@ export default function (props: IExcelTableProps) {
     const { services, ...coreProps } = props;
     let sary: ITableService[] = [
         enrichData,
-        excelSider,
+        // excelSider,
         resizeableGrid,
         redoundo,
         styleSetter,
@@ -32,5 +32,6 @@ export default function (props: IExcelTableProps) {
         items={defaultToolbar}
         {...coreProps}
         services={sary}
+        showHeader={false}
     />;
 }

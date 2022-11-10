@@ -1,35 +1,23 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite';
 import TableDriver from '../tableDriver/TableDriver';
-import { ICellRange } from '../tableDriver/ITableDriver';
+import { ICellKey, ICellRange } from '../tableDriver/ITableDriver';
 import { useDriver } from './DriverContext';
 export interface ISelectRangeProps {
 }
-
 const getRangeStyle = (range: ICellRange, driver: TableDriver): React.CSSProperties => {
-    const table = driver.tableRef;
-    if (!table) {
-        return {};
-    }
-    const fromcell = table.querySelector(`[data-cellkey=${driver.getCellKey(range.from)}]`);
-    const tocell = table.querySelector(`[data-cellkey=${driver.getCellKey(range.to)}]`);
-    if (!fromcell || !tocell) {
-        return {};
-    }
-    const fromrect = fromcell.getBoundingClientRect();
-    const torect = tocell.getBoundingClientRect();
-    const tableRect = table.getBoundingClientRect();
+    const { from, to } = range;
+    const top = driver.getLength(null, from, "row");
+    const left = driver.getLength(null, from, "col");
+    const width = driver.getLength(from, to, "col");
+    const height = driver.getLength(from, to, "row");
     // 边框宽度1
     const borderWidth = "var(--ex-range-width)";
-    const left = Math.min(fromrect.left, torect.left);
-    const top = Math.min(fromrect.top, torect.top);
-    const right = Math.max(fromrect.right, torect.right);
-    const bottom = Math.max(fromrect.bottom, torect.bottom);
     return {
-        left: `calc( ${left- tableRect.left}px - ${borderWidth} / 2 )`,
-        top:`calc( ${top - tableRect.top}px - ${borderWidth} / 2 )`,
-        width: `calc( ${right-left}px + ${borderWidth} )`,
-        height: `calc( ${bottom-top}px + ${borderWidth} )`
+        left: `calc( ${left}px - ${borderWidth} / 2 )`,
+        top: `calc( ${top}px - ${borderWidth} / 2 )`,
+        width: `calc( ${width}px + ${borderWidth} )`,
+        height: `calc( ${height}px + ${borderWidth} )`
     }
 }
 

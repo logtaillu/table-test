@@ -4,7 +4,7 @@
  */
 import { makeAutoObservable, observable } from "mobx"
 import { IActionStack, ITableCacheConfig, IAcitonServiceMap, IActionItem, ICellRange, ICellKey, IGlobalRange, IValueType, IConfigKey, IRowKey, IColKey, ISaveValues, IRangeSetAry, ISaveRange } from "./ITableDriver"
-import { getFormatedRange, getRangeCells, getRangeHandleMerged, getRangeRelation, getTargetRange } from "./DriverFunc";
+import { getFormatedRange, getLength, getRangeCells, getRangeHandleMerged, getRangeRelation, getTargetRange } from "./DriverFunc";
 import { getPriorityValue, getValue, setAndSaveValues } from "./ValueFunc";
 import { ITableService } from "../services/ITableService";
 import eventUtil from "../utils/eventUtil";
@@ -183,8 +183,12 @@ export default class TableDriver {
     // 只有在展示时使用，需要用合并后的单元格，对于右下角，需要转换
     get selectedShowRanges() {
         return (this.config.selected || []).map(range => {
-            return getRangeHandleMerged(this.config.merged || [], range, true);
+            return getRangeHandleMerged(this.config.merged || [], range, false);
         });
+    }
+
+    getLength(from: ICellKey | null, to: ICellKey, type: "row" | "col") {
+        return getLength(this, from, to, type);
     }
 
     /**
