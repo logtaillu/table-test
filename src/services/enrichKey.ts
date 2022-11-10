@@ -12,13 +12,14 @@ export default {
             columns: mapColumn(tableProps.columns || [], (col, cell, isLeaf) => {
                 const append: any = {
                     onHeaderCell(column, index) {
-                        return { "data-cellkey": driver.getCellKey(cell) }
+                        return { "data-cellkey": driver.getCellKey(cell),   "data-col": driver.getColKey({ index: cell.col }) }
                     }
                 };
                 if (isLeaf) {
                     append.onCell = (record, index) => {
                         return {
-                            "data-cellkey": driver.getCellKey({ type: "body", col: cell.col, row: index })
+                            "data-cellkey": driver.getCellKey({ type: "body", col: cell.col, row: index }),
+                            "data-col": driver.getColKey({ index: cell.col })
                         }
                     }
                 }

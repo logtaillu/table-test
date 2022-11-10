@@ -3,6 +3,7 @@ import { IBorderType, ICellCssVars, ICellKey, ICellType, IConfigKey, IGlobalBord
 import { observer } from "mobx-react-lite";
 import { getValue } from "../tableDriver/ValueFunc";
 import { ITableService } from "./ITableService";
+import { borderKeys, getCellBorder } from "../utils/borderUtil";
 /**样式设置和实现
  * 样式用cssvar形式，给每层设置cssvar style
  * used by ExcelTable,DataTable
@@ -24,8 +25,15 @@ const components = {
         wrapper: getWrapper("body")
     }
 };
-
-
+const getClearKeys = key => {
+    return borderKeys.map(k => ["cssvars", `--cell-b-${key}-${k}`]);
+}
+const clearKeys = {
+    borderType: borderKeys.map(k=>[`b${k}`]),
+    borderColor: getClearKeys("color"),
+    borderStyle: getClearKeys("style"),
+    borderWidth: getClearKeys("width")
+}
 // border相关
 /**
  * 1. get selected range or all range
@@ -61,19 +69,21 @@ export default {
         // 边框设置
         borderChange: {
             exec(driver, value: Partial<IGlobalBorderConfig>) {
-                const confs: IRangeSetAry = [];
-                const keys = Object.keys(value) as Array<keyof IGlobalBorderConfig>;
+                let confs: IRangeSetAry = [];
                 if (driver.selected) {
                     (driver.config.selected || []).map(range => {
                         const cells = driver.getCellListInRanges([range]);
                         cells.map(cell => {
-                            // type: 设置哪些边=>实际要设置哪些边
-                            // width：对不为0的边生效，考虑边缘格子
-                            // color/style=>对range内的边生效，考虑边缘格子
+                            const ary = getCellBorder(driver, cell, range, value);
+                            confs = confs.concat(ary);
                         });// end map cell
                     }) // end map range
                 } else {
-                    keys.map(key => confs.push({ type: "cell", key: [key], value: value[key] }))
+                    const keys = Object.keys(value) as Array<keyof IGlobalBorderConfig>;
+                    keys.map(key => confs.push({
+                        type: "cell", key: [key], value: value[key],
+                        clearKeys: clearKeys[key]
+                    }))
                 }
                 return driver.setMultiRangeValue(confs);
             }

@@ -12,11 +12,13 @@
     .toolbar-btn {
         @apply btn btn-square btn-sm rounded-none min-w-sm w-auto p-1 align-middle btn-primary;
     }
-    .btn-group.btn-group-vertical .toolbar-btn{
-        &:first-child:not(:last-child){
+
+    .btn-group.btn-group-vertical .toolbar-btn {
+        &:first-child:not(:last-child) {
             @apply rounded-t-s;
         }
-        &:last-child:not(:first-child){
+
+        &:last-child:not(:first-child) {
             @apply rounded-b-s;
         }
     }
@@ -34,10 +36,12 @@
     // 工具栏菜单
     .toolbar-menu {
         @apply menu bg-white rounded-sm drop-shadow-md;
-        >li{
+
+        >li {
             @apply items-center;
         }
-        >li>a{
+
+        >li>a {
             @apply py-4px;
         }
     }
@@ -76,9 +80,11 @@
             box-shadow: 0 0 0 2px var(--tw-shadow-color);
         }
     }
+
     .tool-line {
         @apply border-black my-2 border-t-2 w-16;
     }
+
     .tool-input-number {}
 }
 
@@ -94,17 +100,22 @@
 
 .@{tprefix} {
     @apply relative box-border;
+
     &-rtl {
         direction: rtl;
     }
+
     &-table-wrapper {
         // table theme
         .theme();
+
         // table基础
-        table{
+        table {
             @apply border-spacing-0;
         }
-        th,td{
+
+        th,
+        td {
             @apply relative box-border break-words transition-shadow;
         }
 
@@ -144,8 +155,15 @@
     &-serial-table &-thead tr th {
         @apply bg-slate-300;
     }
+
+    tr td tr th {
+        &.@{tprefix}-serial-cell {
+            @apply border-r-0;
+        }
+    }
+
     // toolbar
-    &-toolbar{
+    &-toolbar {
         @apply py-2;
     }
 }

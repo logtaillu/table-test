@@ -249,7 +249,7 @@ export default class TableDriver {
      * @param type 类型
      * @param useGlobal 是否强制使用全局量 
      */
-    setRangeValue(type: IValueType, key: IConfigKey | IConfigKey[], value: any, userRange: ISaveRange = false): ISaveValues {
+    setRangeValue(type: IValueType, key: IConfigKey | IConfigKey[], value: any, userRange: ISaveRange = false, clearKeys: Array<IConfigKey | IConfigKey[]> = []): ISaveValues {
         const keys = Array.isArray(key) ? key : [key];
         const selected = userRange ? getTargetRange(userRange) : this.config.selected || [];
         const saves: ISaveValues = [];
@@ -259,17 +259,23 @@ export default class TableDriver {
                 saves.push({ value, paths: [type, getCellTypeKey(cell, type), ...keys] });
             });
         } else {
-            saves.push({ value, paths: [this.globalRange, type, ...keys] });
+            const globalRange = type === "col" ? "all" : this.globalRange;
+            saves.push({ value, paths: [globalRange, type, ...keys] });
             // 清除下层
-            if (this.globalRange === "all") {
+            if (globalRange === "all") {
                 saves.push({ value: undefined, paths: ["header", type, ...keys] });
                 saves.push({ value: undefined, paths: ["body", type, ...keys] });
             }
             // 遍历当前type的key值，清除范围内的
             const target = this.config[type] || {};
             Object.keys(target).map(typekey => {
+                // col不区分body/header，col只有global
                 if (this.globalRange === "all" || type === "col" || typekey.includes(this.globalRange)) {
                     saves.push({ value, paths: [type, typekey, ...keys] });
+                    clearKeys.map(key => {
+                        const paths = Array.isArray(key) ? key : [key];
+                        saves.push({ value, paths: [type, typekey, ...paths] });
+                    })
                 }
             });
         }
@@ -279,8 +285,8 @@ export default class TableDriver {
 
     setMultiRangeValue(configs: IRangeSetAry) {
         let undoTargets: ISaveValues = [];
-        configs.map(({ type, key, value, range = false }) => {
-            const cur = this.setRangeValue(type, key, value, range);
+        configs.map(({ type, key, value, range = false, clearKeys= [] }) => {
+            const cur = this.setRangeValue(type, key, value, range, clearKeys);
             undoTargets = undoTargets.concat(cur);
         });
         return undoTargets;

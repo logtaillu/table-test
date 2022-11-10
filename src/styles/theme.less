@@ -27,8 +27,8 @@
     --ex-resize-width: 1px; // resize handle宽度
 
     /* cell */
-    th,
-    td {
+    tr th,
+    tr td {
         font-size: calc(1px * var(--cell-f-size));
         font-family: var(--cell-f-family);
         color: var(--cell-f-color);
@@ -46,6 +46,9 @@
 
         // 第一列
         &:first-child {
+            border-left-width: var(--cell-b-width-l);
+        }
+        &[data-col="0"]{
             border-left-width: var(--cell-b-width-l);
         }
 

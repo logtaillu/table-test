@@ -43,6 +43,11 @@ export type ICellCssVars = typeof defaultCssVars;
 export interface ICellConfig {
     /**@description 样式变量 */
     cssvars?: Partial<ICellCssVars>;
+    /**@description 四向边框有无 */
+    bl?: boolean;
+    br?: boolean;
+    bt?: boolean;
+    bb?: boolean;
 }
 
 
@@ -98,9 +103,9 @@ export interface ITableCacheConfig {
     /**@description 列单独配置 */
     col?: ICacheObj<IColConfig>;
     /**@description 表头全局配置 */
-    header?: IGlobalCacheConfig;
+    header?: Pick<IGlobalCacheConfig,"cell"|"row">;
     /**@description 内容全局配置 */
-    body?: IGlobalCacheConfig;
+    body?: Pick<IGlobalCacheConfig,"cell"|"row">;
     /**@description 整体全局配置 */
     all?: IGlobalCacheConfig;
     /**@description 合并的单元格范围，可以not formatted */
@@ -145,4 +150,4 @@ export type IAcitonServiceMap = ICacheObj<IActionService>;
 /**@description setRange的userRange可用值 */
 export type ISaveRange = ICellRange[] | ICellRange | ICellKey | IRowKey | IColKey | false;
 /**@description 一组setRange配置 */
-export type IRangeSetAry = Array<{ type: IValueType, key: IConfigKey | IConfigKey[], value: any, range?: ISaveRange }>;
+export type IRangeSetAry = Array<{ type: IValueType, key: IConfigKey | IConfigKey[], value: any, range?: ISaveRange, clearKeys?: Array<IConfigKey | IConfigKey[]> }>;
