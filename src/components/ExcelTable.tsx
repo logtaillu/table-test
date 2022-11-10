@@ -7,6 +7,7 @@ import enrichData from '../services/enrichData';
 import enrichKey from '../services/enrichKey';
 import excelSider from '../services/excelSider';
 import { ITableService } from '../services/ITableService';
+import rangeSelect from '../services/rangeSelect';
 import redoundo from '../services/redoundo';
 import resizeableGrid from '../services/resizeableGrid';
 import styleSetter from '../services/styleSetter';
@@ -21,7 +22,8 @@ export default function (props: IExcelTableProps) {
         excelSider,
         resizeableGrid,
         redoundo,
-        styleSetter
+        styleSetter,
+        rangeSelect
     ];
     sary = sary.concat(services || []);
     sary.push(enrichKey);

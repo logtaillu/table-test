@@ -37,12 +37,8 @@
     .toolbar-menu {
         @apply menu bg-white rounded-sm drop-shadow-md;
 
-        >li {
-            @apply items-center;
-        }
-
         >li>a {
-            @apply py-4px;
+            @apply py-4px flex flex-col items-center;
         }
     }
 
@@ -99,24 +95,16 @@
 }
 
 .@{tprefix} {
-    @apply relative box-border;
-
-    &-rtl {
-        direction: rtl;
+    &-inner-table{
+        @apply relative box-border;
     }
-
     &-table-wrapper {
         // table theme
         .theme();
 
         // table基础
         table {
-            @apply border-spacing-0;
-        }
-
-        th,
-        td {
-            @apply relative box-border break-words transition-shadow;
+            @apply border-spacing-0 table-fixed w-full;
         }
 
         // resizeable handle
@@ -126,9 +114,8 @@
         }
 
         th .react-resizable-handle {
-            @apply cursor-col-resize bg-none p-0 bottom-0;
+            @apply cursor-col-resize bg-none p-0 bottom-0 h-full;
             width: calc(var(--ex-resize-width) * 2 + 1px);
-            height: 100%;
             right: calc(-1 * var(--ex-resize-width));
             z-index: 1;
 
@@ -138,9 +125,8 @@
         }
 
         tr>.react-resizable-handle {
-            @apply absolute cursor-row-resize bg-none p-0 right-0;
+            @apply absolute cursor-row-resize bg-none p-0 right-0 w-full;
             z-index: 1;
-            width: 100%;
             height: calc(var(--ex-resize-width) * 2 + 1px);
             bottom: calc(-1 * var(--ex-resize-width));
 
@@ -165,5 +151,19 @@
     // toolbar
     &-toolbar {
         @apply py-2;
+    }
+    // select range
+    &-select-ranges &-range{
+        @apply border-solid border-primary box-border absolute pointer-events-none;
+        @apply after:block after:absolute after:pointer-events-none after:bg-primary;
+        @apply before:w-full before:h-full before:bg-primary before:opacity-20
+        before:block before:absolute before:pointer-events-none;
+        border-width: var(--ex-range-width);
+        &::after{
+            width: calc( var(--ex-range-width) + var(--ex-range-rect)*2 );
+            height: calc( var(--ex-range-width) + var(--ex-range-rect)*2 );
+            right: calc( var(--ex-range-width) * -1 - var(--ex-range-rect) );
+            bottom: calc( var(--ex-range-width) * -1 - var(--ex-range-rect) );
+        }
     }
 }

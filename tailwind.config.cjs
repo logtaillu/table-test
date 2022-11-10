@@ -6,12 +6,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // p-4px
       padding: {
         "4px": "4px"
       },
+      // min-sm
       minWidth: {
         "sm": "2rem"
       },
+      // rounded-s
       borderRadius: {
         "s": "0.25rem"
       }

@@ -1,5 +1,4 @@
 both
-1. border
 2. selectRange,，包含行列选择功能
 3. 合并/拆分单元格
 4.  行列（插入/删除）
@@ -28,6 +27,7 @@ both
 5. 字体/字号/颜色-both
 6. 文字对齐text align/vertical align-both
 7. 粗体/斜体/下划线-both
+1. border
 
 
 样式添加位置：

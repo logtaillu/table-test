@@ -20,22 +20,21 @@ const getRangeStyle = (range: ICellRange, driver: TableDriver): React.CSSPropert
     const torect = tocell.getBoundingClientRect();
     const tableRect = table.getBoundingClientRect();
     // 边框宽度1
-    const borderWidth = 1;
+    const borderWidth = "var(--ex-range-width)";
     const left = Math.min(fromrect.left, torect.left);
     const top = Math.min(fromrect.top, torect.top);
     const right = Math.max(fromrect.right, torect.right);
     const bottom = Math.max(fromrect.bottom, torect.bottom);
     return {
-        left: (left - borderWidth - tableRect.left) + "px",
-        top: (top - borderWidth - tableRect.top) + "px",
-        width: (right - left + borderWidth) + "px",
-        height: (bottom - top + borderWidth) + "px"
+        left: `calc( ${left- tableRect.left}px - ${borderWidth} / 2 )`,
+        top:`calc( ${top - tableRect.top}px - ${borderWidth} / 2 )`,
+        width: `calc( ${right-left}px + ${borderWidth} )`,
+        height: `calc( ${bottom-top}px + ${borderWidth} )`
     }
 }
 
 export default observer(function (props: ISelectRangeProps) {
     const driver = useDriver();
-    
     return (
         <div className={driver.prefix("select-ranges")}>
             {driver.selectedShowRanges.map((range) => {

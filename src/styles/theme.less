@@ -25,7 +25,8 @@
     --cell-b-color-b: cornflowerblue;
     // 其他
     --ex-resize-width: 1px; // resize handle宽度
-
+    --ex-range-width: 3px;
+    --ex-range-rect: 3px;
     /* cell */
     tr th,
     tr td {
@@ -40,7 +41,7 @@
         font-style: var(--cell-f-style);
         border-style: var(--cell-b-style-t) var(--cell-b-style-r) var(--cell-b-style-b) var(--cell-b-style-l);
         border-color: var(--cell-b-color-t) var(--cell-b-color-r) var(--cell-b-color-b) var(--cell-b-color-l);
-        @apply border-t-0 border-l-0;
+        @apply border-t-0 border-l-0 relative box-border break-words transition-shadow select-none;
         border-right-width: var(--cell-b-width-r);
         border-bottom-width: var(--cell-b-width-b);
 
