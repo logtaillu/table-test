@@ -21,8 +21,9 @@ export type IGlobalRange = "body" | "header" | "all";
  * col - 列  
  * row - 行  
  * cell - 单元格  
+ * wrap - 其他外层参数
  */
-export type IValueType = "col" | "row" | "cell";
+export type IValueType = "col" | "row" | "cell" | "wrap";
 
 /**
  * 一个范围的边框类型  
@@ -64,3 +65,15 @@ export type IRowKey = Pick<ICellKey, "row" | "type">;
 
 /** 列序号对象 */
 export type IColKey = Pick<ICellKey, "col">;
+
+/** 范围定义 */
+export interface ICellRange {
+    /** 起始单元格 */
+    from: ICellKey;
+    /** 结束单元格 */
+    to: ICellKey;
+}
+
+/** 可用范围传参 */
+export type IRangeType = ICellRange | ICellKey | IRowKey | IColKey | false | IGlobalRange;
+export type IRangeAryType = IRangeType | ICellRange[];

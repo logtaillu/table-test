@@ -1,0 +1,164 @@
+/** 表格控制器 */
+import { makeAutoObservable, observable } from "mobx";
+import { IActionItem, IActionServiceMap, IActionStack, ISaveValues } from "../interfaces/IActionStack";
+import { IConfigKey, IDriverCache, IDriverSetter, IMultiRangeSetter } from "../interfaces/IDriverCache";
+import { IGlobalRange, IRangeAryType, IValueType } from "../interfaces/IGlobalType";
+import { IEvPlugin, IPluginEvent } from "../interfaces/IPlugin";
+import { mergeConfig } from "../utils/baseUtil";
+import eventUtil from "../utils/eventUtil";
+import { doAction, redo, undo } from "./actions";
+import initContent from "./initContent";
+import { getRangeValue, setRangeValue } from "./ranges";
+
+export default class EvDriver {
+    constructor(props: IDriverSetter) {
+        makeAutoObservable(this, {
+            tableRef: observable.ref
+        });
+        Object.keys(props).map(key => this[key] = props[key]);
+    }
+    /*******************事件与操作处理注册 **********************/
+    /** 事件按类型列表 */
+    events: Record<string, IPluginEvent[]> = {};
+    /** 表格元素 */
+    tableRef: HTMLDivElement | null = null;
+    /** 注册插件 */
+    register(plugins: IEvPlugin[]) {
+        plugins.map(p => {
+            const { events = [], actions = {} } = p;
+            this.acServiceMap = { ...this.acServiceMap, ...actions };
+            events.map(event => {
+                this.events[event.name] = this.events[event.name] || [];
+                this.events[event.name].push(event);
+            });
+        });
+        eventUtil.add(this);
+    }
+    /** 插件全部移除 */
+    remove() {
+        eventUtil.remove(this);
+        this.events = {};
+        this.acServiceMap = {};
+    }
+    /** 是否事件目标 */
+    isEventTarget(e) {
+        const wrapper = e.target?.closest(`div.${this.prefix("table")}`);
+        return wrapper === this.tableRef;
+    }
+    /*******************动作处理 **********************/
+    /** 操作栈 */
+    actionStack: IActionStack = [];
+    /** 回退栈 */
+    undoStack: IActionStack = [];
+    /** 操作处理对象map */
+    acServiceMap: IActionServiceMap = {};
+    /**最大操作栈记录数，-1代表不限制 */
+    maxStack: number = -1;
+
+    /**对外的执行动作函数 */
+    exec(type: string, value?: any, keep?: boolean) {
+        doAction(this, { type, value, keep });
+    }
+    /** 重做 */
+    redo() {
+        redo(this);
+    }
+    /** 回退 */
+    undo() {
+        undo(this);
+    }
+    /** 是否可以undo */
+    get undoEnable() {
+        return this.actionStack.length > 0;
+    }
+    /** 是否可以redo */
+    get redoEnable() {
+        return this.undoStack.length;
+    }
+    /** 是否右选择范围 */
+    get haveSelectRange() {
+        return (this.content?.selected?.length || 0) > 0;
+    }
+
+    /*******************配置内容 **********************/
+    /** 配置内容 */
+    cache: IDriverCache = {};
+    set content(value: IDriverCache | undefined) {
+        this.actionStack = [];
+        this.undoStack = [];
+        this.cache = mergeConfig(initContent(), value || {});
+    }
+    get content() {
+        return this.cache;
+    }
+    /** 获取merged范围 */
+    get merged() {
+        return this.content?.merged || [];
+    }
+    /** 范围取值 */
+    getValue(type: IValueType, path: IConfigKey[], range: IRangeAryType) {
+        return getRangeValue(this, type, path, range);
+    }
+    /** 范围设值 */
+    setValue(type: IValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clearKeys: Array<IConfigKey[]> = []) {
+        return setRangeValue(this, type, path, value, range, clearKeys);
+    }
+    /**批量范围设值 */
+    setValues(configs: IMultiRangeSetter) {
+        let undoTargets: ISaveValues = [];
+        configs.map(({ type, path, value, range = false, clears= [] }) => {
+            const cur = this.setValue(type, path, value, range, clears);
+            undoTargets = undoTargets.concat(cur);
+        });
+        return undoTargets;
+    }
+
+    /*******************其他临时状态 **********************/
+    /** 是否正在选择中 */
+    selectingIn: boolean = false;
+    get selecting() {
+        return this.selectingIn;
+    }
+    set selecting(value: boolean) {
+        this.selectingIn = value;
+    }
+    /** className前缀 */
+    prefixClsIn: string = "ev";
+    get prefixCls() {
+        return this.prefixClsIn;
+    }
+    set prefixCls(value: string) {
+        this.prefixClsIn = value;
+    }
+    /**获取带前缀样式
+     * @param cls {string} 样式名
+     */
+    prefix(cls: string = "") {
+        return cls.length ? cls.split(" ").filter(s => !!s).map(s => this.prefixCls + "-" + s).join(" ") : this.prefixCls;
+    }
+
+    /** 编辑状态 */
+    editableIn: boolean = false;
+    get editable() {
+        return this.editableIn;
+    }
+    set editable(value: boolean) {
+        this.editableIn = value;
+    }
+    /** 当前语言 */
+    langIn: string = "zh-CN";
+    get lang() {
+        return this.langIn;
+    }
+    set lang(value: string) {
+        this.langIn = value;
+    }
+    /** 当前全局范围 */
+    globalRangeIn: IGlobalRange = "all";
+    get globalRange() {
+        return this.globalRangeIn;
+    }
+    set globalRange(value: IGlobalRange) {
+        this.globalRangeIn = value;
+    }
+}
