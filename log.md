@@ -53,3 +53,15 @@ global 和body/header的关系=>虽然范围不同，直接覆盖
 
 遗留问题：
 没有改动的动作触发
+
+目录结构：
+table table组件
+stories 文档
+styles 样式
+driver 控制器
+toolbars 工具栏
+locales 语言
+utils 辅助函数
+plugins 功能部件
+components 其他输入控件等
+name=evtable
