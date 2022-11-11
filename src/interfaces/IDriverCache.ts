@@ -60,7 +60,7 @@ export interface IDriverSetter {
     /** 当前语言 */
     lang?: string;
     /** 当前全局类型 */
-    global?: IGlobalRange;
+    globalRange?: IGlobalRange;
 }
 
 /** 可用配置字段 */

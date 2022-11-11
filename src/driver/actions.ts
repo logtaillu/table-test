@@ -22,6 +22,9 @@ export function doAction(driver: EvDriver, action: IActionItem, clearUndo: boole
                 last.keep = action.keep;
             } else {
                 driver.actionStack.push({ ...action, undo: result || [] });
+                if (driver.maxStack >= 0 && driver.actionStack.length > driver.maxStack) {
+                    driver.actionStack.splice(0, driver.actionStack.length - driver.maxStack);
+                }
             }
             if (clearUndo) {
                 driver.undoStack = [];

@@ -15,6 +15,9 @@ export default class EvDriver {
         makeAutoObservable(this, {
             tableRef: observable.ref
         });
+        this.update(props);
+    }
+    update(props: IDriverSetter) {
         Object.keys(props).map(key => this[key] = props[key]);
     }
     /*******************事件与操作处理注册 **********************/
@@ -53,7 +56,16 @@ export default class EvDriver {
     /** 操作处理对象map */
     acServiceMap: IActionServiceMap = {};
     /**最大操作栈记录数，-1代表不限制 */
-    maxStack: number = -1;
+    maxStackIn: number = -1;
+    get maxStack(): number {
+        return this.maxStackIn;
+    }
+    set maxStack(value: number | undefined) {
+        this.maxStackIn = typeof (value) === "number" ? value : this.maxStackIn;
+        if (this.maxStackIn>=0 && this.actionStack.length > this.maxStackIn) {
+            this.actionStack.splice(0, this.actionStack.length - this.maxStackIn);
+        }
+    }
 
     /**对外的执行动作函数 */
     exec(type: string, value?: any, keep?: boolean) {
@@ -96,7 +108,7 @@ export default class EvDriver {
         return this.content?.merged || [];
     }
     /** 范围取值 */
-    getValue(type: IValueType, path: IConfigKey[], range: IRangeAryType) {
+    getValue(type: IValueType, path: IConfigKey[], range: IRangeAryType = false) {
         return getRangeValue(this, type, path, range);
     }
     /** 范围设值 */
@@ -124,11 +136,11 @@ export default class EvDriver {
     }
     /** className前缀 */
     prefixClsIn: string = "ev";
-    get prefixCls() {
+    get prefixCls(): string {
         return this.prefixClsIn;
     }
-    set prefixCls(value: string) {
-        this.prefixClsIn = value;
+    set prefixCls(value: string | undefined) {
+        this.prefixClsIn = value || this.prefixClsIn;
     }
     /**获取带前缀样式
      * @param cls {string} 样式名
@@ -139,26 +151,26 @@ export default class EvDriver {
 
     /** 编辑状态 */
     editableIn: boolean = false;
-    get editable() {
+    get editable(): boolean {
         return this.editableIn;
     }
-    set editable(value: boolean) {
-        this.editableIn = value;
+    set editable(value: boolean | undefined) {
+        this.editableIn = value || this.editableIn;
     }
     /** 当前语言 */
     langIn: string = "zh-CN";
-    get lang() {
+    get lang(): string {
         return this.langIn;
     }
-    set lang(value: string) {
-        this.langIn = value;
+    set lang(value: string | undefined) {
+        this.langIn = value || this.langIn;
     }
     /** 当前全局范围 */
     globalRangeIn: IGlobalRange = "all";
-    get globalRange() {
+    get globalRange(): IGlobalRange {
         return this.globalRangeIn;
     }
-    set globalRange(value: IGlobalRange) {
-        this.globalRangeIn = value;
+    set globalRange(value: IGlobalRange | undefined) {
+        this.globalRangeIn = value || this.globalRangeIn;
     }
 }
