@@ -5,13 +5,12 @@ import React from 'react'
 import { observer } from 'mobx-react-lite';
 import { useDriver } from './DriverContext';
 import ToolbarOperation from './ToolbarOperation';
-import toolbars from '../toolbars';
 import { ITableProps } from '../interfaces/ITableProps';
 
 /** 工具栏组 */
-const ToolBarGroup = observer<{group, table}>(({ group, table }) => {
+const ToolBarGroup = observer<{ group, sources }>(({ group, sources }) => {
     const items = (group || []).map(item => {
-        return <ToolbarOperation key={item.key} table={table} item={item} />;
+        return <ToolbarOperation key={item.key} sources={sources} item={item} />;
     })
     return (
         <div className={"toolbar-group"}>
@@ -21,8 +20,8 @@ const ToolBarGroup = observer<{group, table}>(({ group, table }) => {
 })
 
 /**@description 工具栏 */
-export default observer(function ({ table }: { table: ITableProps }) {
-    const { toolbar, items, sources } = table;
+export default observer(function (props: Pick<ITableProps, "toolbar" | "items" | "sources">) {
+    const { toolbar, items, sources } = props;
     const driver = useDriver();
     if (!toolbar || !driver.editable) {
         return null;
@@ -30,7 +29,7 @@ export default observer(function ({ table }: { table: ITableProps }) {
     return (
         <div className={driver.prefix("toolbar")}>
             {(items || []).map((itemGroup, idx) => {
-                return <ToolBarGroup table={table} group={itemGroup} key={idx} />;
+                return <ToolBarGroup sources={sources} group={itemGroup} key={idx} />;
             })}
         </div>
     )

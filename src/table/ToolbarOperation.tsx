@@ -11,7 +11,7 @@ export interface IToolbarOperation {
     /**@description 工具栏配置 */
     item: IToolbarItem;
     /**@description 自定义资源表 */
-    table?: ITableProps;
+    sources?: Pick<ITableProps, "sources">;
 }
 /**@description 工具栏单项 */
 export default observer(function (props: IToolbarOperation) {
@@ -19,7 +19,7 @@ export default observer(function (props: IToolbarOperation) {
     if (!target) {
         return <span />;
     }
-    const sources = props.table?.sources;
+    const sources = props?.sources;
     const [open, setOpen] = useState(false);
     const [temp, setTemp] = useState(null);
     const driver = useDriver();
