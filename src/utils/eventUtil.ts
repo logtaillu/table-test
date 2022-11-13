@@ -1,3 +1,4 @@
+/** 事件监听 */
 import EvDriver from "../driver/EvDriver";
 import { IEventName } from "../interfaces/IPlugin";
 

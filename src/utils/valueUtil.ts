@@ -1,3 +1,4 @@
+/** 取值设值相关函数 */
 import { ISaveValues } from "../interfaces/IActionStack";
 
 /**
