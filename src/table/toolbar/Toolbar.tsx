@@ -3,9 +3,9 @@
  */
 import React from 'react'
 import { observer } from 'mobx-react-lite';
-import { useDriver } from './DriverContext';
+import { useDriver } from '../DriverContext';
 import ToolbarOperation from './ToolbarOperation';
-import { ITableProps } from '../interfaces/ITableProps';
+import { ITableProps } from '../../interfaces/ITableProps';
 
 /** 工具栏组 */
 const ToolBarGroup = observer<{ group, sources }>(({ group, sources }) => {

@@ -1,33 +1,15 @@
-/** 表格核心 */
-import React, { useEffect, useImperativeHandle, useState } from 'react';
+/** 表格核心入口，初始化driver和intl，执行enrichProps */
+import React, { useEffect, useImperativeHandle, useState, useMemo } from 'react';
 import { observer } from "mobx-react-lite";
-import { ITableProps } from '../interfaces/ITableProps';
-import { IntlProvider } from 'react-intl';
+import { IPluginList, ITableProps } from '../interfaces/ITableProps';
 import EvDriver from '../driver/EvDriver';
 import { DriverContext } from './DriverContext';
-import Toolbar from './Toolbar';
-import useUpdateEffect from '../hooks/useUpdateEffect';
-import messages from "../locales/index";
-import Table from './Table';
-import { getValue } from '../utils/valueUtil';
-const defaultLang = "zh-CN";
-const getMessages = (lang?: string, locales?: Record<string, any>) => {
-    lang = lang || defaultLang;
-    return {
-        ...(messages[lang] || messages[defaultLang]),
-        ...(locales ? (locales[lang] || locales[defaultLang]) : {})
-    }
-}
+import TableWrapper from './TableWrapper';
+import { mergeConfig } from '../utils/baseUtil';
 
-export default observer(React.forwardRef(function (props: ITableProps, ref) {
-    const { content, editable, lang, globalRange, maxStack, prefixCls, locales, plugins, className, style, items, sources, toolbar } = props;
-    const [driver] = useState(() => new EvDriver({ content, editable, lang: lang || navigator.language, globalRange, maxStack, prefixCls }));
-    // 配置改变
-    useUpdateEffect(() => { driver.content = content }, [content]);
-    // 其他改变
-    useUpdateEffect(() => {
-        driver.update({ prefixCls, editable, lang, globalRange, maxStack });
-    }, [prefixCls, editable, lang, globalRange, maxStack]);
+export default observer(React.forwardRef(function (props: ITableProps & IPluginList, ref) {
+    const { plugins, ...tableProps } = props;
+    const [driver] = useState(() => new EvDriver());
 
     // 挂载插件
     useEffect(() => {
@@ -38,24 +20,28 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
             driver.remove();
         }
     }, [plugins]);
-    const setRef = (n: HTMLDivElement) => {
-        driver.tableRef = n;
+    // enrichProps
+    const enrichProps = () => {
+        let result = {...tableProps};
+        (plugins || []).map(p => {
+            if (p.enrich) {
+                const temp = p.enrich(result, driver);
+                result = mergeConfig(result, temp);
+            }
+        });
+        return result;
     }
+    const passToTable = useMemo(() => {
+        return enrichProps();
+     }, [driver, plugins]);
 
     // ref函数,备用
     useImperativeHandle(ref, () => ({
 
     }));
     return (
-        <IntlProvider locale={driver.lang} defaultLocale={defaultLang} messages={getMessages(lang, locales)}>
-            <DriverContext.Provider value={driver}>
-                <div className={driver.prefix("wrapper") + " " + (className || "")} style={{ ...getValue(driver.content, ["all", "cell", "cssvar"]), ...style }}>
-                    <Toolbar items={items} sources={sources} toolbar={toolbar} />
-                    <div ref={setRef} className={driver.prefix("table")}>
-                        <Table />
-                    </div>
-                </div>
-            </DriverContext.Provider>
-        </IntlProvider>
+        <DriverContext.Provider value={driver}>
+            <TableWrapper {...passToTable} />
+        </DriverContext.Provider>
     )
 }));

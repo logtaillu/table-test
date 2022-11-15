@@ -67,5 +67,8 @@ components 其他输入控件等
 interfaces 接口定义
 name=evtable
 
-tableDriver部分差不多了
-toolbar+datacomponents=>table+services部分
+colgroup
+thead-trow-th
+tbody-trow-td
+column.width=>number or string or undefined
+colWidth=> number

@@ -3,10 +3,10 @@ import { observer } from 'mobx-react-lite';
 import classnames from "classnames";
 import { useIntl } from 'react-intl';
 import DropDown from "rc-dropdown";
-import { IToolbarItem } from '../interfaces/IToolbar';
-import { useDriver } from './DriverContext';
-import { ITableProps } from '../interfaces/ITableProps';
-import toolbars from '../toolbars';
+import { IToolbarItem } from '../../interfaces/IToolbar';
+import { useDriver } from '../DriverContext';
+import { ITableProps } from '../../interfaces/ITableProps';
+import toolbars from '../../toolbars';
 export interface IToolbarOperation {
     /**@description 工具栏配置 */
     item: IToolbarItem;

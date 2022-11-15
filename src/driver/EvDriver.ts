@@ -4,6 +4,7 @@ import { IActionItem, IActionServiceMap, IActionStack, ISaveValues } from "../in
 import { IConfigKey, IDriverCache, IDriverSetter, IMultiRangeSetter } from "../interfaces/IDriverCache";
 import { IGlobalRange, IRangeAryType, IValueType } from "../interfaces/IGlobalType";
 import { IEvPlugin, IPluginEvent } from "../interfaces/IPlugin";
+import { IRenderCol } from "../interfaces/ITableProps";
 import { mergeConfig } from "../utils/baseUtil";
 import eventUtil from "../utils/eventUtil";
 import { doAction, redo, undo } from "./actions";
@@ -11,11 +12,10 @@ import initContent from "./initContent";
 import { getRangeValue, setRangeValue } from "./ranges";
 
 export default class EvDriver {
-    constructor(props: IDriverSetter) {
+    constructor() {
         makeAutoObservable(this, {
             tableRef: observable.ref
         });
-        this.update(props);
     }
     update(props: IDriverSetter) {
         Object.keys(props).map(key => this[key] = props[key]);
@@ -45,7 +45,7 @@ export default class EvDriver {
     }
     /** 是否事件目标 */
     isEventTarget(e) {
-        const wrapper = e.target?.closest(`div.${this.prefix("table")}`);
+        const wrapper = e.target?.closest(`div.${this.prefix("table-core")}`);
         return wrapper === this.tableRef;
     }
     /*******************动作处理 **********************/
@@ -62,7 +62,7 @@ export default class EvDriver {
     }
     set maxStack(value: number | undefined) {
         this.maxStackIn = typeof (value) === "number" ? value : this.maxStackIn;
-        if (this.maxStackIn>=0 && this.actionStack.length > this.maxStackIn) {
+        if (this.maxStackIn >= 0 && this.actionStack.length > this.maxStackIn) {
             this.actionStack.splice(0, this.actionStack.length - this.maxStackIn);
         }
     }
@@ -118,7 +118,7 @@ export default class EvDriver {
     /**批量范围设值 */
     setValues(configs: IMultiRangeSetter) {
         let undoTargets: ISaveValues = [];
-        configs.map(({ type, path, value, range = false, clears= [] }) => {
+        configs.map(({ type, path, value, range = false, clears = [] }) => {
             const cur = this.setValue(type, path, value, range, clears);
             undoTargets = undoTargets.concat(cur);
         });
@@ -158,7 +158,7 @@ export default class EvDriver {
         this.editableIn = value || this.editableIn;
     }
     /** 当前语言 */
-    langIn: string = "zh-CN";
+    langIn: string = navigator.language;
     get lang(): string {
         return this.langIn;
     }
@@ -172,5 +172,22 @@ export default class EvDriver {
     }
     set globalRange(value: IGlobalRange | undefined) {
         this.globalRangeIn = value || this.globalRangeIn;
+    }
+
+    /** 底层columns列表 */
+    renderColAry: IRenderCol[] = [];
+    set renderCols(value: IRenderCol[]) {
+        this.renderColAry = value;
+    }
+    get renderCols() {
+        return this.renderColAry;
+    }
+    /** 层叠的columns列表 */
+    evcolumns: IRenderCol[][] = [];
+    set columns(value: IRenderCol[][]) {
+        this.evcolumns = value;
+    }
+    get columns() {
+        return this.evcolumns;
     }
 }
