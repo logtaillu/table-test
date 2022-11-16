@@ -47,7 +47,7 @@ export function getTargetRange(driver: EvDriver, target: IRangeType): ICellRange
  * @returns {ICellRange[]} 范围数组，not formatted, not minTarget
  */
 export function getTargetRangeList(driver: EvDriver, range: IRangeAryType): ICellRange[] {
-    return Array.isArray(range) ? range : [getTargetRange(driver, range)];
+    return Array.isArray(range) ? range.map(r=>getTargetRange(driver, r)) : [getTargetRange(driver, range)];
 }
 
 /***********************范围格式化 ****************************/

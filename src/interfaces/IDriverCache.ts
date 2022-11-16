@@ -3,7 +3,7 @@
  */
 
 import { ICellConfig, ICellCssVars, IColConfig, IGlobalBorderConfig, IRowConfig } from "./IConfig";
-import { ICellRange, IGlobalRange, IRangeType, IValueType } from "./IGlobalType";
+import { ICellRange, IGlobalRange, IRangeAryType, IValueType } from "./IGlobalType";
 
 /** record类型，key是行/列/单元格的key */
 export type IRecord<T> = Record<string, T>;
@@ -22,10 +22,10 @@ export interface IGlobalCache {
 export interface IDriverCache {
     /** 单元格配置 */
     cell?: IRecord<ICellConfig>;
-    /** 行配置 */
+    /** 行配置，不做范围内cell配置，因为和col的优先级是同级的 */
     row?: IRecord<IRowConfig>;
-    /** 列配置 */
-    col?: IRecord<IColConfig>;
+    /** 列配置，与范围内cell配置, col是横跨body/header的 */
+    col?: IRecord<IColConfig & { body?: ICellConfig, header?: ICellConfig }>;
     /** 表头配置 */
     header?: Pick<IGlobalCache, "row" | "cell">;
     /** 表内容配置 */
@@ -75,9 +75,9 @@ export interface IRangeSetter {
     /** 值 */
     value: any;
     /** 指定范围 */
-    range?: IRangeType;
+    range?: IRangeAryType;
     /** 额外需要清除的字段*/
-    clears?: Array<IConfigKey[]>;
+    clears?: Array<{ type: IValueType, path: IConfigKey[] }>;
 }
 /** 批量范围设值 */
 export type IMultiRangeSetter = Array<IRangeSetter>;

@@ -6,7 +6,7 @@ import { ISaveValues } from "../interfaces/IActionStack";
  * @param target 取值目标
  * @param paths 路径
  */
- export function getValue(target: any, paths: string[] | string) {
+export function getValue(target: any, paths: string[] | string) {
     paths = Array.isArray(paths) ? paths : paths.split(".");
     let cur = target;
     if (!cur) {
@@ -31,10 +31,36 @@ import { ISaveValues } from "../interfaces/IActionStack";
 export function getPriorityValue(target: any, paths: Array<string[] | string>) {
     let res = undefined;
     for (let i = 0; i < paths.length; i++) {
-        const current = getValue(target, paths[i]);
-        if (current !== null && current !== undefined) {
-            res = current;
-            break;
+        if (paths[i].length) {
+            const current = getValue(target, paths[i]);
+            if (current !== null && current !== undefined) {
+                res = current;
+                break;
+            }
+        }
+    }
+    return res;
+}
+
+/**
+ * 按顺序返回每级的有效值
+ * @param target 取值目标
+ * @param paths 路径列表
+ * @returns 值
+ */
+export function getPriorityValueAry(target: any, paths: Array<string[] | string>): any[] {
+    let res: any[] = new Array(paths.length).fill(null);
+    for (let i = 0; i < paths.length; i++) {
+        if (paths[i].length) {
+            const current = getValue(target, paths[i]);
+            if (current !== null && current !== undefined) {
+                res[i] = current;
+            }
+        }
+    }
+    for (let i = res.length - 2; i--; i >= 0){
+        if (res[i] === null || res[i] === undefined) {
+            res[i] = res[i + 1];
         }
     }
     return res;

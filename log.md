@@ -73,5 +73,6 @@ tbody-trow-td
 column/data 和content的优先级问题
 1. content作为修改过程存储，更加优先
 2. column/data内容不去变更
-有1个initContent，和一个content
+a.有1个initContent，和一个content
+b.个别量做init
 column/data如果有什么关联量，反映到initContent

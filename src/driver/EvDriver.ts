@@ -112,7 +112,7 @@ export default class EvDriver {
         return getRangeValue(this, type, path, range);
     }
     /** 范围设值 */
-    setValue(type: IValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clearKeys: Array<IConfigKey[]> = []) {
+    setValue(type: IValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clearKeys: Array<{type: IValueType, path: IConfigKey[]}> = []) {
         return setRangeValue(this, type, path, value, range, clearKeys);
     }
     /**批量范围设值 */
