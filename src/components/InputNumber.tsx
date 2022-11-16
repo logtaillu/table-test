@@ -8,7 +8,8 @@ export interface IInputNumber extends IBlurInput {
 export default function (props: IInputNumber) {
     const { callback, ...others } = props;
     const back = val => {
-        callback(Number(val));
+        val = Number(val);
+        callback(isNaN(val) ? "" : val);
     }
     return (
         <div className='tool-input-number'>

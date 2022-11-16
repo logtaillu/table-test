@@ -9,8 +9,9 @@ import { ITableProps } from '../../interfaces/ITableProps';
 
 /** 工具栏组 */
 const ToolBarGroup = observer<{ group, sources }>(({ group, sources }) => {
-    const items = (group || []).map(item => {
-        return <ToolbarOperation key={item.key} sources={sources} item={item} />;
+    const items = (group || []).map((item, idx) => {
+        const key = typeof (item) === "string" ? item : (item.key || idx);
+        return <ToolbarOperation key={key} sources={sources} item={item} />;
     })
     return (
         <div className={"toolbar-group"}>

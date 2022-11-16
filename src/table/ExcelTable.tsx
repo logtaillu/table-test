@@ -1,6 +1,6 @@
 import React from 'react'
 import { IEvPlugin } from "../interfaces/IPlugin";
-import { ITableProps } from "../interfaces/ITableProps";
+import { ITableCoreProps } from "../interfaces/ITableProps";
 import TableCore from "./TableCore";
 
 const defaultToolbar = [
@@ -9,7 +9,7 @@ const defaultToolbar = [
     ['alignLeft', 'alignCenter', 'alignRight', 'verticalAlign'],
     ['borderType', 'borderColor', 'borderStyle', 'borderWidth']
 ];
-export interface IExcelTableProps extends ITableProps {
+export interface IExcelTableProps extends ITableCoreProps {
 }
 
 export default function (props: IExcelTableProps) {

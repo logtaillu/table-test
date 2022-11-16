@@ -1,13 +1,13 @@
 /** 表格核心入口，初始化driver和intl，执行enrichProps */
 import React, { useEffect, useImperativeHandle, useState, useMemo } from 'react';
 import { observer } from "mobx-react-lite";
-import { IPluginList, ITableProps } from '../interfaces/ITableProps';
+import { ITableCoreProps } from '../interfaces/ITableProps';
 import EvDriver from '../driver/EvDriver';
 import { DriverContext } from './DriverContext';
 import TableWrapper from './TableWrapper';
 import { mergeConfig } from '../utils/baseUtil';
 
-export default observer(React.forwardRef(function (props: ITableProps & IPluginList, ref) {
+export default observer(React.forwardRef(function (props: ITableCoreProps, ref) {
     const { plugins, ...tableProps } = props;
     const [driver] = useState(() => new EvDriver());
 

@@ -1,4 +1,5 @@
 /**
+ * 监听column改变，并修改driver内容
  * 1. 处理columns，获取表头深度deep，列数columnCount
  * 2. 获取底层columns Array
  * 3. 获取thead渲染用的column数组
@@ -39,5 +40,6 @@ export default function (columns: IColumnList) {
         ]);
         driver.renderCols = renderCols;
         driver.columns = headerCols;
+        console.log(renderCols, headerCols);
     }, [columns]);
 }

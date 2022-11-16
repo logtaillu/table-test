@@ -4,6 +4,7 @@ import { ImTextHeight } from "react-icons/im";
 import { AiOutlineColumnHeight } from "react-icons/ai";
 import { FormattedMessage } from "react-intl";
 import InputNumber from "../components/InputNumber";
+import SuffixInput from '../components/SuffixInput';
 /**@description 高度自适应设置 */
 export const autoHeight: IToolbarItemObj = {
     key: "autoHeight",
@@ -24,7 +25,13 @@ export const autoHeight: IToolbarItemObj = {
 export const size: IToolbarItemObj = {
     key: "size",
     icon: <AiOutlineColumnHeight />,
-    dropdown: ({ driver }) => {
+    source: {
+        // 后缀集合
+        suffixs: ["px", "%"],
+        // 无后缀的展示
+        nosuffix: "px"
+    },
+    dropdown: ({ driver, source }) => {
         const changeHeight = value => {
             driver.exec("sizeChange", { rowHeight: value });
         }
@@ -41,7 +48,7 @@ export const size: IToolbarItemObj = {
                 </label>
                 <label className="tool-input-group p-2">
                     <span><FormattedMessage id="colWidth" /></span>
-                    <InputNumber callback={changeWidth} value={colWidth} />
+                    <SuffixInput  {...source} callback={changeWidth} value={colWidth} />
                 </label>
             </div>
         )

@@ -70,5 +70,8 @@ name=evtable
 colgroup
 thead-trow-th
 tbody-trow-td
-column.width=>number or string or undefined
-colWidth=> number
+column/data 和content的优先级问题
+1. content作为修改过程存储，更加优先
+2. column/data内容不去变更
+有1个initContent，和一个content
+column/data如果有什么关联量，反映到initContent

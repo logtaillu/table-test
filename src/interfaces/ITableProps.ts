@@ -31,7 +31,7 @@ export interface IColumn {
     onHeader?: () => React.ReactNode;
     /** 获取body单元格props [unused]*/
     onCell?: () => React.ReactNode;
-    /** 特定类型渲染时，如果title不是string|number，需要获取header单元格的值 *[unused]/
+    /** 特定类型渲染时，如果title不是string|number，需要获取header单元格的值 *[unused] */
     getHeaderValue?: () => any;
     /** 特定类型渲染时，如果title不是string|number，需要获取body单元格的值 [unused]*/
     getCellValue?: () => any;
@@ -67,7 +67,7 @@ export interface IPluginList {
 }
 
 /** 表格入参 */
-export interface ITableProps extends IDriverSetter {
+export interface ITableProps<T = any> extends IDriverSetter {
     /** 样式名 */
     className?: string;
     /** 内联样式 */
@@ -86,4 +86,8 @@ export interface ITableProps extends IDriverSetter {
     showHeader?: boolean;
     /** table tableLayout */
     tableLayout?: "fixed" | "auto";
+    /** 数据内容 */
+    data?: T[];
 }
+
+export type ITableCoreProps = IPluginList & ITableProps;

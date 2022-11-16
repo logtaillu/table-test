@@ -5,9 +5,9 @@
  * 单元格类型  
  * body - 内容  
  * header - 表头  
- * external - 左侧多余 
+ * external - 左侧多余 -先不定义
  */
-export type ICellType = "body" | "header" | "external";
+export type ICellType = "body" | "header";
 /**
  * 全局范围类型  
  * body - 内容  

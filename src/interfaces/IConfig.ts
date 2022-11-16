@@ -14,8 +14,8 @@ export interface IRowConfig {
 
 /**单列配置 */
 export interface IColConfig {
-    /** 列宽 */
-    colWidth?: number;
+    /** 列宽, % or px */
+    colWidth?: number | string;
 }
 
 /** 单元格样式变量 */

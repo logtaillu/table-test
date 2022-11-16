@@ -19,6 +19,11 @@ export default function () {
             <ExcelTable
                 editable={true}
                 toolbar={true}
+                columns={[
+                    { dataIndex: "a", title: "a" },
+                    { dataIndex: "b", title: "b" },
+                    { dataIndex: "c", title: "c" },
+                ]}
             />
         </div>
     )
