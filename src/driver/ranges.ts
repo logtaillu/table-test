@@ -22,6 +22,7 @@ function getCellListandGlobalRange(driver: EvDriver, range: IRangeAryType) {
         return { list, grange: driver.globalRange };
     }
 }
+
 /** 取值，按优先级获取值 */
 export function getRangeValue(driver: EvDriver, type: IValueType, path: IConfigKey[], range: IRangeAryType) {
     if (type === "wrap") {

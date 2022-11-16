@@ -23,7 +23,7 @@ export function getValue(target: any, paths: string[] | string) {
 }
 
 /**
- * 按顺序取最后的有效值
+ * 按顺序取第一个能取到的有效值
  * @param target 取值目标
  * @param paths 路径列表
  * @returns 值
