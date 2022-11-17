@@ -1,5 +1,5 @@
 /** key值转换函数 */
-import { ICellKey, IRowKey, IColKey, IValueType, ICellType } from "../interfaces/IGlobalType";
+import { ICellKey, IRowKey, IColKey, IBaseValueType, ICellType } from "../interfaces/IGlobalType";
 
 /**
  * string类型cell key
@@ -32,7 +32,7 @@ export function getColKey(col: IColKey) {
  * @param type 需要获取的key类型
  * @returns string 
  */
-export function getCellTypeKey(cell: ICellKey, type: IValueType) {
+export function getCellTypeKey(cell: ICellKey, type: IBaseValueType) {
     if (type === "cell") {
         return getCellKey(cell);
     } else if (type === "row") {
@@ -41,6 +41,7 @@ export function getCellTypeKey(cell: ICellKey, type: IValueType) {
         return getColKey({ col: cell.col });
     }
 }
+
 /**
  * 从string转换成obj的cell key
  * @param keystr key字符串
@@ -59,6 +60,23 @@ export function getRowKeyObj(keystr: string): IRowKey {
     return { type: type as ICellType, row: Number(index) };
 }
 
-export function getColKeyObj(keystr: string): IColKey{
+export function getColKeyObj(keystr: string): IColKey {
     return { col: Number(keystr) };
+}
+
+/**
+ * 从3种类型的key string转化成cell obj
+ */
+export function getCellTypeObj(keystr: string): ICellKey {
+    const ary = keystr.split("-");
+    const basecell: ICellKey = { col: 0, row: 0, type: "body" };
+    if (ary.length == 0) {
+        return basecell;
+    } else if (ary.length === 1) {
+        return { ...basecell, ...getColKeyObj(keystr) };
+    } else if (ary.length === 2) {
+        return { ...basecell, ...getRowKeyObj(keystr) };
+    } else {
+        return getCellKeyObj(keystr);
+    }
 }

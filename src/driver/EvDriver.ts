@@ -1,8 +1,8 @@
 /** 表格控制器 */
 import { makeAutoObservable, observable } from "mobx";
 import { IActionItem, IActionServiceMap, IActionStack, ISaveValues } from "../interfaces/IActionStack";
-import { IClearKeys, IConfigKey, IDriverCache, IDriverSetter, IMultiRangeSetter } from "../interfaces/IDriverCache";
-import { IGlobalRange, IRangeAryType, IValueType } from "../interfaces/IGlobalType";
+import { IClearConf, IConfigKey, IDriverCache, IDriverSetter, IMultiRangeSetter } from "../interfaces/IDriverCache";
+import { IGlobalRange, IRangeAryType, IExtendValueType } from "../interfaces/IGlobalType";
 import { IEvPlugin, IPluginEvent } from "../interfaces/IPlugin";
 import { IRenderCol } from "../interfaces/ITableProps";
 import { mergeConfig } from "../utils/baseUtil";
@@ -108,18 +108,18 @@ export default class EvDriver {
         return this.content?.merged || [];
     }
     /** 范围取值 */
-    getValue(type: IValueType, path: IConfigKey[], range: IRangeAryType = false) {
-        return getRangeValue(this, type, path, range);
+    getValue(type: IExtendValueType, path: IConfigKey[], range: IRangeAryType = false, grange?: IGlobalRange, content?: IDriverCache) {
+        return getRangeValue(this, type, path, range, grange || this.globalRange, content || this.content || {});
     }
     /** 范围设值 */
-    setValue(type: IValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clearKeys: IClearKeys = []) {
-        return setRangeValue(this, type, path, value, range, clearKeys);
+    setValue(type: IExtendValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clears: IClearConf = [], grange?: IGlobalRange, content?: IDriverCache) {
+        return setRangeValue(this, type, path, value, range, clears, grange || this.globalRange, content || this.content || {});
     }
     /**批量范围设值 */
     setValues(configs: IMultiRangeSetter) {
         let undoTargets: ISaveValues = [];
-        configs.map(({ type, path, value, range = false, clears = [] }) => {
-            const cur = this.setValue(type, path, value, range, clears);
+        configs.map(({ type, path, value, range = false, clears = [], grange, content }) => {
+            const cur = this.setValue(type, path, value, range, clears, grange, content);
             undoTargets = undoTargets.concat(cur);
         });
         return undoTargets;

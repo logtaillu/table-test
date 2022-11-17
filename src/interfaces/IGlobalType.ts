@@ -16,6 +16,8 @@ export type ICellType = "body" | "header";
  */
 export type IGlobalRange = "body" | "header" | "all";
 
+/** 基础设值类型 */
+export type IBaseValueType = "col" | "row" | "cell" | "wrap";
 /**
  * 设值类型  
  * col - 列  
@@ -24,7 +26,7 @@ export type IGlobalRange = "body" | "header" | "all";
  * wrap - 外层参数
  * colcell - col层级的cell
  */
-export type IValueType = "col" | "row" | "cell" | "wrap" | "colcell";
+export type IExtendValueType = IBaseValueType | "colcell";
 
 /**
  * 一个范围的边框类型  
