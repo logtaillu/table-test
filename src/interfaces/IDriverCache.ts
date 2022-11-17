@@ -81,3 +81,6 @@ export interface IRangeSetter {
 }
 /** 批量范围设值 */
 export type IMultiRangeSetter = Array<IRangeSetter>;
+
+/** 设值时，目标对象里同时清除值的定义 */
+export type IClearKeys = Array<{ type: string, path: IConfigKey[] }>;

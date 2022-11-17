@@ -1,7 +1,7 @@
 /** 表格控制器 */
 import { makeAutoObservable, observable } from "mobx";
 import { IActionItem, IActionServiceMap, IActionStack, ISaveValues } from "../interfaces/IActionStack";
-import { IConfigKey, IDriverCache, IDriverSetter, IMultiRangeSetter } from "../interfaces/IDriverCache";
+import { IClearKeys, IConfigKey, IDriverCache, IDriverSetter, IMultiRangeSetter } from "../interfaces/IDriverCache";
 import { IGlobalRange, IRangeAryType, IValueType } from "../interfaces/IGlobalType";
 import { IEvPlugin, IPluginEvent } from "../interfaces/IPlugin";
 import { IRenderCol } from "../interfaces/ITableProps";
@@ -112,7 +112,7 @@ export default class EvDriver {
         return getRangeValue(this, type, path, range);
     }
     /** 范围设值 */
-    setValue(type: IValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clearKeys: Array<{type: IValueType, path: IConfigKey[]}> = []) {
+    setValue(type: IValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clearKeys: IClearKeys = []) {
         return setRangeValue(this, type, path, value, range, clearKeys);
     }
     /**批量范围设值 */

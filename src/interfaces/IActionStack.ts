@@ -11,7 +11,7 @@ export interface IActionItem {
 }
 
 /** 批量设值配置 */
-export type ISaveValues = Array<{ value: any; paths: string[] }>;
+export type ISaveValues = Array<{ value: any; path: string[] }>;
 
 /** 栈内容 */
 export interface IStackMember extends IActionItem{

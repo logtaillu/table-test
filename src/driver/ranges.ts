@@ -4,10 +4,10 @@
 // row : all => body/header => row
 // cell : all => body/header => body/header(col) => body/header(cell)
 // col : all => col
-// colcell: col层cell
+// colcell: col层cell，取值all => body/header => body/header(col)，设值body/header(col) => body/header(cell)
 import EvDriver from "./EvDriver";
 import { IValueType, ICellKey, IRangeAryType, IGlobalRange, IRangeType, IColKey } from "../interfaces/IGlobalType";
-import { IConfigKey } from "../interfaces/IDriverCache";
+import { IClearKeys, IConfigKey } from "../interfaces/IDriverCache";
 import { getRangeCellList, getTargetRangeList } from "../utils/rangeUtil";
 import { getCellTypeKey } from "../utils/keyUtil";
 import { getPriorityValue, getPriorityValueAry, getValue, setAndSaveValues } from "../utils/valueUtil";
@@ -23,155 +23,108 @@ function getCellListandGlobalRange(driver: EvDriver, range: IRangeAryType) {
     }
 }
 
+/** 获取取值路径列表 */
+function getPathListGet(driver: EvDriver, type: IValueType, path: IConfigKey[], range: IRangeAryType) {
+    const { list, grange } = getCellListandGlobalRange(driver, range);
+    const result: string[][][] = [];
+    if (type === "wrap") {
+        result.push([path]);
+    } else { // row, col, cell, colcell
+        const valType = type === "colcell" ? "cell" : type;
+        const allpath = ["all", valType, ...path];
+        if (list.length) {
+            list.map(cell => {
+                result.push([
+                    // inner, colcell没有
+                    type === "colcell" ? [] : [valType, getCellTypeKey(cell, type), ...path],
+                    // col cell，2种cell有
+                    ["cell", "colcell"].includes(type) ? ["col", getCellTypeKey(cell, "col"), "cell", ...path] : [],
+                    // body/header，col没有
+                    type === "col" ? [] : [cell.type, valType, ...path],
+                    // all，都有
+                    allpath
+                ].filter(s => s.length > 0));
+            })
+        } else if (grange === "all" || type === "col") {
+            result.push([allpath]);
+        } else {
+            result.push([[grange, valType, ...path], allpath]);
+        }
+    }
+    return result;
+}
+
 /** 取值，按优先级获取值 */
 export function getRangeValue(driver: EvDriver, type: IValueType, path: IConfigKey[], range: IRangeAryType) {
-    if (type === "wrap") {
-        return getValue(driver.content, path);
-    } else {
-        return getSelectRangeValue(range, driver, type, path);
+    const paths = getPathListGet(driver, type, path, range);
+    // 是否所有单元格值相同，取第一个单元格的值
+    if (paths.length) {
+        const listvalues = paths.map(pary => getPriorityValueAry(driver.content, pary));
+        const firstValue = listvalues[0];
+        // 找到第一个所有cell相同的，最后一层是all，总是全部相同
+        const targetValue = firstValue.find((v, idx) => {
+            const nosame = listvalues.findIndex(vary => vary[idx] !== v);
+            return nosame < 0;
+        });
+        return targetValue;
     }
+    return undefined;
 }
 
-
-
-
-
-/** 获取单元格不同类型的取值路径
- *  @param type 类型
- * @param cell 单元格
- * @returns {string[][]} 优先级取值路径
- */
-function getCellValuePath(type: IValueType, path: IConfigKey[], grange: IGlobalRange, cell?: ICellKey): string[][] {
-    // all类型，总是存在
-    const allpath = ["all", type, ...path];
-    // 最内层，有cell的时候才有
-    const typepath = cell ? [type, getCellTypeKey(cell, type), ...path] : [];
-    // body/header类型，有cell或者grange !==all时存在
-    const bodyHeaderPath = cell ? [cell.type, type, ...path] : grange === "all" ? [] : [grange, type, ...path];
-    const gtype = cell ? cell.type : grange;
-    if (type === "row") {
-        return [typepath, bodyHeaderPath, allpath].filter(s => s.length > 0);
-    } else if (type === "col") {
-        return [typepath, allpath].filter(s => s.length > 0);
-    } else if (type === "cell") {
-        return [
-            typepath, // cell
-            // col内cell配置
-            cell ? ["col", getCellTypeKey(cell, "col"), "cell", ...path] : [], // col
-            bodyHeaderPath, // body/header
-            allpath // all
-        ].filter(s => s.length > 0);
-    } else {
-        return [];
-    }
-}
-
-/** 获取范围内的值 */
-function getSelectRangeValue(range: IRangeAryType, driver: EvDriver, type: IValueType, path: IConfigKey[]) {
-    const { list, grange } = getCellListandGlobalRange(driver, range);
-    if (list.length) {
-        const getCellValueList = (cell?: ICellKey) => {
-            // 层级取值
-            const getvalpath = getCellValuePath(type, path, grange, cell);
-            return getPriorityValueAry(driver.content, getvalpath);
-        }
-        // 是否所有单元格值相同，取第一个单元格的值
-        if (list.length) {
-            const listvalues = list.map(cell => getCellValueList(cell));
-            const firstValue = listvalues[0];
-            // 找到第一个所有cell相同的，最后一层是all，总是全部相同
-            const targetValue = firstValue.find((v, idx) => {
-                const nosame = listvalues.findIndex(vary => vary[idx] !== v);
-                return nosame < 0;
-            });
-            return targetValue;
-        }
-    } else {
-        // 根据取值路径取全局优先级值
-        const getvalpath = getCellValuePath(type, path, grange);
-        return getPriorityValue(driver.content, getvalpath);
-    }
-}
 /**
  * 获取设值列表 
- * @param list 单元格列表或者类型key列表
+ * @param target 保存目标
+ * @param list key列表
  * @param value 值
- * @param type 类型
+ * @param prefix 第一路径
  * @param path 路径列表
- * @returns 
+ * @returns {void}
  */
-function getValueSetList(saves: ISaveValues, list: Array<ICellKey | string>, value: any, type: IValueType, path: IConfigKey[][]) {
+function getValueSetList(target: ISaveValues, list: string[], value: any, prefix: string, path: IConfigKey[], otherkeys: IClearKeys = []) {
+    const pary: string[][] = [];
+    otherkeys.map(c => {
+        if (c.type === prefix) {
+            pary.push(c.path);
+        }
+    });
     const keymap: any = {};
-    list.map(cell => {
-        const key = typeof (cell) === "string" ? cell : getCellTypeKey(cell, type);
+    list.map(key => {
         if (!keymap[key]) {
             keymap[key] = true;
-            path.map(p => {
-                saves.push({ value, paths: [type, key, ...p] });
+            target.push({ value, path: [prefix, key, ...path] });
+            pary.map(p => {
+                target.push({ value: undefined, path: [prefix, key, ...p] });
             });
         }
     });
 }
 
-/** 特殊的对于cell，range排除colslist */
-function getColKeys(range: IRangeAryType): IColKey[] {
-    const iscol = (r: IRangeType) => typeof (r) === "object" && 'col' in r && !('row' in r) && !('type' in r);
-    if (Array.isArray(range)) {
-        const idx = range.findIndex(s => !iscol(s));
-        return idx >= 0 ? [] : range as IColKey[];
-    } else {
-        return iscol(range) ? [range] as IColKey[] : [];
-    }
-}
-
 /** 设值，设置当前值并清除下层值 */
 export function setRangeValue(driver: EvDriver, type: IValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clearKeys: Array<{ type: IValueType, path: IConfigKey[] }> = []): ISaveValues {
-    const saves: ISaveValues = [];
+    const result: ISaveValues = [];
+    const { list, grange } = getCellListandGlobalRange(driver, range);
     if (type === "wrap") {
-        // 整体量，虽然一般不会走这里
-        saves.push({ value, paths: path });
-    } else {
-        const { list, grange } = getCellListandGlobalRange(driver, range);
-        const getKeys = t => {
-            const keys = Object.keys(getValue(driver.content, t) || {});
-            return keys.filter(k => grange === "all" || t === "col" || k.includes(t));
-        };
-        // list判断
-        const commonSet = (handle) => {
-            if (list.length) {
-                getValueSetList(saves, list, value, type, [path]);
-            } else {
-                handle();
-                // 清除最内层
-                getValueSetList(saves, getKeys(type), undefined, type, [path]);
+        result.push({ value, path });
+    } else if (type === "row" || type === "col") { // row, col
+        const setValue = (list: string[], value: any, prefix: string) => getValueSetList(result, list, value, prefix, path, clearKeys);
+        if (list.length) {
+            const keys = list.map(cell => getCellTypeKey(cell, type));
+            setValue(keys, value, type);
+        } else {
+            const isCol = type === "col";
+            const valRange = isCol ? "all" : grange;
+            // 当前层级
+            result.push({ value, path: [valRange, type, ...path] });
+            // body/header层级 for all, col没有这个类型
+            if (valRange === "all" && !isCol) {
+                ["body", "header"].map(t => setValue([type], undefined, t));
             }
-        }
-        // 全局设值
-        const setGlobal = () => {
-            if (grange === "all") {// 设在all，清除body/header
-                saves.push({ value, paths: ["all", type, ...path] });
-                saves.push({ value: undefined, paths: ["header", type, ...path] });
-                saves.push({ value: undefined, paths: ["body", type, ...path] });
-            } else {//设在body/header
-                saves.push({ value, paths: [grange, type, ...path] });
-            }
-        }
-        if (type === "row") {
-            commonSet(setGlobal);
-        } else if (type === "col") {
-            commonSet(() => saves.push({ value, paths: ["all", type, ...path] }));
-        } else if (type === "cell") {
-            const colkeys = getColKeys(range);
-            if (colkeys.length) {
-                // col类型
-            } else {
-                commonSet(() => {
-                    setGlobal(); // 全局设值
-                    getValueSetList(saves, getKeys("col"), undefined, "col", [["cell", ...path]]); // 清除col
-                })
-            }
+            // inner层级
+            const keys = Object.keys(getValue(driver.content, type) || {}).filter(s => valRange === "all" || s.includes(grange));
+            setValue(keys, undefined, type);
         }
     }
-    const saveTarget = setAndSaveValues(driver.content, saves);
+    // return
+    const saveTarget = setAndSaveValues(driver.content, result);
     return saveTarget;
 }

@@ -103,12 +103,12 @@ export function setValue(target: any, paths: string[], value: any) {
  */
 export function setAndSaveValues(target: any, values: ISaveValues) {
     const saveTarget: ISaveValues = [];
-    values.map(({ value, paths }) => {
+    values.map(({ value, path }) => {
         // 保存新值并获取旧值
-        const oldValue = setValue(target, paths, value);
+        const oldValue = setValue(target, path, value);
         // 如果2个值不等，保存旧值
         if (oldValue !== value) {
-            saveTarget.push({ value: oldValue, paths });
+            saveTarget.push({ value: oldValue, path });
         }
     });
     return saveTarget;
