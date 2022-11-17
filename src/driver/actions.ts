@@ -54,7 +54,8 @@ export function undo(driver: EvDriver) {
             if (func) {
                 func(lastAction.value, driver);
             } else {
-                setAndSaveValues(driver.content, lastAction.undo || []);
+                // set value用cache
+                setAndSaveValues(driver.cache, lastAction.undo || []);
             }
         }
     }

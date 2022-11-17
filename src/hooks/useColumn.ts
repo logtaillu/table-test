@@ -5,14 +5,17 @@
  * 3. 获取thead渲染用的column数组
  */
 import React, { useEffect } from 'react'
+import { IMultiRangeSetter } from '../interfaces/IDriverCache';
 import { IColumn, IColumnGroup, IColumnList, IRenderCol } from '../interfaces/ITableProps';
 import { useDriver } from '../table/DriverContext'
 import { deepMapAry, getDeep } from '../utils/baseUtil';
 export default function (columns: IColumnList) {
     const driver = useDriver();
     useEffect(() => {
+        const setary: IMultiRangeSetter = [];
         // 1. header深度
         const deep = getDeep(columns);
+        setary.push({ value: deep, path: ["deep"], type: "wrap" });
         // 2. 更新colCount,更新width配置，获取渲染列
         let columnCount = driver.getValue("wrap", ["colCount"]);
         let headerCols: IRenderCol[][] = [];
@@ -26,20 +29,25 @@ export default function (columns: IColumnList) {
                 rowSpan: rowspan,
                 colSpan: colspan
             }
+            // 转化align和width
             if (isLeaf) {
                 renderCols.push(col);
+                setary.push({ type: "colcell", path: ["--ev-ah"], value: col.align, grange: "body" });
+                setary.push({ type: "colcell", path: ["--ev-ah"], value: col.align, grange: "header" });
+                setary.push({ type: "col", path: ["colWidth"], value: col.width });
+                
+            } else {
+                setary.push({ type: "cell", path: ["--ev-ah"], value: col.align });
             }
             headerCols[y] = headerCols[y] || [];
             headerCols[y].push(col);
             return {};
         };
         deepMapAry<IColumnGroup | IColumn>(columns, handleColumns, deep);
-        driver.setValues([
-            { value: deep, path: ["deep"], type: "wrap" },
-            { value: columnCount, path: ["colCount"], type: "wrap" }
-        ]);
-        driver.renderCols = renderCols;
-        driver.columns = headerCols;
+        setary.push({ value: columnCount, path: ["colCount"], type: "wrap" });
+        driver.setValues(setary);
+        driver.renderCols = renderCols; // 底层
+        driver.columns = headerCols; // 渲染表头
         console.log(renderCols, headerCols);
     }, [columns]);
 }

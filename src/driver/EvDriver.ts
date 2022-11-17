@@ -1,10 +1,10 @@
 /** 表格控制器 */
 import { makeAutoObservable, observable } from "mobx";
-import { IActionItem, IActionServiceMap, IActionStack, ISaveValues } from "../interfaces/IActionStack";
-import { IClearConf, IConfigKey, IDriverCache, IDriverSetter, IMultiRangeSetter } from "../interfaces/IDriverCache";
+import { IActionServiceMap, IActionStack, ISaveValues } from "../interfaces/IActionStack";
+import { IClearConf, IConfigKey, IDriverCache, IMultiRangeSetter } from "../interfaces/IDriverCache";
 import { IGlobalRange, IRangeAryType, IExtendValueType } from "../interfaces/IGlobalType";
 import { IEvPlugin, IPluginEvent } from "../interfaces/IPlugin";
-import { IRenderCol } from "../interfaces/ITableProps";
+import { IRenderCol, ITableInfoProps } from "../interfaces/ITableProps";
 import { mergeConfig } from "../utils/baseUtil";
 import eventUtil from "../utils/eventUtil";
 import { doAction, redo, undo } from "./actions";
@@ -16,9 +16,6 @@ export default class EvDriver {
         makeAutoObservable(this, {
             tableRef: observable.ref
         });
-    }
-    update(props: IDriverSetter) {
-        Object.keys(props).map(key => this[key] = props[key]);
     }
     /*******************事件与操作处理注册 **********************/
     /** 事件按类型列表 */
@@ -95,25 +92,28 @@ export default class EvDriver {
     /*******************配置内容 **********************/
     /** 配置内容 */
     cache: IDriverCache = {};
+    init: IDriverCache = initContent();
     set content(value: IDriverCache | undefined) {
         this.actionStack = [];
         this.undoStack = [];
-        this.cache = mergeConfig(initContent(), value || {});
+        this.cache = value || {};
     }
     get content() {
-        return this.cache;
+        return mergeConfig(this.init, this.cache);
     }
+
     /** 获取merged范围 */
     get merged() {
         return this.content?.merged || [];
     }
     /** 范围取值 */
-    getValue(type: IExtendValueType, path: IConfigKey[], range: IRangeAryType = false, grange?: IGlobalRange, content?: IDriverCache) {
-        return getRangeValue(this, type, path, range, grange || this.globalRange, content || this.content || {});
+    getValue(type: IExtendValueType, path: IConfigKey[] | IConfigKey, range: IRangeAryType = false, grange?: IGlobalRange, content?: IDriverCache) {
+        return getRangeValue(this, type, path, range, grange || this.tableProps.globalRange, content || this.content || {});
     }
     /** 范围设值 */
-    setValue(type: IExtendValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clears: IClearConf = [], grange?: IGlobalRange, content?: IDriverCache) {
-        return setRangeValue(this, type, path, value, range, clears, grange || this.globalRange, content || this.content || {});
+    setValue(type: IExtendValueType, path: IConfigKey[] | IConfigKey, value: any, range: IRangeAryType = false, clears: IClearConf = [], grange?: IGlobalRange, content?: IDriverCache) {
+        // set value用cache
+        return setRangeValue(this, type, path, value, range, clears, grange || this.tableProps.globalRange, content || this.cache || {});
     }
     /**批量范围设值 */
     setValues(configs: IMultiRangeSetter) {
@@ -134,44 +134,28 @@ export default class EvDriver {
     set selecting(value: boolean) {
         this.selectingIn = value;
     }
-    /** className前缀 */
-    prefixClsIn: string = "ev";
-    get prefixCls(): string {
-        return this.prefixClsIn;
+
+    tableProps: ITableInfoProps & { globalRange: IGlobalRange } = {
+        prefixCls: "ev",
+        editable: false,
+        lang: navigator.language,
+        globalRange: "all"
     }
-    set prefixCls(value: string | undefined) {
-        this.prefixClsIn = value || this.prefixClsIn;
+
+    update(props: Partial<ITableInfoProps>) {
+        Object.keys(props).map(key => {
+            if (key === "maxStack") {
+                this.maxStack = props[key];
+            } else {
+                this.tableProps[key] = props[key]
+            }
+        });
     }
     /**获取带前缀样式
      * @param cls {string} 样式名
      */
     prefix(cls: string = "") {
-        return cls.length ? cls.split(" ").filter(s => !!s).map(s => this.prefixCls + "-" + s).join(" ") : this.prefixCls;
-    }
-
-    /** 编辑状态 */
-    editableIn: boolean = false;
-    get editable(): boolean {
-        return this.editableIn;
-    }
-    set editable(value: boolean | undefined) {
-        this.editableIn = value || this.editableIn;
-    }
-    /** 当前语言 */
-    langIn: string = navigator.language;
-    get lang(): string {
-        return this.langIn;
-    }
-    set lang(value: string | undefined) {
-        this.langIn = value || this.langIn;
-    }
-    /** 当前全局范围 */
-    globalRangeIn: IGlobalRange = "all";
-    get globalRange(): IGlobalRange {
-        return this.globalRangeIn;
-    }
-    set globalRange(value: IGlobalRange | undefined) {
-        this.globalRangeIn = value || this.globalRangeIn;
+        return cls.length ? cls.split(" ").filter(s => !!s).map(s => this.tableProps.prefixCls + "-" + s).join(" ") : this.tableProps.prefixCls;
     }
 
     /** 底层columns列表 */

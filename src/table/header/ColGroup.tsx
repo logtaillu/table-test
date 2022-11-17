@@ -3,7 +3,7 @@ import React from 'react'
 import { observer } from 'mobx-react-lite'
 import { useDriver } from '../DriverContext'
 const ColItem = observer(function (props: { value }) {
-    return <col style={'width' in props.value ? { width: props.value.width } : {}} />;
+    return <col style={'width' in props.value && /\d+/.test(props.value.width) ? { width: props.value.width } : {}} />;
 })
 export default observer(function () {
     const driver = useDriver();

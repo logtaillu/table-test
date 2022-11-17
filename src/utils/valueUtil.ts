@@ -58,7 +58,7 @@ export function getPriorityValueAry(target: any, paths: Array<string[] | string>
             }
         }
     }
-    for (let i = res.length - 2; i--; i >= 0){
+    for (let i = res.length - 2; i >= 0; i--) {
         if (res[i] === null || res[i] === undefined) {
             res[i] = res[i + 1];
         }

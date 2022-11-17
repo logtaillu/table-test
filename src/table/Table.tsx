@@ -5,13 +5,14 @@ import { ITableProps } from '../interfaces/ITableProps';
 import { useDriver } from './DriverContext';
 import THead from './header/Thead';
 import ColGroup from './header/ColGroup';
-export default observer(function (props: Pick<ITableProps, "showHeader" | "tableLayout">) {
+export default observer(function () {
     const driver = useDriver();
-    const layoutcls = props.tableLayout === "fixed" ? "table-fixed" : "table-auto";
+    const layoutcls = driver.tableProps.tableLayout === "fixed" ? "table-fixed" : "table-auto";
+    console.log("up table");
     return (
         <table className={`${driver.prefix("table")} ${layoutcls}`}>
             <ColGroup/>
-            {props.showHeader ? <THead /> : null}
+            {driver.tableProps.showHeader !== false ? <THead /> : null}
         </table>
     )
 })

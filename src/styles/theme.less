@@ -1,0 +1,66 @@
+// 样式变量
+.theme() {
+    --ev-fsz: 12;
+    --ev-ff: Microsoft YaHei;
+    --ev-fc: #666;
+    --ev-av: middle;
+    --ev-ah: center;
+    --ev-bg: transparent;
+    --ev-fw: normal;
+    --ev-fsy: normal;
+    --ev-dr: none;
+    // 四向边框
+    --ev-bwt: 1px;
+    --ev-bst: solid;
+    --ev-bct: #377CFB;
+    --ev-bwl: 1px;
+    --ev-bsl: solid;
+    --ev-bcl: #377CFB;
+    --ev-bwr: 1px;
+    --ev-bsr: solid;
+    --ev-bcr: #377CFB;
+    --ev-bwb: 1px;
+    --ev-bsb: solid;
+    --ev-bcb: #377CFB;
+    // 其他
+    --ev-resize-width: 1px; // resize handle宽度
+    --ev-range-width: 3px;
+    --ev-range-rect: 3px;
+
+    /* cell */
+    tr th,
+    tr td {
+        font-size: calc(1px * var(--ev-fsz));
+        font-family: var(--ev-ff);
+        color: var(--ev-fc);
+        text-align: var(--ev-ah);
+        vertical-align: var(--ev-av);
+        background-color: var(--ev-bg);
+        text-decoration: var(--ev-dr);
+        font-weight: var(--ev-fw);
+        font-style: var(--ev-fsy);
+        border-style: var(--ev-bst) var(--ev-bsr) var(--ev-bsb) var(--ev-bsl);
+        border-color: var(--ev-bct) var(--ev-bcr) var(--ev-bcb) var(--ev-bcl);
+        @apply border-t-0 border-l-0 relative box-border break-words transition-shadow select-none p-0;
+        border-right-width: var(--ev-bwr);
+        border-bottom-width: var(--ev-bwb);
+
+        // 第一列
+        &:first-child {
+            border-left-width: var(--ev-bwl);
+        }
+        // 字体处理
+        &.small-font {
+            font-size: 12px;
+            >div {
+                -webkit-transform: scale(calc(var(--ev-fsz) / 12));
+            }
+        }
+    }
+
+    // 上边框，没有header时，body需要上边框
+    tr:first-child th,
+    tbody tr:first-child td {
+        border-top-width: var(--ev-bwt);
+    }
+}

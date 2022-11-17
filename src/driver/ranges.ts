@@ -123,7 +123,8 @@ function baseValueHandle(driver: EvDriver, type: IExtendValueType, range: IRange
 }
 
 /** 取值 */
-export function getRangeValue(driver: EvDriver, type: IExtendValueType, path: IConfigKey[], range: IRangeAryType = false, userGrange: IGlobalRange, content: IDriverCache) {
+export function getRangeValue(driver: EvDriver, type: IExtendValueType, p: IConfigKey[] | IConfigKey, range: IRangeAryType = false, userGrange: IGlobalRange, content: IDriverCache) {
+    const path = Array.isArray(p) ? p : [p];
     const { list, vt, stageIdx } = baseValueHandle(driver, type, range, userGrange, content);
     if (list.length) {
         // 1. 遍历单元格
@@ -151,7 +152,8 @@ export function getRangeValue(driver: EvDriver, type: IExtendValueType, path: IC
 }
 
 /** 设值 */
-export function setRangeValue(driver: EvDriver, type: IExtendValueType, path: IConfigKey[], value: any, range: IRangeAryType = false, clears: IClearConf = [], userGrange: IGlobalRange, content: IDriverCache) {
+export function setRangeValue(driver: EvDriver, type: IExtendValueType, p: IConfigKey[] | IConfigKey, value: any, range: IRangeAryType = false, clears: IClearConf = [], userGrange: IGlobalRange, content: IDriverCache) {
+    const path = Array.isArray(p) ? p : [p];
     const { list, vt, stageIdx } = baseValueHandle(driver, type, range, userGrange, content);
     const result: ISaveValues = [];
     const pushValues = (ary: ICellKey[], val: any, stage: IStageType) => {
@@ -162,11 +164,11 @@ export function setRangeValue(driver: EvDriver, type: IExtendValueType, path: IC
             });
         })
     }
-    // 1. 遍历当前层级设值
-    pushValues(list, value, stageTypes[stageIdx]);
-    // 2. 向下遍历层级
     const stages = valTypes[vt].stages;
-    const filter = stageTypes[stageIdx].filter;
+    // 1. 遍历当前层级设值
+    pushValues(list, value, stageTypes[stages[stageIdx]]);
+    // 2. 向下遍历层级
+    const filter = stageTypes[stages[stageIdx]].filter;
     for (let i = stageIdx + 1; i < stages.length; i++) {
         const curStage = stageTypes[stages[i]];
         const cells = curStage.getcells(content, vt).filter(cell => filter(cell, list));

@@ -6,9 +6,9 @@ const keys: IGlobalRange[] = ["all", "body", "header"];
 export const globalRange: IToolbarItemObj = {
     key: "globalRange",
     icon: true,
-    getValue: ({driver})=>driver.globalRange,
+    getValue: ({driver})=>driver.tableProps.globalRange,
     source: keys.map(k => ({ value: k, label: k })),
     onClick: ({ value, driver }) => {
-        driver.globalRange = value;
+        driver.tableProps.globalRange = value;
     }
 }

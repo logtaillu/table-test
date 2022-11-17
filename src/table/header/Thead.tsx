@@ -2,11 +2,14 @@
 import { observer } from 'mobx-react-lite'
 import React from 'react'
 import { useDriver } from '../DriverContext';
+import TableRow from '../row/TableRow';
 export default observer(function () {
     const driver = useDriver();
     return (
-        <thead>
-            {/* {driver.columns.map((row, idx) => )} */}
+        <thead className={driver.prefix("thead")}>
+            {driver.columns.map((columns, idx) => {
+                return <TableRow key={idx} columns={columns} rowtype="header" row={idx} />;
+            })}
         </thead>
     )
 })

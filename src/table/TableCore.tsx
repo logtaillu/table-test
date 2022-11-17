@@ -1,5 +1,5 @@
 /** 表格核心入口，初始化driver和intl，执行enrichProps */
-import React, { useEffect, useImperativeHandle, useState, useMemo } from 'react';
+import React, { useEffect, useImperativeHandle, useState, useCallback } from 'react';
 import { observer } from "mobx-react-lite";
 import { ITableCoreProps } from '../interfaces/ITableProps';
 import EvDriver from '../driver/EvDriver';
@@ -21,8 +21,8 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
         }
     }, [plugins]);
     // enrichProps
-    const enrichProps = () => {
-        let result = {...tableProps};
+    const enrichProps = useCallback((info) => {
+        let result = { ...info };
         (plugins || []).map(p => {
             if (p.enrich) {
                 const temp = p.enrich(result, driver);
@@ -30,11 +30,9 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
             }
         });
         return result;
-    }
-    const passToTable = useMemo(() => {
-        return enrichProps();
-     }, [driver, plugins]);
-
+    }, [driver, plugins]);
+    const passToTable = enrichProps(tableProps);
+    console.log("up core");
     // ref函数,备用
     useImperativeHandle(ref, () => ({
 

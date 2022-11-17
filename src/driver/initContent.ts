@@ -4,7 +4,7 @@ import { IDriverCache } from "../interfaces/IDriverCache";
 export default (): IDriverCache => ({
     all: {
         row: { autoHeight: true, rowHeight: 40 },
-        col: { colWidth: 100 },
+        // col: { colWidth: 100 },
         cell: {
             cssvar: {
                 "--ev-fsz": 12, // 因为scale计算，这里用number
@@ -18,9 +18,13 @@ export default (): IDriverCache => ({
                 "--ev-dr": "none",
             },
             borderType: "all",
-            borderColor: "cornflowerblue",
+            borderColor: "#377CFB",
             borderStyle: "solid",
             borderWidth: "1px"
         }
-    }
+    },
+    rowCount: 0,
+    deep: 0,
+    colCount: 0,
+    externalCount: 0
 })

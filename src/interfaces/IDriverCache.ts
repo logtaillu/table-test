@@ -47,22 +47,6 @@ export interface IDriverCache {
     deep?: number;
 }
 
-/** driver可初始化对象 */
-export interface IDriverSetter {
-    /** 配置对象 */
-    content?: IDriverCache;
-    /** 编辑状态 */
-    editable?: boolean;
-    /** className前缀 */
-    prefixCls?: string;
-    /** 最大操作栈项数 */
-    maxStack?: string;
-    /** 当前语言 */
-    lang?: string;
-    /** 当前全局类型 */
-    globalRange?: IGlobalRange;
-}
-
 /** 可用配置字段 */
 export type IConfigKey = keyof ICellConfig | keyof IRowConfig | keyof IColConfig | keyof ICellCssVars | keyof IGlobalBorderConfig | keyof IDriverCache;
 
@@ -75,7 +59,7 @@ export interface IRangeSetter {
     /** 类型 */
     type: IExtendValueType;
     /** 目标字段路径 */
-    path: IConfigKey[];
+    path: IConfigKey[] | IConfigKey;
     /** 值 */
     value: any;
     /** 指定范围 */
