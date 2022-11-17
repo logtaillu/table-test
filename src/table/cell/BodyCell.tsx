@@ -1,8 +1,15 @@
 import React from 'react'
 import { observer } from "mobx-react-lite";
+import AutoHeightComponent from './AutoHeightComponent';
 export interface IBodyCell{
     data: any;
+    row: number;
+    col: number;
 }
 export default observer((props: IBodyCell) => {
-    return <td>占位</td>
+    return (
+        <AutoHeightComponent component="td" type="body" {...props}>
+            占位
+        </AutoHeightComponent>
+    );
 });

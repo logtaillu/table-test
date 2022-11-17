@@ -11,7 +11,7 @@ import { getCellKey } from "./keyUtil";
  */
 export function getTargetRange(driver: EvDriver, target: IRangeType): ICellRange {
     if (target === false || typeof (target) === "string") {
-        const grange = target === false ? driver.globalRange : target;
+        const grange = target === false ? driver.tableProps.globalRange : target;
         const getCount = val => Math.max(val - 1, 0);
         if (grange === "body" || (grange === "all" && !driver.content?.deep)) {
             return {

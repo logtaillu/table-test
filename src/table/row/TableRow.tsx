@@ -23,9 +23,9 @@ export default observer((props: ITableRow) => {
     const Component = rowtype === "header" ? HeaderCell : BodyCell;
     const getProps = rowtype === "header" ? driver.tableProps.onHeaderRow : driver.tableProps.onRow;
     const rowProps = getProps ? getProps(columns as any, rowkey) : {};
-    const childs = columns.map(col => {
+    const childs = columns.map((col, index) => {
         const key = Array.isArray(col.dataIndex) ? col.dataIndex.join(".") : col.dataIndex || col.key;
-        return <Component data={col} key={key} />
+        return <Component data={col} key={key} row={row} col={index} />
     });
     if (!resizeable || !size) {
         return (
