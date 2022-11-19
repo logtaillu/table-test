@@ -8,8 +8,9 @@ class EventController {
     /** 注册控制器 */
     add(driver: EvDriver) {
         this.drivers.push(driver);
-        const keys = Object.keys(driver.events) as IEventName[];
-        keys.map(name => this.addEvent(name));
+        driver.events.forEach((value, name) => {
+            this.addEvent(name);
+        });
     }
     /** 移除控制器 */
     remove(driver: EvDriver) {
@@ -20,7 +21,7 @@ class EventController {
     }
     /** 事件是否仍然存在 */
     isEventExist(name: IEventName) {
-        const idx = this.drivers.findIndex(d => !!d.events[name]);
+        const idx = this.drivers.findIndex(d => d.events.has(name));
         return idx >= 0;
     }
 
@@ -32,11 +33,11 @@ class EventController {
                 // 是否事件目标
                 if (d.isEventTarget(e)) {
                     // 遍历事件并执行
-                    (d.events[name] || []).map((item) => {
+                    d.events.get(name)?.forEach(item => {
                         if (name !== "keydown" || (e.ctrlKey === (!!item.ctrl) && e.key.toLowerCase() === item.key?.toLocaleLowerCase())) {
                             item.func(d, e);
                         }
-                    })
+                    });
                 }
             })
         }

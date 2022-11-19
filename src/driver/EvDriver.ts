@@ -1,8 +1,8 @@
 /** 表格控制器 */
 import { makeAutoObservable, observable } from "mobx";
-import { IActionServiceMap, IActionStack, ISaveValues } from "../interfaces/IActionStack";
+import { IActionService, IActionStack, ISaveValues } from "../interfaces/IActionStack";
 import { IClearConf, IConfigKey, IDriverCache, IMultiRangeSetter } from "../interfaces/IDriverCache";
-import { IGlobalRange, IRangeAryType, IExtendValueType } from "../interfaces/IGlobalType";
+import { IGlobalRange, IRangeAryType, IExtendValueType, ICellKey } from "../interfaces/IGlobalType";
 import { IEvPlugin, IPluginEvent } from "../interfaces/IPlugin";
 import { IRenderCol, ITableInfoProps } from "../interfaces/ITableProps";
 import { mergeConfig } from "../utils/baseUtil";
@@ -10,6 +10,7 @@ import eventUtil from "../utils/eventUtil";
 import { doAction, redo, undo } from "./actions";
 import initContent from "./initContent";
 import { getRangeValue, setRangeValue } from "./ranges";
+import { getMergedTarget, compareCell } from "../utils/rangeUtil";
 
 export default class EvDriver {
     constructor() {
@@ -19,17 +20,20 @@ export default class EvDriver {
     }
     /*******************事件与操作处理注册 **********************/
     /** 事件按类型列表 */
-    events: Record<string, IPluginEvent[]> = {};
+    events: Map<keyof WindowEventMap, Set<IPluginEvent>> = new Map();
     /** 表格元素 */
     tableRef: HTMLDivElement | null = null;
     /** 注册插件 */
     register(plugins: IEvPlugin[]) {
         plugins.map(p => {
             const { events = [], actions = {} } = p;
-            this.acServiceMap = { ...this.acServiceMap, ...actions };
+            Object.keys(actions).map(key => this.acServiceMap.set(key, actions[key]));
             events.map(event => {
-                this.events[event.name] = this.events[event.name] || [];
-                this.events[event.name].push(event);
+                if (!this.events.has(event.name)) {
+                    this.events.set(event.name, new Set([event]));
+                } else {
+                    this.events.get(event.name)?.add(event);
+                }
             });
         });
         eventUtil.add(this);
@@ -37,8 +41,8 @@ export default class EvDriver {
     /** 插件全部移除 */
     remove() {
         eventUtil.remove(this);
-        this.events = {};
-        this.acServiceMap = {};
+        this.events.clear();
+        this.acServiceMap.clear();
     }
     /** 是否事件目标 */
     isEventTarget(e) {
@@ -51,7 +55,7 @@ export default class EvDriver {
     /** 回退栈 */
     undoStack: IActionStack = [];
     /** 操作处理对象map */
-    acServiceMap: IActionServiceMap = {};
+    acServiceMap: Map<string, IActionService> = new Map();
     /**最大操作栈记录数，-1代表不限制 */
     maxStackIn: number = -1;
     get maxStack(): number {
@@ -106,6 +110,21 @@ export default class EvDriver {
     get merged() {
         return this.content?.merged || [];
     }
+    /** 获取单元格合并值，类型一定时body */
+    getMergedValue(cell: ICellKey) {
+        const target = getMergedTarget(this.merged, cell);
+        if (target) {
+            const { from, to } = target;
+            if (from.col === cell.col && from.type === cell.type && from.row === cell.row) {
+                return { colSpan: to.col - from.col + 1, rowSpan: to.row - from.row + 1 };
+            } else {
+                return { colSpan: 0, rowSpan: 0 };
+            }
+
+        } else {
+            return { colSpan: 1, rowSpan: 1 };
+        }
+    }
     /** 范围取值 */
     getValue(type: IExtendValueType, path: IConfigKey[] | IConfigKey, range: IRangeAryType = false, grange?: IGlobalRange, content?: IDriverCache) {
         return getRangeValue(this, type, path, range, grange || this.tableProps.globalRange, content || this.content || {});
@@ -127,7 +146,7 @@ export default class EvDriver {
 
     /*******************其他临时状态 **********************/
     /** 是否正在选择中 */
-    selectingIn: boolean = false;
+    private selectingIn: boolean = false;
     get selecting() {
         return this.selectingIn;
     }
@@ -146,7 +165,7 @@ export default class EvDriver {
         Object.keys(props).map(key => {
             if (key === "maxStack") {
                 this.maxStack = props[key];
-            } else {
+            } else if (this.tableProps[key] !== props[key]) {
                 this.tableProps[key] = props[key]
             }
         });
@@ -159,7 +178,7 @@ export default class EvDriver {
     }
 
     /** 底层columns列表 */
-    renderColAry: IRenderCol[] = [];
+    private renderColAry: IRenderCol[] = [];
     set renderCols(value: IRenderCol[]) {
         this.renderColAry = value;
     }
@@ -167,11 +186,16 @@ export default class EvDriver {
         return this.renderColAry;
     }
     /** 层叠的columns列表 */
-    evcolumns: IRenderCol[][] = [];
+    private evcolumns: IRenderCol[][] = [];
     set columns(value: IRenderCol[][]) {
         this.evcolumns = value;
     }
     get columns() {
         return this.evcolumns;
+    }
+    // 行列真实大小缓存
+    sizes: Record<string, number> = {};
+    setSize(key, value) {
+        this.sizes[key] = value;
     }
 }

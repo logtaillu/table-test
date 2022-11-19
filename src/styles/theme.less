@@ -28,8 +28,8 @@
     --ev-range-rect: 3px;
 
     /* cell */
-    tr th,
-    tr td {
+    tr th:not(.react-resizable-handle),
+    tr td:not(.react-resizable-handle) {
         font-size: calc(1px * var(--ev-fsz));
         font-family: var(--ev-ff);
         color: var(--ev-fc);
@@ -59,8 +59,8 @@
     }
 
     // 上边框，没有header时，body需要上边框
-    tr:first-child th,
-    tbody tr:first-child td {
+    tr:first-child th:not(.react-resizable-handle),
+    tbody tr:first-child td:not(.react-resizable-handle) {
         border-top-width: var(--ev-bwt);
     }
 }

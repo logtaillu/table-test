@@ -23,10 +23,10 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
     const driver = useDriver();
     // 配置改变
     useEffect(() => { driver.content = content }, [content]);
-    // 其他改变
+    // 注册到driver控制的tableProps
     useEffect(() => {
         driver.update(p);
-    }, [p.editable, p.prefixCls, p.maxStack, p.lang, p.globalRange, p.showHeader, p.tableLayout, p.data, p.onRow, p.onHeaderRow]);
+    }, [p.editable, p.prefixCls, p.maxStack, p.lang, p.globalRange, p.showHeader, p.tableLayout, p.data, p.onRow, p.onHeaderRow, p.data, p.rowkey]);
     // columns
     useColumn(columns || []);
     const setRef = (n: HTMLDivElement) => {

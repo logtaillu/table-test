@@ -8,7 +8,7 @@ export default observer(function () {
     return (
         <thead className={driver.prefix("thead")}>
             {driver.columns.map((columns, idx) => {
-                return <TableRow key={idx} columns={columns} rowtype="header" row={idx} />;
+                return <TableRow key={idx + "header"} columns={columns} rowtype="header" row={idx} />;
             })}
         </thead>
     )

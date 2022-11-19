@@ -24,6 +24,10 @@ export default function () {
                     { dataIndex: "b", title: "b" },
                     { dataIndex: "c", title: "c" },
                 ]}
+                data={[
+                    { a: 1, b: 2, c: 3 },
+                    { a: 4, b: 5, c: 6 }
+                ]}
             />
         </div>
     )

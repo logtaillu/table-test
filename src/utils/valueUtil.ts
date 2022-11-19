@@ -7,6 +7,9 @@ import { ISaveValues } from "../interfaces/IActionStack";
  * @param paths 路径
  */
 export function getValue(target: any, paths: string[] | string) {
+    if (!Array.isArray(paths) && paths in target) {
+        return target[paths];
+    }
     paths = Array.isArray(paths) ? paths : paths.split(".");
     let cur = target;
     if (!cur) {

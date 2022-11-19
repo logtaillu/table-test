@@ -1,5 +1,5 @@
 /** 表格核心入口，初始化driver和intl，执行enrichProps */
-import React, { useEffect, useImperativeHandle, useState, useCallback } from 'react';
+import React, { useEffect, useImperativeHandle, useState, useCallback, useMemo } from 'react';
 import { observer } from "mobx-react-lite";
 import { ITableCoreProps } from '../interfaces/ITableProps';
 import EvDriver from '../driver/EvDriver';
@@ -31,7 +31,7 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
         });
         return result;
     }, [driver, plugins]);
-    const passToTable = enrichProps(tableProps);
+    const passToTable = useMemo(() => enrichProps(tableProps), [props, enrichProps]);
     console.log("up core");
     // ref函数,备用
     useImperativeHandle(ref, () => ({

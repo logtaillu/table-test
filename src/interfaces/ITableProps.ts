@@ -10,14 +10,18 @@ export interface IColumn {
     key?: string;
     /** 宽度，数值(px)或百分比，eg: "50%", 60*/
     width?: number | string;
-    /** 路径，用.分隔，优先判断带.情况的列是否存在 [unused]*/
+    /** 路径，用.分隔，优先判断带.情况的列是否存在*/
     dataIndex: string | string[];
-    /** 内容 [unused]*/
+    /** 内容*/
     title: React.ReactNode;
     /** 样式名 */
     className?: string;
+    /** cell样式名 */
+    cellClassName?: string;
     /** 内联样式 */
     style?: React.CSSProperties;
+    /** cell内联样式 */
+    cellStyle?: React.CSSProperties;
     /** 冻结列，true or 'left' or 'right' [unused]*/
     fixed?: boolean | string;
     /** colspan，不会自动判断下一个是否为0*/
@@ -26,12 +30,12 @@ export interface IColumn {
     align?: string;
     /** 渲染header单元格 [unused]*/
     renderHeader?: () => React.ReactNode;
-    /** 渲染body单元格 [unused]*/
-    renderCell?: () => React.ReactNode;
-    /** 获取header单元格props [unused]*/
-    onHeader?: () => React.ReactNode;
-    /** 获取body单元格props [unused]*/
-    onCell?: () => React.ReactNode;
+    /** 渲染body单元格*/
+    renderCell?: (text: any, record: any, row: number) => React.ReactNode;
+    /** 获取header单元格props*/
+    onHeader?: (data: IRenderCol) => React.ReactNode;
+    /** 获取body单元格props*/
+    onCell?: (record: any, row: number) => React.ReactNode;
     /** 特定类型渲染时，如果title不是string|number，需要获取header单元格的值 *[unused] */
     getHeaderValue?: () => any;
     /** 特定类型渲染时，如果title不是string|number，需要获取body单元格的值 [unused]*/
@@ -88,7 +92,11 @@ export interface ITableInfoProps<T = any> {
     /** 内容行属性 */
     onRow?: (column: IRenderCol, rowkey: IRowKey) => any;
     /** 表头行属性 */
-    onHeaderRow?: (record: T, rowkey: IRowKey) => any;
+    onHeaderRow?: (column: IRenderCol, rowkey: IRowKey) => any;
+    /** 列配置 */
+    columns?: IColumnList;
+    /** 行key */
+    rowkey?: (data: T, row: number) => string;
 }
 
 /** 表格入参 */
@@ -107,8 +115,6 @@ export interface ITableProps<T = any> extends Partial<ITableInfoProps<T>> {
     items?: IToolbarItem[][];
     /** 是否展示工具栏 */
     toolbar?: boolean;
-    /** 列配置 */
-    columns?: IColumnList;
 }
 
 export type ITableCoreProps = IPluginList & ITableProps;

@@ -5,6 +5,7 @@ import { ITableProps } from '../interfaces/ITableProps';
 import { useDriver } from './DriverContext';
 import THead from './header/Thead';
 import ColGroup from './header/ColGroup';
+import Tbody from './body/Tbody';
 export default observer(function () {
     const driver = useDriver();
     const layoutcls = driver.tableProps.tableLayout === "fixed" ? "table-fixed" : "table-auto";
@@ -13,6 +14,7 @@ export default observer(function () {
         <table className={`${driver.prefix("table")} ${layoutcls}`}>
             <ColGroup/>
             {driver.tableProps.showHeader !== false ? <THead /> : null}
+            <Tbody/>
         </table>
     )
 })
