@@ -88,34 +88,34 @@ export function getCellCssVars(driver: EvDriver, cell: ICellKey) {
     // 全局类型设置的样式
     const { cssvars, bexists } = getGlobalCellBorder(driver, cell);
     const result = { ...colCellVars, ...cellvars };
-    Object.keys(bexists).map((key: any) => {
+    // 方向遍历
+    borderKeys.map(pos => {
         // 方向是否有边框，内部的优先级更高
-        let innerExist = driver.getValue("cell", key, cell);
+        const bkey = `b${pos}` as IConfigKey;
+        let innerExist = driver.getValue("cell", bkey, cell);
         if (typeof (innerExist) !== "boolean") {
-            innerExist = bexists[key];
+            innerExist = bexists[bkey];
         }
-        // 方向遍历
-        borderKeys.map(pos => {
-            // 颜色、样式处理
-            ["c", "s"].map(k => {
-                const key = `--ev-b${k}${pos}`;
-                const val = driver.getValue("cell", ["cssvar", key] as any[], cell);
-                if (!val) {
-                    result[key] = cssvars[key];
-                }
-            })
-            // 宽度处理
-            const key = `--ev-bw${pos}`;
+        // 颜色、样式处理
+        ["c", "s"].map(k => {
+            const key = `--ev-b${k}${pos}`;
             const val = driver.getValue("cell", ["cssvar", key] as any[], cell);
-            if (innerExist) {
-                // 有边框
-                if (val === undefined || val === null) {
-                    result[key] = cssvars[key];
-                }
-            } else if (val !== 0) {
-                result[key] = 0;
+            if (!val) {
+                result[key] = cssvars[key];
             }
-        });
+        })
+        // 宽度处理
+        const key = `--ev-bw${pos}`;
+        const val = driver.getValue("cell", ["cssvar", key] as any[], cell);
+        if (innerExist) {
+            // 有边框
+            if (val === undefined || val === null) {
+                console.log("set value", key, cssvars[key]);
+                result[key] = cssvars[key];
+            }
+        } else if (val !== 0) {
+            result[key] = 0;
+        }
     });
     return result;
 }

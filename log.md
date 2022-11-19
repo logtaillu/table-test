@@ -77,6 +77,6 @@ a.有1个initContent，和一个content
 b.个别量做init
 column/data如果有什么关联量，反映到initContent
 
-1. service迁移
+1. service迁移=>检查功能可用性
 2. select range
 3. merge columns

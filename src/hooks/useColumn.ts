@@ -22,7 +22,7 @@ export default function (columns: IColumnList) {
         let renderCols: IRenderCol[] = [];
         const handleColumns = ({ item, x, y, isLeaf, rowspan, colspan }) => {
             // 更新colCount
-            columnCount = Math.max(x, columnCount);
+            columnCount = Math.max(x + 1, columnCount);
             const col: IRenderCol = {
                 ...item, isLeaf,
                 row: y, col: x,

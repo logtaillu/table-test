@@ -168,6 +168,9 @@ export default class EvDriver {
             if (key === "maxStack") {
                 this.maxStack = props[key];
             } else if (this.tableProps[key] !== props[key]) {
+                if (key === "data") {
+                    this.init.rowCount = (props[key] || []).length;
+                }
                 this.tableProps[key] = props[key]
             }
         });
