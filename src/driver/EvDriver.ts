@@ -10,8 +10,9 @@ import eventUtil from "../utils/eventUtil";
 import { doAction, redo, undo } from "./actions";
 import initContent from "./initContent";
 import { getRangeValue, setRangeValue } from "./ranges";
-import { getMergedTarget, compareCell } from "../utils/rangeUtil";
-
+import { getMergedTarget } from "../utils/rangeUtil";
+import base from "../plugins/base";
+const defaultPlugins = [base];
 export default class EvDriver {
     constructor() {
         makeAutoObservable(this, {
@@ -25,6 +26,7 @@ export default class EvDriver {
     tableRef: HTMLDivElement | null = null;
     /** 注册插件 */
     register(plugins: IEvPlugin[]) {
+        plugins = defaultPlugins.concat(plugins);
         plugins.map(p => {
             const { events = [], actions = {} } = p;
             Object.keys(actions).map(key => this.acServiceMap.set(key, actions[key]));
@@ -102,7 +104,7 @@ export default class EvDriver {
         this.undoStack = [];
         this.cache = value || {};
     }
-    get content() {
+    get content(): IDriverCache {
         return mergeConfig(this.init, this.cache);
     }
 

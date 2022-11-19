@@ -1,6 +1,6 @@
 /** 表格核心入口，初始化driver和intl，执行enrichProps */
-import React, { useEffect } from 'react';
-import { observer } from "mobx-react-lite";
+import React, { useEffect, useMemo, useRef } from 'react';
+import { observer, useObserver } from "mobx-react-lite";
 import { ITableProps } from '../interfaces/ITableProps';
 import { IntlProvider } from 'react-intl';
 import { useDriver } from './DriverContext';
@@ -9,6 +9,8 @@ import messages from "../locales/index";
 import Table from './Table';
 import { getValue } from '../utils/valueUtil';
 import useColumn from '../hooks/useColumn';
+import classNames from 'classnames';
+import useResize from '../hooks/useResize';
 const defaultLang = "zh-CN";
 const getMessages = (lang?: string, locales?: Record<string, any>) => {
     lang = lang || defaultLang;
@@ -29,17 +31,25 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
     }, [p.editable, p.prefixCls, p.maxStack, p.lang, p.globalRange, p.showHeader, p.tableLayout, p.data, p.onRow, p.onHeaderRow, p.data, p.rowkey]);
     // columns
     useColumn(columns || []);
-    const setRef = (n: HTMLDivElement) => {
-        driver.tableRef = n;
-    }
-    const lang = driver.tableProps.lang || defaultLang;
+    // 宽度处理
+    const tableRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        driver.tableRef = tableRef.current;
+     }, [tableRef.current]);
+    const { width } = useResize(tableRef);
     console.log("up wrapper");
+    const cls = classNames({
+        scroll: p.scroll,
+        expand: p.expand,
+        resizing: p.editable
+    });
+    const lang = driver.tableProps.lang || defaultLang;
     return (
         <IntlProvider locale={lang} defaultLocale={defaultLang} messages={getMessages(lang, locales)}>
             <div className={driver.prefix("wrapper") + " " + (className || "")} style={{ ...getValue(driver.content, ["all", "cell", "cssvar"]), ...style }}>
                 <Toolbar items={items} sources={sources} toolbar={toolbar} />
-                <div ref={setRef} className={driver.prefix("table-core")}>
-                    <Table />
+                <div ref={tableRef} className={`${driver.prefix("table-core")} ${cls}`}>
+                    <Table width={width} />
                 </div>
             </div>
         </IntlProvider>

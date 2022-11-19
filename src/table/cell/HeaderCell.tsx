@@ -50,14 +50,16 @@ export default observer((props: IHeaderCell) => {
     const driver = useDriver();
     const { data } = props;
     const resizeable = (driver.tableProps.editable && props.data.isLeaf);
-    const colKey = getColKey({ col: data.col });
-    const size = driver.sizes[colKey];
+    const colKey = useMemo(() => ({ col: data.col }), [data.col]);
+    const size = driver.sizes[getColKey(colKey)];
     const start = useCallback((e: any, s: any) => {
-        const val = s.size.width;
+        const val = Math.round(s.size.width);
+        driver.setSize(getColKey(colKey), val);
         driver.exec("sizeChange", { range: colKey, colWidth: val }, true);
     }, [colKey, driver]);
     const stop = useCallback((e: any, s: any) => {
-        const val = s.size.width;
+        const val = Math.round(s.size.width);
+        driver.setSize(getColKey(colKey), val);
         driver.exec("sizeChange", { range: colKey, colWidth: val }, false);
     }, [colKey, driver]);
 

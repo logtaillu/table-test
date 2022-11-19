@@ -54,7 +54,7 @@ export default observer((props: ITableRow) => {
 
     if (!resizeable || !size) {
         return (
-            <tr {...rowProps} {...{ height: size }}>
+            <tr data-row={getRowKey(rowkey)} {...rowProps} {...{ height: size }}>
                 {list}
             </tr>
         );
@@ -72,7 +72,7 @@ export default observer((props: ITableRow) => {
                 onResizeStop={stop}
                 handle={<HandleEle className='react-resizable-handle' />}
             >
-                <tr {...rowProps} {...append}>
+                <tr data-row={getRowKey(rowkey)} {...rowProps} {...append}>
                     {list}
                 </tr>
             </Resizable>

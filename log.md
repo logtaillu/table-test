@@ -76,3 +76,7 @@ column/data 和content的优先级问题
 a.有1个initContent，和一个content
 b.个别量做init
 column/data如果有什么关联量，反映到initContent
+
+1. service迁移
+2. select range
+3. merge columns

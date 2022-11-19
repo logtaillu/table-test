@@ -29,15 +29,16 @@ export default function (columns: IColumnList) {
                 rowSpan: rowspan,
                 colSpan: colspan
             }
+            const range = { col: col.col };
             // 转化align和width
             if (isLeaf) {
                 renderCols.push(col);
-                setary.push({ type: "colcell", path: ["--ev-ah"], value: col.align, grange: "body" });
-                setary.push({ type: "colcell", path: ["--ev-ah"], value: col.align, grange: "header" });
-                setary.push({ type: "col", path: ["colWidth"], value: col.width });
-                
+                setary.push({ type: "colcell", path: ["--ev-ah"], value: col.align, grange: "body", range });
+                setary.push({ type: "colcell", path: ["--ev-ah"], value: col.align, grange: "header", range });
+                setary.push({ type: "col", path: ["colWidth"], value: col.width, range });
+
             } else {
-                setary.push({ type: "cell", path: ["--ev-ah"], value: col.align });
+                setary.push({ type: "cell", path: ["--ev-ah"], value: col.align, range });
             }
             headerCols[y] = headerCols[y] || [];
             headerCols[y].push(col);
@@ -48,6 +49,6 @@ export default function (columns: IColumnList) {
         driver.setValues(setary);
         driver.renderCols = renderCols; // 底层
         driver.columns = headerCols; // 渲染表头
-        console.log("[useColumn]",renderCols, headerCols);
+        console.log("[useColumn]", renderCols, headerCols);
     }, [columns]);
 }

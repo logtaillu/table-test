@@ -75,11 +75,11 @@ const valTypes: IRecord<IValType> = {
     },
     col: {
         stages: ["all", "inner"],
-        current: list => list.length ? "all" : "inner"
+        current: list => list.length ? "inner" : "all"
     },
     row: {
         stages: ["all", "type", "inner"],
-        current: (list, grange) => list.length ? "all" : grange === "all" ? "all" : "type"
+        current: (list, grange) => list.length ? "inner" : grange === "all" ? "all" : "type"
     },
     cell: {
         stages: ["all", "type", "coltype", "inner"],

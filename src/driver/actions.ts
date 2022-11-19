@@ -5,7 +5,7 @@ import EvDriver from "./EvDriver";
 
 /** 执行动作 */
 export function doAction(driver: EvDriver, action: IActionItem, clearUndo: boolean = true) {
-    const service = driver.acServiceMap[action.type];
+    const service = driver.acServiceMap.get(action.type);
     if (service) {
         const result = service.exec(driver, action.value);
         // 返回false，阻止继续执行
@@ -47,10 +47,11 @@ export function redo(driver: EvDriver) {
 export function undo(driver: EvDriver) {
     if (driver.actionStack.length) {
         const lastAction = driver.actionStack.pop();
-        if (lastAction && driver.acServiceMap[lastAction.type]) {
+        if (lastAction && driver.acServiceMap.has(lastAction.type)) {
             console.log("undo action", lastAction.type);
             driver.undoStack.push(lastAction);
-            const func = driver.acServiceMap[lastAction.type].undo;
+            const ac = driver.acServiceMap.get(lastAction.type);
+            const func = ac?.undo;
             if (func) {
                 func(lastAction.value, driver);
             } else {

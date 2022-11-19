@@ -83,7 +83,10 @@ export function getGlobalCellBorder(driver: EvDriver, cell: ICellKey) {
  */
 export function getCellCssVars(driver: EvDriver, cell: ICellKey) {
     // 单元格初始cssvar
-    const cellvars = getValue(driver.content, ["cell", getCellKey(cell), "cssvar"]);
+    let cellvars = getValue(driver.content, ["cell", getCellKey(cell), "cssvar"]);
+    const colCellVars = getValue(driver.content, ["col", cell.type, "cssvar"]);
+    // 简单合并
+    cellvars = { ...colCellVars, ...cellvars };
     // 全局类型设置的样式
     const { cssvars, bexists } = getGlobalCellBorder(driver, cell);
     const result = { ...cellvars };

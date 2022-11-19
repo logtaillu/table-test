@@ -6,6 +6,7 @@ import React from 'react'
 import { ICellType } from '../../interfaces/IGlobalType';
 import { IRenderCol } from '../../interfaces/ITableProps';
 import { getCellCssVars } from '../../utils/borderUtil';
+import { getCellKey } from '../../utils/keyUtil';
 import { useDriver } from '../DriverContext';
 export interface IAutoHeightComponent {
     component: "td" | "th";
@@ -30,7 +31,7 @@ export default observer(React.forwardRef((p: React.PropsWithChildren<IAutoHeight
         maxHeight: autoHeight ? "auto" : `calc( ${rowSpan * rowHeight}px - var(--ev-bwt) - var(--ev-bwb) )`
     }
     return (
-        <Component ref={ref} {...props} className={`${fontcss} ${props.className || ""}`} style={{ ...cellvars, ...props.style }}>
+        <Component data-cell={getCellKey(cellkey)} ref={ref} {...props} className={`${fontcss} ${props.className || ""}`} style={{ ...cellvars, ...props.style }}>
             <div className="overflow-hidden" style={hstyle}>
                 <div>
                     {children}

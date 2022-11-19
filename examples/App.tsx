@@ -17,13 +17,17 @@ export default function () {
             <h1>data table</h1>
             <h1>excel table</h1>
             <ExcelTable
+                tableLayout='fixed'
                 editable={true}
                 toolbar={true}
+                content={{ all: { col: { colWidth: 100 } } }}
                 columns={[
                     { dataIndex: "a", title: "a" },
                     { dataIndex: "b", title: "b" },
                     { dataIndex: "c", title: "c" },
                 ]}
+                expand={false}
+                scroll={true}
                 data={[
                     { a: 1, b: 2, c: 3 },
                     { a: 4, b: 5, c: 6 }

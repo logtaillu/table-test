@@ -9,11 +9,22 @@
 
 .@{evprefix} {
     &-table {
-        @apply w-full border-spacing-0;
+        @apply border-spacing-0 border-collapse;
     }
-
+    // 滚动
+    &-table-core.scroll.expand &-table{
+        @apply min-w-full;
+    }
+    // expand
+    &-table-core.expand &-table{
+        @apply w-full;
+    }
     &-table-core {
         @apply relative box-border;
+
+        &.scroll{
+            @apply overflow-x-auto overflow-y-hidden;
+        }
         .theme();
 
         // resizeable handle
@@ -42,6 +53,10 @@
             &:hover {
                 @apply bg-primary bg-opacity-50;
             }
+        }
+        // resize handle 预留空间
+        &.resizing{
+            padding-bottom: calc(var(--ev-resize-width) * 2 + 1px);
         }
     }
 

@@ -97,6 +97,10 @@ export interface ITableInfoProps<T = any> {
     columns?: IColumnList;
     /** 行key */
     rowkey?: (data: T, row: number) => string;
+    /** 是否可滚动 */
+    scroll?: boolean;
+    /** 是否最小100% */
+    expand?: boolean;
 }
 
 /** 表格入参 */

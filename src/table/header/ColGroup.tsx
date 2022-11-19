@@ -2,14 +2,17 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite'
 import { useDriver } from '../DriverContext'
+import { getColKey } from '../../utils/keyUtil';
 const ColItem = observer(function (props: { value }) {
-    return <col style={'width' in props.value && /\d+/.test(props.value.width) ? { width: props.value.width } : {}} />;
+    const driver = useDriver();
+    const w = driver.getValue("col", "colWidth", { col: props.value });
+    return <col style={w ? { width: w } : {}} />;
 })
 export default observer(function () {
     const driver = useDriver();
     return (
         <colgroup>
-            {driver.renderCols.map((col, idx) => <ColItem key={idx} value={col} />)}
+            {driver.renderCols.map((col, idx) => <ColItem key={col.col} value={col.col} />)}
             {driver.tableProps.editable ? <col style={{width: 0}} key="resize-handle"/> : null}
         </colgroup>
     )
