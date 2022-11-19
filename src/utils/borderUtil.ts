@@ -85,11 +85,9 @@ export function getCellCssVars(driver: EvDriver, cell: ICellKey) {
     // 单元格初始cssvar
     let cellvars = getValue(driver.content, ["cell", getCellKey(cell), "cssvar"]);
     const colCellVars = getValue(driver.content, ["col", cell.type, "cssvar"]);
-    // 简单合并
-    cellvars = { ...colCellVars, ...cellvars };
     // 全局类型设置的样式
     const { cssvars, bexists } = getGlobalCellBorder(driver, cell);
-    const result = { ...cellvars };
+    const result = { ...colCellVars, ...cellvars };
     Object.keys(bexists).map((key: any) => {
         // 方向是否有边框，内部的优先级更高
         let innerExist = driver.getValue("cell", key, cell);

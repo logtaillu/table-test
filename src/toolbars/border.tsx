@@ -22,7 +22,7 @@ export const borderType: IToolbarItemObj = {
     ],
     getValue: ({ driver }) => driver.haveSelectRange ? undefined : driver.getValue("cell", ["borderType"]),
     onClick: ({ driver, value }) => {
-        driver.exec("borderChange", { bordeType: value });
+        driver.exec("borderChange", { borderType: value });
     },
 }
 

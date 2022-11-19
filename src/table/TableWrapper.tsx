@@ -11,6 +11,7 @@ import { getValue } from '../utils/valueUtil';
 import useColumn from '../hooks/useColumn';
 import classNames from 'classnames';
 import useResize from '../hooks/useResize';
+import { toJS } from 'mobx';
 const defaultLang = "zh-CN";
 const getMessages = (lang?: string, locales?: Record<string, any>) => {
     lang = lang || defaultLang;
@@ -44,11 +45,12 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
         resizing: p.editable
     });
     const lang = driver.tableProps.lang || defaultLang;
+    const cssvar = toJS(getValue(driver.content, ["all", "cell", "cssvar"]));
     return (
         <IntlProvider locale={lang} defaultLocale={defaultLang} messages={getMessages(lang, locales)}>
-            <div className={driver.prefix("wrapper") + " " + (className || "")} style={{ ...getValue(driver.content, ["all", "cell", "cssvar"]), ...style }}>
+            <div className={driver.prefix("wrapper") + " " + (className || "")} style={style}>
                 <Toolbar items={items} sources={sources} toolbar={toolbar} />
-                <div ref={tableRef} className={`${driver.prefix("table-core")} ${cls}`}>
+                <div ref={tableRef} className={`${driver.prefix("table-core")} ${cls}`} style={cssvar}>
                     <Table width={width} />
                 </div>
             </div>

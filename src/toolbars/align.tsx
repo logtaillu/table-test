@@ -9,7 +9,7 @@ const getTextAlign = (curval: string, icon): IToolbarItemObj => {
         icon,
         active: ({ driver }) => driver.getValue("cell", ["cssvar", "--ev-ah"]) === curval,
         onClick: ({ driver }) => {
-            driver.exec("styleChange", { "--cell-align-h": curval });
+            driver.exec("styleChange", { "--ev-ah": curval });
         }
     }
 }

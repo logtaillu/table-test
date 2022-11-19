@@ -4,9 +4,10 @@ import { observer } from 'mobx-react-lite'
 import { useDriver } from '../DriverContext';
 import TableRow from '../row/TableRow';
 import { getValue } from '../../utils/valueUtil';
+import { toJS } from 'mobx';
 export default observer(function () {
     const driver = useDriver();
-    const cssvar = getValue(driver.content, ["body", "cell", "cssvar"]);
+    const cssvar = toJS(getValue(driver.content, ["body", "cell", "cssvar"]));
     return (
         <tbody className={driver.prefix("tbody")} style={cssvar}>
             {(driver.tableProps.data || []).map((data, idx) => {
