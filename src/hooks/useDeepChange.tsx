@@ -7,7 +7,7 @@ const deepEqual = (a, b) => {
             return a.findIndex((val, idx) => !deepEqual(val, b[idx])) < 0;
         }
         return false;
-    } else if (typeof (a) === "object" && typeof (b) === "object") {
+    } else if (a && b && typeof (a) === "object" && typeof (b) === "object") {
         const keysa = Object.keys(a);
         const keysb = Object.keys(b);
         if (keysa.length === keysb.length) {
@@ -25,5 +25,5 @@ export default function (func) {
     if (!equal) {
         preRef.current = result;
     }
-    return useObserver(() => preRef.current);
+    return preRef.current;
 }

@@ -9,7 +9,6 @@ import useTotalWidth from '../hooks/useTotalWidth';
 export default observer(function ({ width }: { width }) {
     const driver = useDriver();
     const layoutcls = driver.tableProps.tableLayout === "fixed" ? "table-fixed" : "table-auto";
-    console.log("up table");
     const wfull = useTotalWidth(width);
     return (
         <table

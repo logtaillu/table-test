@@ -24,7 +24,6 @@ const ToolBarGroup = observer<{ group, sources }>(({ group, sources }) => {
 export default observer(function (props: Pick<ITableProps, "toolbar" | "items" | "sources">) {
     const { toolbar, items, sources } = props;
     const driver = useDriver();
-    console.log("up toolbar");
     if (!toolbar || !driver.tableProps.editable) {
         return null;
     }

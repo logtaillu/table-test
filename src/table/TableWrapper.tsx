@@ -12,6 +12,7 @@ import useColumn from '../hooks/useColumn';
 import classNames from 'classnames';
 import useResize from '../hooks/useResize';
 import { toJS } from 'mobx';
+import logUtil from '../utils/logUtil';
 const defaultLang = "zh-CN";
 const getMessages = (lang?: string, locales?: Record<string, any>) => {
     lang = lang || defaultLang;
@@ -38,7 +39,6 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
         driver.tableRef = tableRef.current;
      }, [tableRef.current]);
     const { width } = useResize(tableRef);
-    console.log("up wrapper");
     const cls = classNames({
         scroll: p.scroll,
         expand: p.expand,
@@ -46,6 +46,7 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
     });
     const lang = driver.tableProps.lang || defaultLang;
     const cssvar = toJS(getValue(driver.content, ["all", "cell", "cssvar"]));
+    logUtil.log("render", "TableCore");
     return (
         <IntlProvider locale={lang} defaultLocale={defaultLang} messages={getMessages(lang, locales)}>
             <div className={driver.prefix("wrapper") + " " + (className || "")} style={style}>

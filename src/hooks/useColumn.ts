@@ -49,6 +49,5 @@ export default function (columns: IColumnList) {
         driver.setValues(setary);
         driver.renderCols = renderCols; // 底层
         driver.columns = headerCols; // 渲染表头
-        console.log("[useColumn]", renderCols, headerCols);
     }, [columns]);
 }

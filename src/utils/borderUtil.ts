@@ -110,7 +110,6 @@ export function getCellCssVars(driver: EvDriver, cell: ICellKey) {
         if (innerExist) {
             // 有边框
             if (val === undefined || val === null) {
-                console.log("set value", key, cssvars[key]);
                 result[key] = cssvars[key];
             }
         } else if (val !== 0) {

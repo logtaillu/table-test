@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ExcelTable } from "../src";
+import { ExcelTable, LogView } from "../src";
 import "../src/styles/index.less";
 const getData = (str: string, num: number) => {
     const keys = str.split("");
@@ -32,7 +32,9 @@ export default function () {
                     { a: 1, b: 2, c: 3 },
                     { a: 4, b: 5, c: 6 }
                 ]}
+                debug={true}
             />
+            <LogView/>
         </div>
     )
 }

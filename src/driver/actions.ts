@@ -12,7 +12,6 @@ export function doAction(driver: EvDriver, action: IActionItem, clearUndo: boole
         if (result === false) {
             return;
         }
-        console.log("do action", action.type, action.value, action.keep);
         // 有undo功能的action或者返回了undo栈，入栈
         if (service.undo || (Array.isArray(result) && result.length > 0)) {
             // 是否有keep栈，不覆盖undo
@@ -48,7 +47,6 @@ export function undo(driver: EvDriver) {
     if (driver.actionStack.length) {
         const lastAction = driver.actionStack.pop();
         if (lastAction && driver.acServiceMap.has(lastAction.type)) {
-            console.log("undo action", lastAction.type);
             driver.undoStack.push(lastAction);
             const ac = driver.acServiceMap.get(lastAction.type);
             const func = ac?.undo;

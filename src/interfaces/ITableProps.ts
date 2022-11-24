@@ -119,6 +119,8 @@ export interface ITableProps<T = any> extends Partial<ITableInfoProps<T>> {
     items?: IToolbarItem[][];
     /** 是否展示工具栏 */
     toolbar?: boolean;
+    /** 是否输出日志 */
+    debug?: boolean | string[];
 }
 
 export type ITableCoreProps = IPluginList & ITableProps;
