@@ -17,5 +17,5 @@ export default (width: number) => {
             }
         })
     }
-    return useObserver(() => styled ? total < width ? "" : "w-full" : "");;
+    return useObserver(() => styled ? total < width ? "" : "w-full" : "");
 }
