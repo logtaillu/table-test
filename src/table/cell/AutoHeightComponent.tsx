@@ -4,7 +4,6 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react'
 import { ICellType } from '../../interfaces/IGlobalType';
-import { IRenderCol } from '../../interfaces/ITableProps';
 import { getCellCssVars } from '../../utils/borderUtil';
 import { getCellKey } from '../../utils/keyUtil';
 import { useDriver } from '../DriverContext';

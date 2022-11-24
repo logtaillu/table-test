@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { observer } from "mobx-react-lite";
 import { Resizable } from "react-resizable";
 import { useDriver } from '../DriverContext';
 import { ICellType, IRowKey } from '../../interfaces/IGlobalType';
 import { IRenderCol } from '../../interfaces/ITableProps';
-import HeaderCell from '../cell/HeaderCell';
-import BodyCell from '../cell/BodyCell';
 import useResize from '../../hooks/useResize';
 import { getRowKey } from '../../utils/keyUtil';
 import HeaderList from './HeaderList';
@@ -21,10 +19,10 @@ export interface ITableRow {
 export default observer((props: ITableRow) => {
     const driver = useDriver();
     const ref = useRef<Element>(null);
-    const resizeable = driver.tableProps.editable;
+    const resizeable = driver.editable;
     const { height } = useResize(ref, !resizeable);
     const { rowtype, row, columns } = props;
-    const rowkey: IRowKey = useMemo(() => ({ row, type: rowtype }), [row, rowtype]);
+    const rowkey: IRowKey = ({ row, type: rowtype });
     useEffect(() => {
         if (height > 0) {
             driver.setSize(getRowKey(rowkey), height);
@@ -32,25 +30,25 @@ export default observer((props: ITableRow) => {
     }, [height, rowkey]);
     const size: any = driver.getValue("row", ["rowHeight"], rowkey);
     const [temp, setTemp] = useState(-1);
-    const getProps = rowtype === "header" ? driver.tableProps.onHeaderRow : driver.tableProps.onRow;
+    const getProps = rowtype === "header" ? driver.onHeaderRow : driver.onRow;
     // 自定义参数
-    const rowProps = useMemo(() => getProps ? getProps(columns as any, rowkey) : {}, [rowkey, getProps, columns]);
+    const rowProps = getProps ? getProps(columns as any, rowkey) : {};
 
     // 子元素渲染
     const list = rowtype === "header" ? <HeaderList {...props} /> : <BodyList {...props} />;
 
 
-    const start = useCallback((e: any, s: any) => {
+    const start = (e: any, s: any) => {
         const val = s.size.height;
         setTemp(val);
-    }, []);
-    const stop = useCallback((e: any, s: any) => {
+    }
+    const stop = (e: any, s: any) => {
         const val = s.size.height;
         if (val !== size) {
             driver.exec("sizeChange", { range: rowkey, rowHeight: val });
         }
         setTemp(-1);
-    }, [driver, rowkey, size])
+    }
 
     if (!resizeable || !size) {
         return (

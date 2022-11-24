@@ -1,7 +1,6 @@
 /** 后缀input */
 import React from 'react'
 import InputNumber, { IInputNumber } from "./InputNumber";
-import { useMemo } from "react";
 import Dropdown from 'rc-dropdown';
 export interface ISuffixInput extends IInputNumber {
     /** 后缀集合 */
@@ -11,18 +10,17 @@ export interface ISuffixInput extends IInputNumber {
 }
 export default function (props: ISuffixInput) {
     const { value, suffixs, nosuffix, callback, ...others } = props;
-    const { num, suffix } = useMemo(() => {
-        if (typeof (value) === "number") {
-            return { num: value, suffix: nosuffix };
-        } else if (typeof (value) === "string") {
-            const target = suffixs.find(s => value.endsWith(s));
-            if (target) {
-                const num = Number(value.replace(new RegExp(target + "$"), ""));
-                return { num: !isNaN(num) ? "" : num, suffix: target };
-            }
+    let num: string | number = "";
+    let suffix = nosuffix;
+    if (typeof (value) === "number") {
+        [num, suffix] = [value, suffix];
+    } else if (typeof (value) === "string") {
+        const target = suffixs.find(s => value.endsWith(s));
+        if (target) {
+            const val = Number(value.replace(new RegExp(target + "$"), ""));
+            [num, suffix] = [!isNaN(val) ? "" : val, target];
         }
-        return { num: "", suffix: nosuffix };
-    }, [value, suffixs, nosuffix]);
+    }
     const changeSuffix = val => {
         callback(num + val);
     }

@@ -13,7 +13,7 @@ export default observer(function () {
     return (
         <colgroup>
             {driver.renderCols.map((col, idx) => <ColItem key={col.col} value={col.col} />)}
-            {driver.tableProps.editable ? <col style={{width: 0}} key="resize-handle"/> : null}
+            {driver.editable ? <col style={{width: 0}} key="resize-handle"/> : null}
         </colgroup>
     )
 })

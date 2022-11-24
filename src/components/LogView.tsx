@@ -24,7 +24,7 @@ export default function () {
     const [update, setUpdate] = useState({});
     const forceUpdate = useCallback(() => setUpdate({}), []);
     const logs = logUtil.logs.get(active);
-    useEffect(() => { 
+    useEffect(() => {
         const func = () => {
             forceUpdate();
         }
@@ -36,7 +36,9 @@ export default function () {
     return (
         <div className='card shadow-md bg-base-100 mt-4'>
             <div className="card-body">
-                <h2 className="card-title">日志记录</h2>
+                <h2 className="card-title justify-between">日志记录
+                <button className='btn btn-primary w-20' onClick={() => logUtil.clear()}>清除</button>
+                </h2>
                 <div className="tabs tabs-boxed mb-2 p-3">
                     {logUtil.totalTypes.map(type => <div onClick={() => setActive(type)} className={classNames({ "tab": true, "tab-active": active === type })} key={type}>{type}</div>)}
                 </div>

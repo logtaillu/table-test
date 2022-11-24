@@ -2,6 +2,12 @@
 import { ISaveValues } from "../interfaces/IActionStack";
 
 /**
+ * 判空
+ */
+export function isEmpty(value: any) {
+    return value === null || value === undefined;
+}
+/**
  * 判空取值
  * @param target 取值目标
  * @param paths 路径
@@ -10,7 +16,7 @@ export function getValue(target: any, paths: string[] | string) {
     if (!Array.isArray(paths) && paths in target) {
         return target[paths];
     }
-    paths = Array.isArray(paths) ? paths : paths.split(".");
+    paths = Array.isArray(paths) ? paths : paths.split(".").filter(s=>!!s);
     let cur = target;
     if (!cur) {
         return cur;
@@ -36,7 +42,7 @@ export function getPriorityValue(target: any, paths: Array<string[] | string>) {
     for (let i = 0; i < paths.length; i++) {
         if (paths[i].length) {
             const current = getValue(target, paths[i]);
-            if (current !== null && current !== undefined) {
+            if (!isEmpty(current)) {
                 res = current;
                 break;
             }
@@ -56,13 +62,13 @@ export function getPriorityValueAry(target: any, paths: Array<string[] | string>
     for (let i = 0; i < paths.length; i++) {
         if (paths[i].length) {
             const current = getValue(target, paths[i]);
-            if (current !== null && current !== undefined) {
+            if (!isEmpty(current)) {
                 res[i] = current;
             }
         }
     }
     for (let i = res.length - 2; i >= 0; i--) {
-        if (res[i] === null || res[i] === undefined) {
+        if (isEmpty(res[i])) {
             res[i] = res[i + 1];
         }
     }

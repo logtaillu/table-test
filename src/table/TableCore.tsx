@@ -1,7 +1,7 @@
 /** 表格入口
  * 初始化driver，处理plugins更改props
  */
-import React, { useEffect, useImperativeHandle, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { observer } from "mobx-react-lite";
 import { ITableCoreProps } from '../interfaces/ITableProps';
 import EvDriver from '../driver/EvDriver';
@@ -31,7 +31,7 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
     }, [plugins]);
 
     // 执行enrichProps
-    const enrichProps = useCallback((info) => {
+    const enrichProps = (info) => {
         let result = { ...info };
         (plugins || []).map(p => {
             if (p.enrich) {
@@ -40,14 +40,12 @@ export default observer(React.forwardRef(function (props: ITableCoreProps, ref) 
             }
         });
         return result;
-    }, [driver, plugins]);
-    const passToTable = useMemo(() => enrichProps(tableProps), [props, enrichProps]);
+    };
+    const passToTable = enrichProps(tableProps);
     // ref，将driver提供出去
     useImperativeHandle(ref, () => ({
         driver: () => driver
     }));
-
-    logUtil.log("render", "TableCore");
     
     return (
         <DriverContext.Provider value={driver}>

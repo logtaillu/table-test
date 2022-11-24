@@ -65,14 +65,8 @@ export interface IRenderCol extends IColumn {
 
 /** 表头组 */
 export type IColumnList = Array<IColumnGroup | IColumn>;
-/** table部分用的Props */
-export interface IPluginList {
-    /** 插件列表 */
-    plugins?: IEvPlugin[];
-}
-
-/** table开始的使用量 */
-export interface ITableInfoProps<T = any> {
+/** driver传递的Props */
+export interface ITableDriverProps<T = any> {
     /** 编辑状态 */
     editable: boolean;
     /** className前缀 */
@@ -83,30 +77,31 @@ export interface ITableInfoProps<T = any> {
     lang: string;
     /** 当前全局类型 */
     globalRange: IGlobalRange;
-    /** 是否展示表头 */
-    showHeader?: boolean;
-    /** table tableLayout */
-    tableLayout?: "fixed" | "auto";
-    /** 数据内容 [unused] */
-    data?: T[];
+    /** 配置对象 */
+    content?: IDriverCache;
+    /** 行key */
+    rowkey?: (data: T, row: number) => string;
     /** 内容行属性 */
     onRow?: (column: IRenderCol, rowkey: IRowKey) => any;
     /** 表头行属性 */
     onHeaderRow?: (column: IRenderCol, rowkey: IRowKey) => any;
+    /** 数据内容 [unused] */
+    data?: T[];
+}
+
+/** 表格入参 */
+export interface ITableProps<T = any> extends ITableDriverProps<T> {
+
+    /** 是否展示表头 */
+    showHeader?: boolean;
+    /** table tableLayout */
+    tableLayout?: "fixed" | "auto";
     /** 列配置 */
     columns?: IColumnList;
-    /** 行key */
-    rowkey?: (data: T, row: number) => string;
     /** 是否可滚动 */
     scroll?: boolean;
     /** 是否最小100% */
     expand?: boolean;
-}
-
-/** 表格入参 */
-export interface ITableProps<T = any> extends Partial<ITableInfoProps<T>> {
-    /** 配置对象 */
-    content?: IDriverCache;
     /** 样式名 */
     className?: string;
     /** 内联样式 */
@@ -119,8 +114,10 @@ export interface ITableProps<T = any> extends Partial<ITableInfoProps<T>> {
     items?: IToolbarItem[][];
     /** 是否展示工具栏 */
     toolbar?: boolean;
-    /** 是否输出日志 */
-    debug?: boolean | string[];
 }
 
-export type ITableCoreProps = IPluginList & ITableProps;
+export interface ITableCoreProps extends ITableProps {
+    plugins?: IEvPlugin[];
+    /** 是否输出日志 */
+    debug?: boolean | string[];
+};

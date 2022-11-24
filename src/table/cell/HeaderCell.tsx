@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { observer } from "mobx-react-lite";
 import { IRenderCol } from '../../interfaces/ITableProps';
 import AutoHeightComponent from './AutoHeightComponent';
@@ -14,23 +14,21 @@ const Thead = observer((props: React.PropsWithChildren<IHeaderCell>) => {
     const { children, data } = props;
     const ref = useRef<Element>(null);
     const driver = useDriver();
-    const resizeable = (driver.tableProps.editable && props.data.isLeaf);
+    const resizeable = (driver.editable && props.data.isLeaf);
     const { width } = useResize(ref, !resizeable);
     useEffect(() => {
         if (width >= 0) {
             driver.setSize(getColKey({col: data.col}), width);
         }
     }, [width, data.col]);
-    const headerProps = useMemo(() => {
         const userProps = data.onHeader ? data.onHeader(data) : {};
-        return {
+        const headerProps = {
             className: data.className,
             style: data.style,
             colSpan: data.colSpan,
             rowSpan: data.rowSpan,
             ...userProps
         }
-    },[data]);
     return (
         <AutoHeightComponent
             ref={ref}
@@ -49,19 +47,19 @@ const Thead = observer((props: React.PropsWithChildren<IHeaderCell>) => {
 export default observer((props: IHeaderCell) => {
     const driver = useDriver();
     const { data } = props;
-    const resizeable = (driver.tableProps.editable && props.data.isLeaf);
-    const colKey = useMemo(() => ({ col: data.col }), [data.col]);
+    const resizeable = (driver.editable && props.data.isLeaf);
+    const colKey = ({ col: data.col });
     const size = driver.sizes[getColKey(colKey)];
-    const start = useCallback((e: any, s: any) => {
+    const start = (e: any, s: any) => {
         const val = Math.round(s.size.width);
         driver.setSize(getColKey(colKey), val);
         driver.exec("sizeChange", { range: colKey, colWidth: val }, true);
-    }, [colKey, driver]);
-    const stop = useCallback((e: any, s: any) => {
+    };
+    const stop = (e: any, s: any) => {
         const val = Math.round(s.size.width);
         driver.setSize(getColKey(colKey), val);
         driver.exec("sizeChange", { range: colKey, colWidth: val }, false);
-    }, [colKey, driver]);
+    };
 
     if (!resizeable || !size) {
         return <Thead {...props} />;

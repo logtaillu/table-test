@@ -6,7 +6,7 @@
     }
     .toolbar-group{
         @apply inline-block;
-        &:not(:last-child){
+        &:not(:last-child)>div:last-child{
             @apply border-r border-gray-400 pr-1;
         }
         &:not(:first-child){
@@ -23,7 +23,7 @@
 
     // 不和dropdown一起显示的tooltip
     .dptooltip {
-        @apply tooltip tooltip-bottom z-10;
+        @apply tooltip tooltip-bottom z-10 my-1;
 
         &.rc-dropdown-open::before,
         &.rc-dropdown-open::after {
@@ -83,5 +83,5 @@
 }
 
 .@{evprefix}-toolbar {
-    @apply py-2 flex flex-wrap gap-y-2;
+    @apply py-2 flex flex-wrap;
 }

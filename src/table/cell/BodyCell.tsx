@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { observer } from "mobx-react-lite";
 import AutoHeightComponent from './AutoHeightComponent';
 import { useDriver } from '../DriverContext';
@@ -13,16 +13,14 @@ export default observer((props: IBodyCell) => {
     const driver = useDriver();
     const column = driver.renderCols[col];
     const { rowSpan, colSpan } = driver.getMergedValue({ col, row, type: "body" });
-    const cellProps = useMemo(() => {
-        const userProps = column?.onCell ? column.onCell(data, row) : {};
-        return {
-            rowSpan,
-            colSpan,
-            className: column.cellClassName,
-            style: column.cellStyle,
-            ...userProps
-        }
-    }, [data, column, row, rowSpan, colSpan]);
+    const userProps = column?.onCell ? column.onCell(data, row) : {};
+    const cellProps = {
+        rowSpan,
+        colSpan,
+        className: column.cellClassName,
+        style: column.cellStyle,
+        ...userProps
+    }
     if (colSpan === 0 || rowSpan === 0) {
         return null;
     }

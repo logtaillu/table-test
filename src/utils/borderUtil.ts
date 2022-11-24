@@ -4,7 +4,7 @@ import { IConfigKey, IMultiRangeSetter } from "../interfaces/IDriverCache";
 import { IBorderType, ICellKey, ICellRange, IRangeType } from "../interfaces/IGlobalType";
 import { getCellKey } from "./keyUtil";
 import { compareCell, getFormattedMinRange, getMergedTarget, getTargetRange } from "./rangeUtil";
-import { getValue } from "./valueUtil";
+import { getValue, isEmpty } from "./valueUtil";
 
 export const borderKeys = ["t", "b", "l", "r"];
 /**
@@ -109,7 +109,7 @@ export function getCellCssVars(driver: EvDriver, cell: ICellKey) {
         const val = driver.getValue("cell", ["cssvar", key] as any[], cell);
         if (innerExist) {
             // 有边框
-            if (val === undefined || val === null) {
+            if (isEmpty(val)) {
                 result[key] = cssvars[key];
             }
         } else if (val !== 0) {

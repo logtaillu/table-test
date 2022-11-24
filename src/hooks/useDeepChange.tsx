@@ -18,9 +18,9 @@ const deepEqual = (a, b) => {
         return a === b;
     }
 }
-export default function (func) {
+export default function (value: any) {
     const preRef = useRef<any>(null);
-    const result = func();
+    const result = typeof (value) === "function" ? value() : value;
     const equal = deepEqual(preRef.current, result);
     if (!equal) {
         preRef.current = result;

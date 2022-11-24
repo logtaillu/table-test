@@ -6,7 +6,7 @@ class LogUtil {
     // render - 组件渲染类型，主要用于查看组件刷新情况
     // action - 操作
     // undo - 回退
-    totalTypes = ["render", "action", "undo"];
+    totalTypes = ["action", "undo"];
     // 输出哪些类型
     types: Set<string> = new Set();
     // 是否启动
@@ -17,6 +17,13 @@ class LogUtil {
     logs: Map<string, any[]> = new Map();
     logChange = false;
     timer: NodeJS.Timeout | null = null;
+    clear() {
+        if (this.logs.size > 0) {
+            this.times.clear();
+            this.logs.clear();
+            this.logChange = true;
+        }
+    }
     change(debug: string[] | boolean) {
         if (debug) {
             this.start(Array.isArray(debug) ? debug : []);

@@ -1,18 +1,15 @@
-/** 表格核心入口，初始化driver和intl，执行enrichProps */
-import React, { useEffect, useMemo, useRef } from 'react';
-import { observer, useObserver } from "mobx-react-lite";
+/** 
+ * 语言、toolbar和table布局，注册需要内部使用的props等
+ */
+import React, { useEffect } from 'react';
+import { observer } from "mobx-react-lite";
 import { ITableProps } from '../interfaces/ITableProps';
 import { IntlProvider } from 'react-intl';
 import { useDriver } from './DriverContext';
 import Toolbar from './toolbar/Toolbar';
 import messages from "../locales/index";
-import Table from './Table';
-import { getValue } from '../utils/valueUtil';
+import Table from './table/Table';
 import useColumn from '../hooks/useColumn';
-import classNames from 'classnames';
-import useResize from '../hooks/useResize';
-import { toJS } from 'mobx';
-import logUtil from '../utils/logUtil';
 const defaultLang = "zh-CN";
 const getMessages = (lang?: string, locales?: Record<string, any>) => {
     lang = lang || defaultLang;
@@ -23,37 +20,42 @@ const getMessages = (lang?: string, locales?: Record<string, any>) => {
 }
 
 export default observer(React.forwardRef(function (props: ITableProps, ref) {
-    const { content, locales, className, style, items, sources, toolbar, columns, ...p } = props;
+    const {
+        // 内部传递的量,lang是为了以后有语言切换的情况
+        editable, prefixCls, maxStack, lang, globalRange, content,
+        // table用
+        // showHeader, tableLayout,
+        data, onRow, onHeaderRow, columns, rowkey,
+        // 滚动样式相关的
+        // scroll, expand,
+        // 外层样式
+        className, style,
+        // 语言
+        locales,
+        // toolbar用到的
+        sources, items, toolbar
+    } = props;
     const driver = useDriver();
-    // 配置改变
-    useEffect(() => { driver.content = content }, [content]);
-    // 注册到driver控制的tableProps
+
+    // 全局配置改变
     useEffect(() => {
-        driver.update(p);
-    }, [p.editable, p.prefixCls, p.maxStack, p.lang, p.globalRange, p.showHeader, p.tableLayout, p.data, p.onRow, p.onHeaderRow, p.data, p.rowkey]);
+        driver.update({
+            editable, prefixCls, maxStack,
+            lang, globalRange, content,
+            onRow, onHeaderRow, rowkey, data
+        });
+    }, [editable, prefixCls, maxStack, lang, globalRange, content, onRow, onHeaderRow, rowkey, data]);
     // columns
     useColumn(columns || []);
-    // 宽度处理
-    const tableRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        driver.tableRef = tableRef.current;
-     }, [tableRef.current]);
-    const { width } = useResize(tableRef);
-    const cls = classNames({
-        scroll: p.scroll,
-        expand: p.expand,
-        resizing: p.editable
-    });
-    const lang = driver.tableProps.lang || defaultLang;
-    const cssvar = toJS(getValue(driver.content, ["all", "cell", "cssvar"]));
-    logUtil.log("render", "TableCore");
+
+    const langcur = driver.lang || defaultLang;
+    const messages = getMessages(langcur, locales);
+
     return (
-        <IntlProvider locale={lang} defaultLocale={defaultLang} messages={getMessages(lang, locales)}>
+        <IntlProvider locale={langcur} defaultLocale={defaultLang} messages={messages}>
             <div className={driver.prefix("wrapper") + " " + (className || "")} style={style}>
                 <Toolbar items={items} sources={sources} toolbar={toolbar} />
-                <div ref={tableRef} className={`${driver.prefix("table-core")} ${cls}`} style={cssvar}>
-                    <Table width={width} />
-                </div>
+                <Table {...props} />
             </div>
         </IntlProvider>
     )

@@ -4,7 +4,7 @@ import { IActionService, IActionStack, ISaveValues } from "../interfaces/IAction
 import { IClearConf, IConfigKey, IDriverCache, IMultiRangeSetter } from "../interfaces/IDriverCache";
 import { IGlobalRange, IRangeAryType, IExtendValueType, ICellKey } from "../interfaces/IGlobalType";
 import { IEvPlugin, IPluginEvent } from "../interfaces/IPlugin";
-import { IRenderCol, ITableInfoProps } from "../interfaces/ITableProps";
+import { IRenderCol, ITableDriverProps, ITableProps } from "../interfaces/ITableProps";
 import { mergeConfig } from "../utils/baseUtil";
 import eventUtil from "../utils/eventUtil";
 import { doAction, redo, undo } from "./actions";
@@ -12,6 +12,7 @@ import initContent from "./initContent";
 import { getRangeValue, setRangeValue } from "./ranges";
 import { getMergedTarget } from "../utils/rangeUtil";
 import base from "../plugins/base";
+import { isEmpty } from "../utils/valueUtil";
 const defaultPlugins = [base];
 export default class EvDriver {
     constructor() {
@@ -129,12 +130,12 @@ export default class EvDriver {
     }
     /** 范围取值 */
     getValue(type: IExtendValueType, path: IConfigKey[] | IConfigKey, range: IRangeAryType = false, grange?: IGlobalRange, content?: IDriverCache) {
-        return getRangeValue(this, type, path, range, grange || this.tableProps.globalRange, content || this.content || {});
+        return getRangeValue(this, type, path, range, grange || this.globalRange, content || this.content || {});
     }
     /** 范围设值 */
     setValue(type: IExtendValueType, path: IConfigKey[] | IConfigKey, value: any, range: IRangeAryType = false, clears: IClearConf = [], grange?: IGlobalRange, content?: IDriverCache) {
         // set value用cache
-        return setRangeValue(this, type, path, value, range, clears, grange || this.tableProps.globalRange, content || this.cache || {});
+        return setRangeValue(this, type, path, value, range, clears, grange || this.globalRange, content || this.cache || {});
     }
     /**批量范围设值 */
     setValues(configs: IMultiRangeSetter) {
@@ -156,22 +157,22 @@ export default class EvDriver {
         this.selectingIn = value;
     }
 
-    tableProps: ITableInfoProps & { globalRange: IGlobalRange } = {
-        prefixCls: "ev",
-        editable: false,
-        lang: navigator.language,
-        globalRange: "all"
-    }
+    lang: string = navigator.language;
+    prefixCls: string = "ev";
+    editable: boolean = false;
+    globalRange: IGlobalRange = "all";
+    onRow: ITableDriverProps["onRow"] = undefined;
+    onHeaderRow: ITableDriverProps["onHeaderRow"] = undefined;
+    rowkey: ITableDriverProps["rowkey"] = undefined;
+    data: any[] = [];
 
-    update(props: Partial<ITableInfoProps>) {
+    update(props: ITableDriverProps) {
         Object.keys(props).map(key => {
-            if (key === "maxStack") {
-                this.maxStack = props[key];
-            } else if (this.tableProps[key] !== props[key]) {
+            if (this[key] !== props[key] && !isEmpty(props[key])) {
+                this[key] = props[key];
                 if (key === "data") {
                     this.init.rowCount = (props[key] || []).length;
                 }
-                this.tableProps[key] = props[key]
             }
         });
     }
@@ -179,7 +180,7 @@ export default class EvDriver {
      * @param cls {string} 样式名
      */
     prefix(cls: string = "") {
-        return cls.length ? cls.split(" ").filter(s => !!s).map(s => this.tableProps.prefixCls + "-" + s).join(" ") : this.tableProps.prefixCls;
+        return cls.length ? cls.split(" ").filter(s => !!s).map(s => this.prefixCls + "-" + s).join(" ") : this.prefixCls;
     }
 
     /** 底层columns列表 */
