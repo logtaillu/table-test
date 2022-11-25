@@ -25,5 +25,5 @@ export default function (value: any) {
     if (!equal) {
         preRef.current = result;
     }
-    return preRef.current;
+    return useObserver(() => preRef.current);
 }

@@ -3,9 +3,8 @@ import { observer } from 'mobx-react-lite'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useDeepChange from '../hooks/useDeepChange';
 import logUtil from '../utils/logUtil';
-const LogItem = (props: { value, row }) => {
+const LogItem = observer((props: { value, row }) => {
     const value = useDeepChange(() => props.value);
-    return useMemo(() => {
         return (
             <tr>
                 <th>{props.row + 1}</th>
@@ -16,8 +15,7 @@ const LogItem = (props: { value, row }) => {
                 </td>
             </tr>
         )
-    }, [value, props.row]);
-};
+});
 
 export default function () {
     const [active, setActive] = useState<string>(logUtil.logs.size > 0 ? logUtil.logs.keys().next().value : "");
