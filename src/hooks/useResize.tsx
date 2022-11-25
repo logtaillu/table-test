@@ -27,7 +27,9 @@ export default function (ref: RefObject<Element>, disabled: boolean = false) {
      }, []);
     useEffect(() => { 
         if (ref.current && !disabled) {
-            observeEle(ref.current,onResize);
+            observeEle(ref.current, onResize);
+            // 初始触发一次
+            onResize(ref.current as any);
         }
         return () => {
             if (ref.current) {

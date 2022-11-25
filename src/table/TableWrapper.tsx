@@ -10,6 +10,7 @@ import Toolbar from './toolbar/Toolbar';
 import messages from "../locales/index";
 import Table from './table/Table';
 import useColumn from '../hooks/useColumn';
+import SelectRange from './SelectRange';
 const defaultLang = "zh-CN";
 const getMessages = (lang?: string, locales?: Record<string, any>) => {
     lang = lang || defaultLang;
@@ -56,6 +57,7 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
             <div className={driver.prefix("wrapper") + " " + (className || "")} style={style}>
                 <Toolbar items={items} sources={sources} toolbar={toolbar} />
                 <Table {...props} />
+                <SelectRange/>
             </div>
         </IntlProvider>
     )

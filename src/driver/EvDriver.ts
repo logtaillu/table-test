@@ -2,7 +2,7 @@
 import { makeAutoObservable, observable } from "mobx";
 import { IActionService, IActionStack, ISaveValues } from "../interfaces/IActionStack";
 import { IClearConf, IConfigKey, IDriverCache, IMultiRangeSetter } from "../interfaces/IDriverCache";
-import { IGlobalRange, IRangeAryType, IExtendValueType, ICellKey } from "../interfaces/IGlobalType";
+import { IGlobalRange, IRangeAryType, IExtendValueType, ICellKey, ICellRange } from "../interfaces/IGlobalType";
 import { IEvPlugin, IPluginEvent } from "../interfaces/IPlugin";
 import { IRenderCol, ITableDriverProps, ITableProps } from "../interfaces/ITableProps";
 import { mergeConfig } from "../utils/baseUtil";
@@ -10,10 +10,12 @@ import eventUtil from "../utils/eventUtil";
 import { doAction, redo, undo } from "./actions";
 import initContent from "./initContent";
 import { getRangeValue, setRangeValue } from "./ranges";
-import { getMergedTarget } from "../utils/rangeUtil";
+import { getFormattedMergeRange, getMergedTarget } from "../utils/rangeUtil";
 import base from "../plugins/base";
 import { isEmpty } from "../utils/valueUtil";
-const defaultPlugins = [base];
+import selectRange from "../plugins/selectRange";
+import { getLength } from "./length";
+const defaultPlugins = [base, selectRange];
 export default class EvDriver {
     constructor() {
         makeAutoObservable(this, {
@@ -94,6 +96,9 @@ export default class EvDriver {
     /** 是否右选择范围 */
     get haveSelectRange() {
         return (this.content?.selected?.length || 0) > 0;
+    }
+    get formatedSelected() {
+        return (this.content?.selected || []).map(s => getFormattedMergeRange(s, this.content.merged || []));
     }
 
     /*******************配置内容 **********************/
@@ -203,5 +208,9 @@ export default class EvDriver {
     sizes: Record<string, number> = {};
     setSize(key, value) {
         this.sizes[key] = value;
+    }
+
+    getLength(from: ICellKey | null, to: ICellKey | null, type: "row" | "col") {
+        return getLength(this, from, to, type);
     }
 }

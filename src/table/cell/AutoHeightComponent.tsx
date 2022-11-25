@@ -30,7 +30,7 @@ export default observer(React.forwardRef((p: React.PropsWithChildren<IAutoHeight
         maxHeight: autoHeight ? "auto" : `calc( ${rowSpan * rowHeight}px - var(--ev-bwt) - var(--ev-bwb) )`
     }
     return (
-        <Component data-cell={getCellKey(cellkey)} ref={ref} {...props} className={`${fontcss} ${props.className || ""}`} style={{ ...cellvars, ...props.style }}>
+        <Component data-cell={getCellKey(cellkey)} ref={ref} {...props} className={`${driver.prefix("cell")} ${fontcss} ${props.className || ""}`} style={{ ...cellvars, ...props.style }}>
             <div className="overflow-hidden" style={hstyle}>
                 <div>
                     {children}

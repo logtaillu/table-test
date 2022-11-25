@@ -10,7 +10,7 @@ export interface IHeaderCell {
     data: IRenderCol;
 }
 
-const Thead = observer((props: React.PropsWithChildren<IHeaderCell>) => {
+const Th = observer((props: React.PropsWithChildren<IHeaderCell>) => {
     const { children, data } = props;
     const ref = useRef<Element>(null);
     const driver = useDriver();
@@ -62,7 +62,7 @@ export default observer((props: IHeaderCell) => {
     };
 
     if (!resizeable || !size) {
-        return <Thead {...props} />;
+        return <Th {...props} />;
     } else {
         return (
             <Resizable
@@ -74,7 +74,7 @@ export default observer((props: IHeaderCell) => {
                 onResizeStop={stop}
 
             >
-                <Thead {...props} />
+                <Th {...props} />
             </Resizable>
         )
     }
