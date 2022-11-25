@@ -3,10 +3,6 @@ class LogUtil {
     constructor() {
         this.timeclick = this.timeclick.bind(this);
     }
-    // render - 组件渲染类型，主要用于查看组件刷新情况
-    // action - 操作
-    // undo - 回退
-    totalTypes = ["action", "undo"];
     // 输出哪些类型
     types: Set<string> = new Set();
     // 是否启动
