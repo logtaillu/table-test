@@ -19,13 +19,18 @@
     &-table-core.expand &-table{
         @apply w-full;
     }
+    &-wrapper{
+        .theme();
+    }
+    &-inner{
+        @apply relative;
+    }
     &-table-core {
         @apply relative box-border;
 
         &.scroll{
             @apply overflow-x-auto overflow-y-hidden;
         }
-        .theme();
 
         // resizeable handle
         th.react-resizable,

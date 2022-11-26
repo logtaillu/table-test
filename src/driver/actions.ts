@@ -51,7 +51,7 @@ export function undo(driver: EvDriver) {
             const ac = driver.acServiceMap.get(lastAction.type);
             const func = ac?.undo;
             if (func) {
-                func(lastAction.value, driver);
+                func(driver, lastAction);
             } else {
                 // set value用cache
                 setAndSaveValues(driver.cache, lastAction.undo || []);

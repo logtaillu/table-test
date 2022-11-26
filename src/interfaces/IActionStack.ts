@@ -24,9 +24,9 @@ export type IActionStack = IStackMember[];
 /** 操作处理对象 */
 export interface IActionService {
     /** 执行动作，return false时不入栈 */
-    exec: (driver: EvDriver, value: any) => ISaveValues | false | void;
+    exec: (driver: EvDriver, value: any) => ISaveValues | false | void | any;
     /** 回退动作，默认执行set undo values */
-    undo?: (driver: EvDriver, value: any) => void;
+    undo?: (driver: EvDriver, value: IStackMember) => void;
 }
 /** 操作处理对象map */
 export type IActionServiceMap = Record<string, IActionService>;

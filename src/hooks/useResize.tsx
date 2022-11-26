@@ -1,8 +1,18 @@
 /** 仿照rc-resize-observer的元素监听 */
+import { useObserver } from 'mobx-react-lite';
 import React, { RefObject, useCallback, useEffect, useState } from 'react';
 import { observeEle, unobserveEle } from '../utils/resizeUtil';
+export interface IUseResize {
+    /** 是否启用 */
+    disabled?: boolean;
+    /** 是否在监听宽度改变 */
+    handleW?: boolean;
+    /** 是否监听高度改变 */
+    handleH?: boolean;
+}
 
-export default function (ref: RefObject<Element>, disabled: boolean = false) {
+export default function (ref: RefObject<Element>, options: IUseResize) {
+    const { disabled, handleW, handleH } = options;
     const [size, setSize] = useState({
         width: -1,
         height: -1,
@@ -16,7 +26,9 @@ export default function (ref: RefObject<Element>, disabled: boolean = false) {
         const fixedHeight = Math.floor(height);
         offsetWidth = offsetWidth === Math.round(width) ? width : offsetWidth;
         offsetHeight = offsetHeight === Math.round(height) ? height : offsetHeight;
-        if (size.width !== fixedWidth && size.height !== fixedHeight && size.offsetWidth !== offsetWidth && size.offsetHeight !== offsetHeight) {
+        const wChange = handleW !== false && (size.width !== fixedWidth || size.offsetWidth !== offsetWidth);
+        const hChange = handleH !== false && (size.height !== fixedHeight || size.offsetHeight !== offsetHeight);
+        if (wChange || hChange) {
             setSize({
                 width: fixedWidth,
                 height: fixedHeight,
@@ -24,7 +36,7 @@ export default function (ref: RefObject<Element>, disabled: boolean = false) {
                 offsetWidth
             });
         }
-     }, []);
+     }, [handleW, handleH]);
     useEffect(() => { 
         if (ref.current && !disabled) {
             observeEle(ref.current, onResize);
@@ -37,5 +49,5 @@ export default function (ref: RefObject<Element>, disabled: boolean = false) {
             }
         }
     }, [ref.current, disabled]);
-    return size;
+    return useObserver(() => size);
 }

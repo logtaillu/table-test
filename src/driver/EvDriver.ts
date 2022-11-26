@@ -14,7 +14,7 @@ import { getFormattedMergeRange, getMergedTarget } from "../utils/rangeUtil";
 import base from "../plugins/base";
 import { isEmpty } from "../utils/valueUtil";
 import selectRange from "../plugins/selectRange";
-import { getLength } from "./length";
+import { getLength, isMerged } from "./calcute";
 const defaultPlugins = [base, selectRange];
 export default class EvDriver {
     constructor() {
@@ -210,7 +210,11 @@ export default class EvDriver {
         this.sizes[key] = value;
     }
 
-    getLength(from: ICellKey | null, to: ICellKey | null, type: "row" | "col") {
-        return getLength(this, from, to, type);
+    getLength(from: ICellKey | null, to: ICellKey | null, type: "row" | "col", include: boolean) {
+        return getLength(this, from, to, type, include);
+    }
+
+    get isMerged() {
+        return isMerged(this);
     }
 }

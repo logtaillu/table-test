@@ -25,5 +25,7 @@ export default {
     "borderColor": "边框线颜色",
     "borderStyle": "边框线样式",
     "borderWidth": "边框线宽度",
-    "borderType": "边框线范围"
+    "borderType": "边框线范围",
+    "mergeCell": "合并单元格",
+    "splitCell": "拆分单元格"
 }

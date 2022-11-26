@@ -4,7 +4,7 @@ import { ITableCoreProps } from "../interfaces/ITableProps";
 import TableCore from "./TableCore";
 
 const defaultToolbar = [
-    ['undo', 'redo', 'autoHeight'],
+    ['undo', 'redo', 'autoHeight', 'mergeCell'],
     ['size', 'fontSize', 'fontFamily', 'fontColor', 'bold', 'italic', 'underline', 'backgroundColor'],
     ['alignLeft', 'alignCenter', 'alignRight', 'verticalAlign'],
     ['borderType', 'borderColor', 'borderStyle', 'borderWidth']

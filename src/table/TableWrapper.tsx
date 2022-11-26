@@ -56,8 +56,10 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
         <IntlProvider locale={langcur} defaultLocale={defaultLang} messages={messages}>
             <div className={driver.prefix("wrapper") + " " + (className || "")} style={style}>
                 <Toolbar items={items} sources={sources} toolbar={toolbar} />
-                <Table {...props} />
-                <SelectRange/>
+                <div className={driver.prefix("inner")}>
+                    <Table {...props} />
+                    <SelectRange />
+                </div>
             </div>
         </IntlProvider>
     )

@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { AiOutlineClear } from 'react-icons/ai';
 import useDeepChange from '../hooks/useDeepChange';
 import logUtil from '../utils/logUtil';
 const LogItem = observer((props: { value, row }) => {
@@ -11,7 +12,7 @@ const LogItem = observer((props: { value, row }) => {
                 <td>{value?.prev}s</td>
                 <td>{value?.total}s</td>
                 <td>
-                    {value?.infos?.map((s, i) => <div key={i}>{s}</div>)}
+                    {value?.infos?.map((s, i) => <div key={i}>{typeof(s)==="string"?s:JSON.stringify(s)}</div>)}
                 </td>
             </tr>
         )
@@ -45,7 +46,7 @@ export default function () {
         <div className='card shadow-md bg-base-100 mt-4'>
             <div className="card-body">
                 <h2 className="card-title justify-between">日志记录
-                    <button className='btn btn-primary w-20' onClick={() => logUtil.clear()}>清除</button>
+                    <button className='btn btn-primary btn-square' onClick={() => logUtil.clear()}><AiOutlineClear className="w-6 h-6"/></button>
                 </h2>
                 <div className="tabs tabs-boxed mb-2 p-3">
                     {childs}

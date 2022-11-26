@@ -6,10 +6,11 @@ import { IToolbarItem, IToolbarItemObj } from "../interfaces/IToolbar";
 import { redo, undo } from "./redoundo";
 import { autoHeight, size } from "./rowColSize";
 import * as borders from "./border";
+import { mergeCell } from "./mergeCell";
 
 class ToolbarItemControler {
     private itemMap: Record<string, IToolbarItemObj> = {
-        redo, undo, globalRange, autoHeight, size, ...fonts, ...aligns, ...borders
+        redo, undo, globalRange, autoHeight, size, ...fonts, ...aligns, ...borders, mergeCell
     };
     // 注册
     register(items: IToolbarItemObj[]) {

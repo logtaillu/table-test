@@ -4,23 +4,23 @@ import { IRenderCol } from '../../interfaces/ITableProps';
 import AutoHeightComponent from './AutoHeightComponent';
 import { useDriver } from '../DriverContext';
 import { Resizable } from 'react-resizable';
-import useResize from '../../hooks/useResize';
 import { getColKey } from '../../utils/keyUtil';
+import useResize from '../../hooks/useResize';
 export interface IHeaderCell {
     data: IRenderCol;
 }
 
 const Th = observer((props: React.PropsWithChildren<IHeaderCell>) => {
     const { children, data } = props;
-    const ref = useRef<Element>(null);
     const driver = useDriver();
     const resizeable = (driver.editable && props.data.isLeaf);
-    const { width } = useResize(ref, !resizeable);
+    const ref = useRef(null);
+    const { width } = useResize(ref, { disabled: !resizeable, handleH: false });
     useEffect(() => {
-        if (width >= 0) {
+        if (resizeable && typeof(width)==="number" && width >= 0) {
             driver.setSize(getColKey({col: data.col}), width);
         }
-    }, [width, data.col]);
+    }, [width, data.col, resizeable]);
         const userProps = data.onHeader ? data.onHeader(data) : {};
         const headerProps = {
             className: data.className,
