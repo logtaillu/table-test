@@ -6,7 +6,7 @@ import TableCore from "./TableCore";
 const defaultToolbar = [
     ['undo', 'redo', 'autoHeight', 'mergeCell'],
     ['size', 'fontSize', 'fontFamily', 'fontColor', 'bold', 'italic', 'underline', 'backgroundColor'],
-    ['alignLeft', 'alignCenter', 'alignRight', 'verticalAlign'],
+    ['alignLeft', 'alignCenter', 'alignRight', 'verticalAlign', 'padding'],
     ['borderType', 'borderColor', 'borderStyle', 'borderWidth']
 ];
 export interface IExcelTableProps extends ITableCoreProps {

@@ -20,7 +20,12 @@ export default function () {
                 tableLayout='fixed'
                 editable={true}
                 toolbar={true}
-                content={{ all: { col: { colWidth: 100 } } }}
+                content={{
+                    all: {
+                        col: { colWidth: 100 }
+                    },
+                    rowCount: 4
+                }}
                 columns={[
                     { dataIndex: "a", title: "a" },
                     { dataIndex: "b", title: "b" },
@@ -28,10 +33,10 @@ export default function () {
                 ]}
                 expand={false}
                 scroll={true}
-                data={[
-                    { a: 1, b: 2, c: 3 },
-                    { a: 4, b: 5, c: 6 }
-                ]}
+                // data={[
+                //     { a: 1, b: 2, c: 3 },
+                //     { a: 4, b: 5, c: 6 }
+                // ]}
                 debug={true}
             />
             <LogView/>

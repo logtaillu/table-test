@@ -1,5 +1,4 @@
 // 更新对比
-import { useObserver } from 'mobx-react-lite';
 import React, { useRef } from 'react'
 const deepEqual = (a, b) => {
     if (Array.isArray(a) && Array.isArray(b)) {
@@ -25,5 +24,5 @@ export default function (value: any) {
     if (!equal) {
         preRef.current = result;
     }
-    return useObserver(() => preRef.current);
+    return preRef.current;
 }

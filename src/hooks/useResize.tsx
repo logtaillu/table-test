@@ -1,5 +1,4 @@
 /** 仿照rc-resize-observer的元素监听 */
-import { useObserver } from 'mobx-react-lite';
 import React, { RefObject, useCallback, useEffect, useState } from 'react';
 import { observeEle, unobserveEle } from '../utils/resizeUtil';
 export interface IUseResize {
@@ -49,5 +48,5 @@ export default function (ref: RefObject<Element>, options: IUseResize) {
             }
         }
     }, [ref.current, disabled]);
-    return useObserver(() => size);
+    return size;
 }

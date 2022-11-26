@@ -1,5 +1,4 @@
-import { useObserver } from 'mobx-react-lite';
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useDriver } from "../table/DriverContext";
 
 export default (width: number, expand: boolean) => {
@@ -17,5 +16,5 @@ export default (width: number, expand: boolean) => {
             }
         })
     }
-    return useObserver(() => styled ? total < width ? "" : "w-full" : "");
+    return styled ? total < width ? "" : "w-full" : "";
 }

@@ -68,25 +68,21 @@ export type IColumnList = Array<IColumnGroup | IColumn>;
 /** driver传递的Props */
 export interface ITableDriverProps<T = any> {
     /** 编辑状态 */
-    editable: boolean;
+    editable?: boolean;
     /** className前缀 */
-    prefixCls: string;
+    prefixCls?: string;
     /** 最大操作栈项数 */
     maxStack?: number;
     /** 当前语言 */
-    lang: string;
+    lang?: string;
     /** 当前全局类型 */
-    globalRange: IGlobalRange;
-    /** 配置对象 */
-    content?: IDriverCache;
+    globalRange?: IGlobalRange;
     /** 行key */
     rowkey?: (data: T, row: number) => string;
     /** 内容行属性 */
     onRow?: (column: IRenderCol, rowkey: IRowKey) => any;
     /** 表头行属性 */
     onHeaderRow?: (column: IRenderCol, rowkey: IRowKey) => any;
-    /** 数据内容 [unused] */
-    data?: T[];
 }
 
 /** 表格入参 */
@@ -98,6 +94,10 @@ export interface ITableProps<T = any> extends ITableDriverProps<T> {
     tableLayout?: "fixed" | "auto";
     /** 列配置 */
     columns?: IColumnList;
+    /** 配置对象 */
+    content?: IDriverCache;
+    /** 数据内容 */
+    data?: T[];
     /** 是否可滚动 */
     scroll?: boolean;
     /** 是否最小100% */

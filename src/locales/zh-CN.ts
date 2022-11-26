@@ -27,5 +27,10 @@ export default {
     "borderWidth": "边框线宽度",
     "borderType": "边框线范围",
     "mergeCell": "合并单元格",
-    "splitCell": "拆分单元格"
+    "splitCell": "拆分单元格",
+    "padding": "内边距",
+    "top": "上",
+    "bottom": "下",
+    "left": "左",
+    "right": "右"
 }

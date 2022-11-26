@@ -4,7 +4,7 @@ import { IActionService, IActionStack, ISaveValues } from "../interfaces/IAction
 import { IClearConf, IConfigKey, IDriverCache, IMultiRangeSetter } from "../interfaces/IDriverCache";
 import { IGlobalRange, IRangeAryType, IExtendValueType, ICellKey, ICellRange } from "../interfaces/IGlobalType";
 import { IEvPlugin, IPluginEvent } from "../interfaces/IPlugin";
-import { IRenderCol, ITableDriverProps, ITableProps } from "../interfaces/ITableProps";
+import { IColumnList, IRenderCol, ITableDriverProps, ITableProps } from "../interfaces/ITableProps";
 import { mergeConfig } from "../utils/baseUtil";
 import eventUtil from "../utils/eventUtil";
 import { doAction, redo, undo } from "./actions";
@@ -15,6 +15,7 @@ import base from "../plugins/base";
 import { isEmpty } from "../utils/valueUtil";
 import selectRange from "../plugins/selectRange";
 import { getLength, isMerged } from "./calcute";
+import initData from "./initData";
 const defaultPlugins = [base, selectRange];
 export default class EvDriver {
     constructor() {
@@ -104,16 +105,17 @@ export default class EvDriver {
     /*******************配置内容 **********************/
     /** 配置内容 */
     cache: IDriverCache = {};
-    init: IDriverCache = initContent();
     set content(value: IDriverCache | undefined) {
         this.actionStack = [];
         this.undoStack = [];
-        this.cache = value || {};
+        this.cache = mergeConfig(initContent(), value || {});
     }
     get content(): IDriverCache {
-        return mergeConfig(this.init, this.cache);
+        return this.cache;
     }
-
+    init(content?: IDriverCache, columns?: IColumnList, data?: any[]) {
+        initData(this, content, columns, data);
+    }
     /** 获取merged范围 */
     get merged() {
         return this.content?.merged || [];
@@ -175,9 +177,6 @@ export default class EvDriver {
         Object.keys(props).map(key => {
             if (this[key] !== props[key] && !isEmpty(props[key])) {
                 this[key] = props[key];
-                if (key === "data") {
-                    this.init.rowCount = (props[key] || []).length;
-                }
             }
         });
     }

@@ -18,7 +18,7 @@ export default function (props: ISuffixInput) {
         const target = suffixs.find(s => value.endsWith(s));
         if (target) {
             const val = Number(value.replace(new RegExp(target + "$"), ""));
-            [num, suffix] = [!isNaN(val) ? "" : val, target];
+            [num, suffix] = [isNaN(val) ? "" : val, target];
         }
     }
     const changeSuffix = val => {

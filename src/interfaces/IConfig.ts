@@ -62,6 +62,14 @@ export interface ICellCssVars {
     "--ev-bsl"?: string;
     /** 左边框颜色 */
     "--ev-bcl"?: string;
+    /** 上内边距 */
+    "--ev-pt"?: string;
+     /** 下内边距 */
+    "--ev-pb"?: string;
+     /** 左内边距 */
+    "--ev-pl"?: string;
+     /** 右内边距 */
+     "--ev-pr"?: string;
 }
 
 /**单元格配置 */

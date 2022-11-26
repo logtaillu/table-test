@@ -9,7 +9,6 @@ import { useDriver } from './DriverContext';
 import Toolbar from './toolbar/Toolbar';
 import messages from "../locales/index";
 import Table from './table/Table';
-import useColumn from '../hooks/useColumn';
 import SelectRange from './SelectRange';
 const defaultLang = "zh-CN";
 const getMessages = (lang?: string, locales?: Record<string, any>) => {
@@ -42,12 +41,14 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
     useEffect(() => {
         driver.update({
             editable, prefixCls, maxStack,
-            lang, globalRange, content,
-            onRow, onHeaderRow, rowkey, data
+            lang, globalRange,
+            onRow, onHeaderRow, rowkey
         });
-    }, [editable, prefixCls, maxStack, lang, globalRange, content, onRow, onHeaderRow, rowkey, data]);
+    }, [editable, prefixCls, maxStack, lang, globalRange, onRow, onHeaderRow, rowkey]);
     // columns
-    useColumn(columns || []);
+    useEffect(() => { 
+        driver.init(content, columns, data);
+    }, [content, data, columns]);
 
     const langcur = driver.lang || defaultLang;
     const messages = getMessages(langcur, locales);

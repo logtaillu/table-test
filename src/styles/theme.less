@@ -22,6 +22,11 @@
     --ev-bwb: 1px;
     --ev-bsb: solid;
     --ev-bcb: #377CFB;
+    // 内边距
+    --ev-pl: 0px;
+    --ev-pr: 0px;
+    --ev-pt: 0px;
+    --ev-pb: 0px;
     // 其他
     --ev-resize-width: 1px; // resize handle宽度
     --ev-range-width: 3px;
@@ -44,6 +49,7 @@
         @apply border-t-0 border-l-0 relative box-border break-words transition-shadow select-none p-0;
         border-right-width: var(--ev-bwr);
         border-bottom-width: var(--ev-bwb);
+        padding: var(--ev-pt) var(--ev-pr) var(--ev-pb) var(--ev-pl);
 
         // 第一列
         &:first-child {

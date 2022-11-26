@@ -30,11 +30,11 @@ export default {
                 const { cellKey, clear } = value;
                 driver.selecting = cellKey;
                 if (clear) {
-                    driver.cache.selected = [];
+                    driver.content.selected = [];
                 }
-                driver.cache.selected = driver.cache.selected || [];
+                driver.content.selected = driver.content.selected || [];
                 // 塞入一个单元格的范围
-                driver.cache.selected.push({ from: cellKey, to: cellKey });
+                driver.content.selected.push({ from: cellKey, to: cellKey });
             }
         },
         selectChange: {
@@ -43,7 +43,7 @@ export default {
                     return false;
                 }
                 const { cellKey } = value;
-                const ranges = driver.cache.selected = driver.cache.selected || [];
+                const ranges = driver.content.selected = driver.content.selected || [];
                 if (ranges.length) {
                     // 当前range一定是最后一个range
                     const cur = ranges[ranges.length - 1];
@@ -70,8 +70,8 @@ export default {
         mergeCell: {
             exec(driver, value) {
                 const selected = driver.content.selected || [];
-                driver.cache.merged = driver.cache.merged || [];
-                const merged = driver.cache.merged;
+                driver.content.merged = driver.content.merged || [];
+                const merged = driver.content.merged;
                 if (driver.isMerged) {
                     // 拆分：如果merged里有范围相同的，则移除
                     const removed: ICellRange[] = [];
@@ -114,13 +114,14 @@ export default {
             undo(driver, value) {
                 const undo: any = value.undo || {};
                 const { removed = [], added = [] } = undo;
+                const merged = driver.content.merged = driver.content.merged || [];
                 removed.map(r => {
-                    driver.merged.push(r);
+                    merged.push(r);
                 })
                 added.map(r => {
-                    const idx = driver.merged.indexOf(r);
+                    const idx = merged.findIndex(s => getRangeRelation(r, s, merged) === "same");
                     if (idx >= 0) {
-                        driver.merged.splice(idx, 1);
+                        merged.splice(idx, 1);
                     }
                 })
             },

@@ -1,22 +1,30 @@
-both
-2. selectRange,，包含行列选择功能
-3. 合并/拆分单元格
-4.  行列（插入/删除）
+task list
+1. row/col补充 - ok
+2. 内间距
+2. excel sider - excel
+3. 行列选择 - excel
+4. 行列插入/删除 - both-excel可以在中间插入
+问题：改变了row/col count时，合并单元格处理
 ***
-9. drag/drop-excel
-10. sort-data
-**
-11. search-data
-12. 勾选-data
+6. drag/drop-excel
 ***
-13. 序号-data
-14. pagination-data,先不考虑分页请求，只接收数据
-**
-15.scrollFixTable功能-data
-16.冻结列-data
-**
-17. 直接填写 - both
-18. 数据展示格式设置 - 共同，数据表以列为单位，自定义表选中范围为单行
+7. sort-data
+8. search-data
+9. 勾选-data
+***
+10. 序号-data
+11. pagination-data,先不考虑分页请求，只接收数据
+12. scrollFixTable功能-data
+13. 冻结列-data
+***
+14. 直接填写 - both
+15. 数据展示格式设置 - 共同，数据表以列为单位，自定义表选中范围为单行
+日期/图片/选择/颜色/文本/数字
+***
+1. 选项构建
+2. 刷新测试/日志补充
+3. fix 样式问题
+4. storybook
 
 已完成：
 1. body/header/all select toolbar-data
@@ -27,13 +35,10 @@ both
 5. 字体/字号/颜色-both
 6. 文字对齐text align/vertical align-both
 7. 粗体/斜体/下划线-both
-1. border
+8. border
+9. 合并单元格
+10. 范围选择
 
-
-样式添加位置：
-2. theme.less 默认值+值使用
-4. getDefaultConfig 添加默认值
-5. locale translate
 
 关于边框：
 1. 边框持有
@@ -73,11 +78,8 @@ tbody-trow-td
 column/data 和content的优先级问题
 1. content作为修改过程存储，更加优先
 2. column/data内容不去变更
+与数据强相关的是column/data/conent
+任意一个改变时，做重置操作
 a.有1个initContent，和一个content
 b.个别量做init
 column/data如果有什么关联量，反映到initContent
-
-
-merge columns
-1. 把表头的merge记录下来保证选中正确
-2. merge/split排除含表头范围
