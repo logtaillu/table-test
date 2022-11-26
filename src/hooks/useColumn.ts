@@ -6,6 +6,7 @@
  */
 import React, { useEffect } from 'react'
 import { IMultiRangeSetter } from '../interfaces/IDriverCache';
+import { ICellRange } from '../interfaces/IGlobalType';
 import { IColumn, IColumnGroup, IColumnList, IRenderCol } from '../interfaces/ITableProps';
 import { useDriver } from '../table/DriverContext'
 import { deepMapAry, getDeep } from '../utils/baseUtil';
@@ -20,6 +21,7 @@ export default function (columns: IColumnList) {
         let columnCount = driver.getValue("wrap", ["colCount"]);
         let headerCols: IRenderCol[][] = [];
         let renderCols: IRenderCol[] = [];
+        const merged: ICellRange[] = [];
         const handleColumns = ({ item, x, y, isLeaf, rowspan, colspan }) => {
             // 更新colCount
             columnCount = Math.max(x + 1, columnCount);
@@ -40,6 +42,13 @@ export default function (columns: IColumnList) {
             } else {
                 setary.push({ type: "cell", path: ["--ev-ah"], value: col.align, range });
             }
+            if (rowspan > 1 || colspan > 1) {
+                const mergedRange: ICellRange = {
+                    from: { col: x, row: y, type: "header" },
+                    to: { col: x + colspan, row: y + rowspan, type: "header" }
+                };
+                merged.push(mergedRange);
+            }
             headerCols[y] = headerCols[y] || [];
             headerCols[y].push(col);
             return {};
@@ -47,6 +56,9 @@ export default function (columns: IColumnList) {
         deepMapAry<IColumnGroup | IColumn>(columns, handleColumns, deep);
         setary.push({ value: columnCount, path: ["colCount"], type: "wrap" });
         driver.setValues(setary);
+        driver.cache.merged = driver.cache.merged || [];
+        driver.cache.merged = driver.cache.merged.filter(s => s.from.type === "header");
+        merged.map(mr => driver.cache.merged?.push(mr));
         driver.renderCols = renderCols; // 底层
         driver.columns = headerCols; // 渲染表头
     }, [columns]);

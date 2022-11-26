@@ -1,6 +1,6 @@
 import { ICellKey, ICellRange } from "../interfaces/IGlobalType";
 import { getCellTypeKey } from "../utils/keyUtil";
-import { getFormattedMergeRange, getFormattedMinRange, getRangeCellList, getRangeRelation, getTargetRange } from "../utils/rangeUtil";
+import { getFormattedMergeRange, getFormattedMinRange, getFormattedRange, getRangeCellList, getRangeRelation, getTargetRange } from "../utils/rangeUtil";
 import EvDriver from "./EvDriver";
 /**
  * 计算总宽度/高度，用于select range展示
@@ -38,7 +38,10 @@ export function isMerged(driver: EvDriver) {
     const merged = driver.content.merged;
     if (selected?.length && merged?.length) {
         // 范围内全部都是合并单元格
-        return selected.findIndex(range => {
+        return selected.filter(range => {
+            range = getFormattedRange(range);
+            return range.from.type !== "header";
+        }).findIndex(range => {
             const isMergeRange = merged.findIndex(mr => getRangeRelation(mr, range, merged) === "same");
             return isMergeRange < 0;
         }) < 0;

@@ -2,7 +2,7 @@ import EvDriver from "../driver/EvDriver";
 import { ICellKey, ICellRange } from "../interfaces/IGlobalType";
 import { IEvPlugin } from "../interfaces/IPlugin";
 import { getCellKeyObj } from "../utils/keyUtil";
-import { getCellRelationToRange, getMergedRange, getRangeRelation } from "../utils/rangeUtil";
+import { getCellRelationToRange, getFormattedRange, getMergedRange, getRangeRelation } from "../utils/rangeUtil";
 interface ISelectResult {
     cellKey: ICellKey;
     clear: boolean;
@@ -85,17 +85,19 @@ export default {
                     return { removed, added: [] };
                 } else {
                     // 合并
-                    // selected range中排除单个单元格/已合并/重叠/被包含/被其他选择范围包含
+                    // selected range中排除单个单元格/已合并/重叠/被包含/被其他选择范围包含/包含表头
                     const removed: ICellRange[] = [];
                     const added: ICellRange[] = [];
                     selected.map((range, idx, ary) => {
+                        range = getFormattedRange(range);
                         const isSingle = getCellRelationToRange(range.from, range, merged) === "same";
                         const isMerged = merged.findIndex(mr => getRangeRelation(range, mr, merged) === "same") >= 0;
                         const isCrossIn = ary.findIndex((r, sidx) => {
                             const rela = getRangeRelation(range, r, merged);
                             return rela === "in" || rela === "part" || (rela === "same" && idx < sidx);
                         }) >= 0;
-                        if (!isSingle && !isMerged && !isCrossIn) {
+                        const includeHeader = range.from.type === "header";
+                        if (!isSingle && !isMerged && !isCrossIn && !includeHeader) {
                             // same已排除，in/part不应该出现
                             const containIdx = merged.findIndex(mr => getRangeRelation(range, mr, merged) === "contain");
                             if (containIdx >= 0) {
