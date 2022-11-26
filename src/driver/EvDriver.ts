@@ -154,11 +154,11 @@ export default class EvDriver {
 
     /*******************其他临时状态 **********************/
     /** 是否正在选择中 */
-    private selectingIn: boolean = false;
+    private selectingIn: ICellKey | false = false;
     get selecting() {
         return this.selectingIn;
     }
-    set selecting(value: boolean) {
+    set selecting(value: ICellKey | false) {
         this.selectingIn = value;
     }
 

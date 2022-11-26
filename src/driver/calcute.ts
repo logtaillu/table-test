@@ -1,6 +1,6 @@
 import { ICellKey, ICellRange } from "../interfaces/IGlobalType";
 import { getCellTypeKey } from "../utils/keyUtil";
-import { getFormattedMinRange, getRangeCellList, getRangeRelation, getTargetRange } from "../utils/rangeUtil";
+import { getFormattedMergeRange, getFormattedMinRange, getRangeCellList, getRangeRelation, getTargetRange } from "../utils/rangeUtil";
 import EvDriver from "./EvDriver";
 /**
  * 计算总宽度/高度，用于select range展示
@@ -17,12 +17,13 @@ export function getLength(driver: EvDriver, dfrom: ICellKey | null, dto: ICellKe
         from: dfrom || startCell,
         to: dto || startCell
     };
-    const { from, to } = getFormattedMinRange(range, driver.content.merged || []);
+    // include取最小格范围，否则取合并格范围
+    const { from, to } = include ? getFormattedMinRange(range, driver.merged || []) : getFormattedMergeRange(range, driver.merged || []);
     const cellRange: ICellRange = {
         from,
         to: type === "row" ? { ...to, col: from.col } : { ...to, row: from.row, type: from.type }
     };
-    const cells = getRangeCellList([cellRange], driver.content.merged || [], driver.content.deep || 0);
+    const cells = getRangeCellList([cellRange], [], driver.content.deep || 0);
 
     const sum = cells.reduce((pre, cur) => {
         const key = getCellTypeKey(cur, type);

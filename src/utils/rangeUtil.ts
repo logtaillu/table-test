@@ -47,7 +47,7 @@ export function getTargetRange(driver: EvDriver, target: IRangeType): ICellRange
  * @returns {ICellRange[]} 范围数组，not formatted, not minTarget
  */
 export function getTargetRangeList(driver: EvDriver, range: IRangeAryType): ICellRange[] {
-    return Array.isArray(range) ? range.map(r=>getTargetRange(driver, r)) : [getTargetRange(driver, range)];
+    return Array.isArray(range) ? range.map(r => getTargetRange(driver, r)) : [getTargetRange(driver, range)];
 }
 
 /***********************范围格式化 ****************************/
@@ -71,16 +71,30 @@ export function compareCell(a: ICellKey, b: ICellKey, type: "row" | "col"): numb
     }
 }
 
+export function getCompareValue(source: ICellKey, compare: ICellKey, type: "row" | "col", valType: "min" | "max") {
+    const compareVal = compareCell(source, compare, type);
+    const needSwitch = valType === "max" ? compareVal < 0 : compareVal > 0;
+    if (needSwitch) {
+        if (type === "row") {
+            source.row = compare.row;
+            source.type = compare.type;
+        } else {
+            source.col = compare.col;
+        }
+    }
+}
+
 /**
  * 范围格式化，左上=>右下
- * @param range 范围
+ * @param range 
  */
-export function getFormattedRange(range: ICellRange): ICellRange {
+ export function getFormattedRange(range: ICellRange) {
     const { from, to } = range;
     // 对比数值
     const isFromColLarger = compareCell(from, to, "col") === 1;
     // 类型不同时header<body，否则对比数值
     const isFromRowLarger = compareCell(from, to, "row") === 1;
+    // 左上=>右下
     return {
         from: {
             col: isFromColLarger ? to.col : from.col,
@@ -93,6 +107,25 @@ export function getFormattedRange(range: ICellRange): ICellRange {
             type: isFromRowLarger ? from.type : to.type
         }
     }
+}
+
+/**
+ * 处理合并单元格交错
+ * @param range 范围
+ */
+export function getMergedRange(range: ICellRange, merged: ICellRange[]): ICellRange {
+    const formatted = getFormattedMinRange(range, merged);
+    merged.map(mr => {
+        mr = getFormattedRange(mr);
+        const r = getRangeRelation(formatted, mr, merged);
+        if (r === "part" || r === "in") {
+            getCompareValue(formatted.from, mr.from, "row", "min");
+            getCompareValue(formatted.from, mr.from, "col", "min");
+            getCompareValue(formatted.to, mr.to, "row", "max");
+            getCompareValue(formatted.to, mr.to, "col", "max");
+        }
+    });
+    return getFormattedMergeRange(formatted, merged);
 }
 
 /**
@@ -140,6 +173,7 @@ export function getFormattedMergeRange(range: ICellRange, merged: ICellRange[]):
  * @param current 当前范围
  * @param target 对比范围
  * @param type 对比类型，row行col列
+ * @param needFormat 阻止循环引用，在getFormattedRange的时候不二次formatted
  * @returns 关系结果
  */
 export function getRangeLineRelation(current: ICellRange, target: ICellRange, type: "row" | "col", merged: ICellRange[]): IRangeRelation {
@@ -211,7 +245,7 @@ export function getRangeCellList(ranges: ICellRange[], merged: ICellRange[], dee
                     pushcell({ type: from.type, col, row });
                 }
             } else {
-                for (let row = from.row; row <= deep; row++) {
+                for (let row = from.row; row < deep; row++) {
                     pushcell({ type: from.type, col, row });
                 }
                 for (let row = 0; row <= to.row; row++) {

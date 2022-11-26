@@ -2,7 +2,7 @@ import EvDriver from "../driver/EvDriver";
 import { ICellKey, ICellRange } from "../interfaces/IGlobalType";
 import { IEvPlugin } from "../interfaces/IPlugin";
 import { getCellKeyObj } from "../utils/keyUtil";
-import { getCellRelationToRange, getRangeRelation } from "../utils/rangeUtil";
+import { getCellRelationToRange, getMergedRange, getRangeRelation } from "../utils/rangeUtil";
 interface ISelectResult {
     cellKey: ICellKey;
     clear: boolean;
@@ -28,7 +28,7 @@ export default {
         selectStart: {
             exec(driver, value: ISelectResult) {
                 const { cellKey, clear } = value;
-                driver.selecting = true;
+                driver.selecting = cellKey;
                 if (clear) {
                     driver.cache.selected = [];
                 }
@@ -48,10 +48,12 @@ export default {
                     // 当前range一定是最后一个range
                     const cur = ranges[ranges.length - 1];
                     const newrange = { from: cur.from, to: cellKey };
-                    if (getRangeRelation(newrange, cur, driver.content.merged || []) === "same") {
+                    if (getRangeRelation(newrange, cur, driver.merged) === "same") {
                         return false;
                     } else {
-                        cur.to = cellKey;
+                        const { from, to } = getMergedRange({ from: driver.selecting, to: cellKey }, driver.merged);
+                        cur.from = from;
+                        cur.to = to;
                     }
 
                 } else {
@@ -68,7 +70,8 @@ export default {
         mergeCell: {
             exec(driver, value) {
                 const selected = driver.content.selected || [];
-                const merged = driver.merged;
+                driver.cache.merged = driver.cache.merged || [];
+                const merged = driver.cache.merged;
                 if (driver.isMerged) {
                     // 拆分：如果merged里有范围相同的，则移除
                     const removed: ICellRange[] = [];
