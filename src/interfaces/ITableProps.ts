@@ -1,6 +1,7 @@
 import React from "react";
+import EvDriver from "../driver/EvDriver";
 import { IDriverCache } from "./IDriverCache";
-import { IGlobalRange, IRowKey } from "./IGlobalType";
+import { ICellKey, IDragItem, IGlobalRange, IRowKey } from "./IGlobalType";
 import { IEvPlugin } from "./IPlugin";
 import { IToolbarItem } from "./IToolbar";
 // 类型渲染：值符合，renderType,else render || defaultRender
@@ -28,20 +29,12 @@ export interface IColumn {
     colSpan?: number;
     /** 对齐*/
     align?: string;
-    /** 渲染header单元格 [unused]*/
-    renderHeader?: () => React.ReactNode;
     /** 渲染body单元格*/
     renderCell?: (text: any, record: any, row: number) => React.ReactNode;
     /** 获取header单元格props*/
     onHeader?: (data: IRenderCol) => React.ReactNode;
     /** 获取body单元格props*/
     onCell?: (record: any, row: number) => React.ReactNode;
-    /** 特定类型渲染时，如果title不是string|number，需要获取header单元格的值 *[unused] */
-    getHeaderValue?: () => any;
-    /** 特定类型渲染时，如果title不是string|number，需要获取body单元格的值 [unused]*/
-    getCellValue?: () => any;
-    /** header类型 [unused]*/
-    headerType?: string;
     /** body类型 [unused]*/
     cellType?: string;
 }
@@ -83,6 +76,10 @@ export interface ITableDriverProps<T = any> {
     onRow?: (column: IRenderCol, rowkey: IRowKey) => any;
     /** 表头行属性 */
     onHeaderRow?: (column: IRenderCol, rowkey: IRowKey) => any;
+    /** 拖拽接收类型 */
+    dropType?: string;
+    /** 自行处理接收操作 */
+    onDrop?: (driver: EvDriver, cell:ICellKey, value: IDragItem) => void;
 }
 
 /** 表格入参 */

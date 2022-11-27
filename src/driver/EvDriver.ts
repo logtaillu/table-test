@@ -172,6 +172,8 @@ export default class EvDriver {
     onHeaderRow: ITableDriverProps["onHeaderRow"] = undefined;
     rowkey: ITableDriverProps["rowkey"] = undefined;
     data: any[] = [];
+    dropType: ITableDriverProps["dropType"] = "";
+    onDrop: ITableDriverProps["onDrop"] = undefined;
 
     update(props: ITableDriverProps) {
         Object.keys(props).map(key => {

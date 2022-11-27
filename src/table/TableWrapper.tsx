@@ -33,7 +33,8 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
         // 语言
         locales,
         // toolbar用到的
-        sources, items, toolbar
+        sources, items, toolbar,
+        onDrop, dropType
     } = props;
     const driver = useDriver();
 
@@ -42,9 +43,10 @@ export default observer(React.forwardRef(function (props: ITableProps, ref) {
         driver.update({
             editable, prefixCls, maxStack,
             lang, globalRange,
-            onRow, onHeaderRow, rowkey
+            onRow, onHeaderRow, rowkey,
+            onDrop, dropType
         });
-    }, [editable, prefixCls, maxStack, lang, globalRange, onRow, onHeaderRow, rowkey]);
+    }, [editable, prefixCls, maxStack, lang, globalRange, onRow, onHeaderRow, rowkey, onDrop, dropType]);
     // columns
     useEffect(() => { 
         driver.init(content, columns, data);

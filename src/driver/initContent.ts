@@ -2,6 +2,7 @@
 import { IDriverCache } from "../interfaces/IDriverCache";
 
 export default (): IDriverCache => ({
+    data:{},
     all: {
         row: { autoHeight: true, rowHeight: 40 },
         // col: { colWidth: 100 },

@@ -64,12 +64,12 @@ export interface ICellCssVars {
     "--ev-bcl"?: string;
     /** 上内边距 */
     "--ev-pt"?: string;
-     /** 下内边距 */
+    /** 下内边距 */
     "--ev-pb"?: string;
-     /** 左内边距 */
+    /** 左内边距 */
     "--ev-pl"?: string;
-     /** 右内边距 */
-     "--ev-pr"?: string;
+    /** 右内边距 */
+    "--ev-pr"?: string;
 }
 
 /**单元格配置 */
@@ -84,6 +84,8 @@ export interface ICellConfig {
     bt?: boolean;
     /** 有无下边框 */
     bb?: boolean;
+    /** body类型 [unused]*/
+    cellType?: string;
 }
 
 

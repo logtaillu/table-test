@@ -1,12 +1,11 @@
 task list
-1. row/col补充 - ok
-2. 内间距
 2. excel sider - excel
 3. 行列选择 - excel
 4. 行列插入/删除 - both-excel可以在中间插入
 问题：改变了row/col count时，合并单元格处理
 ***
 6. drag/drop-excel
+
 ***
 7. sort-data
 8. search-data
@@ -19,13 +18,18 @@ task list
 ***
 14. 直接填写 - both
 15. 数据展示格式设置 - 共同，数据表以列为单位，自定义表选中范围为单行
-日期/图片/选择/颜色/文本/数字
+日期/图片/选择/颜色/文本/数字/check/switch
+类型/类型渲染/
+=>选择框->选项列表
+=>日期、数字-格式
 ***
-1. 选项构建
+1. props功能选项构建
 2. 刷新测试/日志补充
-3. fix 样式问题
+3. 修正样式问题/组件
 4. storybook
+5. 右键操作
 
+select/tooltip/dropdown/pagination/input-number/date-picker
 已完成：
 1. body/header/all select toolbar-data
 1. 样式组件确定并调整 ok
@@ -38,6 +42,8 @@ task list
 8. border
 9. 合并单元格
 10. 范围选择
+1. row/col补充 - ok
+2. 内间距 - ok
 
 
 关于边框：

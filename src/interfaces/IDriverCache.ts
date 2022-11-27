@@ -45,6 +45,8 @@ export interface IDriverCache {
     externalCount?: number;
     /** 表头深度 */
     deep?: number;
+    /** 表格数据 */
+    data?: IRecord<any>;
 }
 
 /** 可用配置字段 */

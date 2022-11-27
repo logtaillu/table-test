@@ -51,7 +51,7 @@ export type IBorderType = "all" | "none" | "left" | "top" | "right" | "bottom" |
  * part - 部分重叠，交错  
  * contain 包含
  */
- export type IRangeRelation = "in" | "out" | "same" | "part" | "contain";
+export type IRangeRelation = "in" | "out" | "same" | "part" | "contain";
 
 /** 单元格序号对象 */
 export interface ICellKey {
@@ -80,3 +80,17 @@ export interface ICellRange {
 /** 可用范围传参 */
 export type IRangeType = ICellRange | ICellKey | IRowKey | IColKey | false | IGlobalRange;
 export type IRangeAryType = IRangeType | Array<ICellKey | IRowKey | IColKey | ICellRange>;
+
+/** 拖拽单元格 */
+/** 值类型 */
+export type ICellDataType = "img" | "text" | "date" | "select" | "color" | "number" |"checkbox"|"switch";
+export interface IDragItem {
+    /** 值内容 */
+    value: any;
+    /** 值类型 */
+    format?: string;
+    /** 类型 */
+    type?: string;
+    /** 其他自定义内容 */
+    info?: any;
+}
