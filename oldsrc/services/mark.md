@@ -1,6 +1,0 @@
-1. enrichData,补充行/列数[excel]
-2. excelSider,类execl行列头[excel]
-3. resizeableGrid,resizeable行高列宽，及展示[execel,data]
-4. redoundo，撤销、重做的事件监听[excel,data]
-5. styleSetter，样式操作[excel,data]
-6. enrichKey,设置data-cellkey和data-rownum,基础项[excel,data]

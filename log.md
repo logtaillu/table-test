@@ -84,8 +84,15 @@ tbody-trow-td
 column/data 和content的优先级问题
 1. content作为修改过程存储，更加优先
 2. column/data内容不去变更
-与数据强相关的是column/data/conent
-任意一个改变时，做重置操作
-a.有1个initContent，和一个content
-b.个别量做init
-column/data如果有什么关联量，反映到initContent
+
+行列插入及excel sider及data/content/column改变
+1. data/content/column改变
+任一改变重置
+2. 行号/列号改造
+    colkey/rowkey: [keyvalue,keyvalue]，对插入方便
+    列插入：增加一个colkey，然后columns里也要塞进取
+    行插入：增加一个rowkey
+    行删除/列删除：删除key并移除配置，处理selected/merged范围
+3. cell有extra类型，在非editable时是没有的
+4. 刷新监测
+5. 输入组件显示[tooltip/input-number]
