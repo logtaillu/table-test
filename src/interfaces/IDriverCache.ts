@@ -78,3 +78,9 @@ export interface IRangeSetter {
 }
 /** 批量范围设值 */
 export type IMultiRangeSetter = Array<IRangeSetter>;
+/** bodyrow缓存 */
+export interface IBodyRow {
+    /** 行key */
+    key: string;
+    record: any;
+}
