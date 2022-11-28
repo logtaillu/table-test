@@ -1,9 +1,9 @@
 /** 内容store */
 import { makeAutoObservable } from "mobx";
 import { IDriverCache } from "../../interfaces/IDriverCache";
-import { IRowKey } from "../../interfaces/IGlobalType";
 import { IRenderCol } from "../../interfaces/ITableProps";
 import EvDriver from "../EvDriver";
+import { getInitCache, mergeByTarget } from "./init";
 
 export default class ContentStore {
     driver: EvDriver;
@@ -25,7 +25,15 @@ export default class ContentStore {
         key: string,
         record?: any
     }> = [];
+    // 表头深度
     get deep() {
         return this.columns.length;
+    }
+    // 设置content
+    set cache(content: IDriverCache | undefined) {
+        mergeByTarget(content || {}, getInitCache());
+        this.content = content || {};
+        this.driver.action.actionStack = [];
+        this.driver.action.undoStack = [];
     }
 }
