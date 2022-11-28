@@ -3,7 +3,7 @@
  */
 
 import { ICellConfig, ICellCssVars, IColConfig, IGlobalBorderConfig, IRowConfig } from "./IConfig";
-import { IBaseValueType, ICellRange, IExtendValueType, IGlobalRange, IRangeAryType } from "./IGlobalType";
+import { ICellRange, IColKey, IExtendValueType, IGlobalRange, IRangeAryType, IRowKey } from "./IGlobalType";
 
 /** record类型，key是行/列/单元格的key */
 export type IRecord<T> = Record<string, T>;
@@ -36,17 +36,20 @@ export interface IDriverCache {
     merged?: ICellRange[];
     /** 选择范围，可not formatted, not mintarget */
     selected?: ICellRange[];
-    // 计数相关字段
+    /** 表格数据 */
+    data?: IRecord<any>;
+    /** data的隐藏行[body部分] */
+    hiddenRows?: string[];
+    /** column的隐藏列 */
+    hiddenCols?: string[];
+    /** data的插入行[body部分] */
+    insertRows?: IRecord<string[]>;
+    /** column的插入列 */
+    insertCols?: IRecord<string[]>;
     /** 数据行数，会用data更新  */
     rowCount?: number;
     /** 数据列数，以最内层计算，会用columns更新 */
     colCount?: number;
-    /** 附加列数，内部计算 */
-    externalCount?: number;
-    /** 表头深度 */
-    deep?: number;
-    /** 表格数据 */
-    data?: IRecord<any>;
 }
 
 /** 可用配置字段 */

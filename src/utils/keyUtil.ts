@@ -48,7 +48,7 @@ export function getCellTypeKey(cell: ICellKey, type: IBaseValueType) {
  */
 export function getCellKeyObj(keystr: string): ICellKey {
     const [type, row, col] = keystr.split("-");
-    return { type: type as ICellType, row: Number(row), col: Number(col) };
+    return { type: type as ICellType, row, col };
 }
 
 /**
@@ -57,11 +57,11 @@ export function getCellKeyObj(keystr: string): ICellKey {
  */
 export function getRowKeyObj(keystr: string): IRowKey {
     const [type, index] = keystr.split("-");
-    return { type: type as ICellType, row: Number(index) };
+    return { type: type as ICellType, row: index };
 }
 
 export function getColKeyObj(keystr: string): IColKey {
-    return { col: Number(keystr) };
+    return { col: keystr };
 }
 
 /**
@@ -69,7 +69,7 @@ export function getColKeyObj(keystr: string): IColKey {
  */
 export function getCellTypeObj(keystr: string): ICellKey {
     const ary = keystr.split("-");
-    const basecell: ICellKey = { col: 0, row: 0, type: "body" };
+    const basecell: ICellKey = { col: "0", row: "0", type: "body" };
     if (ary.length == 0) {
         return basecell;
     } else if (ary.length === 1) {

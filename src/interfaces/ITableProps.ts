@@ -61,7 +61,14 @@ export type IColumnList = Array<IColumnGroup | IColumn>;
 /** driver传递的Props */
 export interface ITableDriverProps<T = any> {
     /** 编辑状态 */
-    editable?: boolean;
+    editable?: boolean | {
+        /** 列resize */
+        colResizeable?: boolean;
+        /** 行resize */
+        rowResizeable?: boolean;
+        /** 单元格编辑 */
+        cellEditable?: boolean;
+    };
     /** className前缀 */
     prefixCls?: string;
     /** 最大操作栈项数 */
@@ -70,7 +77,7 @@ export interface ITableDriverProps<T = any> {
     lang?: string;
     /** 当前全局类型 */
     globalRange?: IGlobalRange;
-    /** 行key */
+    /** 行key[body部分] */
     rowkey?: (data: T, row: number) => string;
     /** 内容行属性 */
     onRow?: (column: IRenderCol, rowkey: IRowKey) => any;
@@ -111,6 +118,7 @@ export interface ITableProps<T = any> extends ITableDriverProps<T> {
     items?: IToolbarItem[][];
     /** 是否展示工具栏 */
     toolbar?: boolean;
+    
 }
 
 export interface ITableCoreProps extends ITableProps {

@@ -10,12 +10,16 @@ export interface IRowConfig {
     rowHeight?: number;
     /** 是否自动高度 @default true */
     autoHeight?: boolean;
+    /** 额外内容 */
+    extra?: boolean;
 }
 
 /**单列配置 */
 export interface IColConfig {
     /** 列宽, % or px */
     colWidth?: number | string;
+    /** 额外内容 */
+    extra?: boolean;
 }
 
 /** 单元格样式变量 */

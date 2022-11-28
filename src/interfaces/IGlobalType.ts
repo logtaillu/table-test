@@ -56,9 +56,9 @@ export type IRangeRelation = "in" | "out" | "same" | "part" | "contain";
 /** 单元格序号对象 */
 export interface ICellKey {
     /** 类型内行号 */
-    row: number;
+    row: string;
     /** 列号, 复合表头按最内层计算 */
-    col: number;
+    col: string;
     /** 单元格类型 */
     type: ICellType;
 }
@@ -81,9 +81,9 @@ export interface ICellRange {
 export type IRangeType = ICellRange | ICellKey | IRowKey | IColKey | false | IGlobalRange;
 export type IRangeAryType = IRangeType | Array<ICellKey | IRowKey | IColKey | ICellRange>;
 
-/** 拖拽单元格 */
 /** 值类型 */
-export type ICellDataType = "img" | "text" | "date" | "select" | "color" | "number" |"checkbox"|"switch";
+export type ICellDataType = "img" | "text" | "date" | "select" | "color" | "number" |"checkbox"|"switch" | string;
+/** 拖拽单元格 */
 export interface IDragItem {
     /** 值内容 */
     value: any;

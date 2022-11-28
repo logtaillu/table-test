@@ -96,3 +96,24 @@ column/data 和content的优先级问题
 3. cell有extra类型，在非editable时是没有的
 4. 刷新监测
 5. 输入组件显示[tooltip/input-number]
+
+
+
+假设的可能情况：动态显隐列，分页
+1. range操作key=>序号
+2. 遍历操作
+3. 记录column/data的插入/删除
+4. column/data改变
+
+content存储
+insert:{pos,key}
+hidden:keys
+临时缓存
+外层的column/data转化掉
+columns：层叠columns
+flatCols：底层columns
+colkeymap:key=>number;
+rowkeymap:key=>number;
+rows: rowkey[]
+content/data/column
+
