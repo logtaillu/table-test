@@ -1,7 +1,7 @@
 /** 列宽部分，因为thead有可能不展示 */
 import React from 'react'
 import { observer } from 'mobx-react-lite'
-import { useDriver } from '../DriverContext'
+import { useDriver } from '../../../src/table/context/DriverContext'
 import { getColKey } from '../../utils/keyUtil';
 const ColItem = observer(function (props: { value }) {
     const driver = useDriver();

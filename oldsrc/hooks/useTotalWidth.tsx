@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useDriver } from "../table/DriverContext";
+import { useDriver } from "../../src/table/context/DriverContext";
 
 export default (width: number, expand: boolean) => {
     const driver = useDriver();

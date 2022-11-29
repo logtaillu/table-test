@@ -6,7 +6,7 @@ import React from 'react'
 import { ICellType } from '../../interfaces/IGlobalType';
 import { getCellCssVars } from '../../utils/borderUtil';
 import { getCellKey } from '../../utils/keyUtil';
-import { useDriver } from '../DriverContext';
+import { useDriver } from '../../../src/table/context/DriverContext';
 export interface IAutoHeightComponent {
     component: "td" | "th";
     row: number;

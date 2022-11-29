@@ -1,7 +1,7 @@
 /** tbody */
 import React from 'react'
 import { observer } from 'mobx-react-lite'
-import { useDriver } from '../DriverContext';
+import { useDriver } from '../../../src/table/context/DriverContext';
 import TableRow from '../row/TableRow';
 import { getValue } from '../../utils/valueUtil';
 import { toJS } from 'mobx';

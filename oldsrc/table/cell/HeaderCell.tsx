@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { observer } from "mobx-react-lite";
 import { IRenderCol } from '../../interfaces/ITableProps';
 import AutoHeightComponent from './AutoHeightComponent';
-import { useDriver } from '../DriverContext';
+import { useDriver } from '../../../src/table/context/DriverContext';
 import { Resizable } from 'react-resizable';
 import { getColKey } from '../../utils/keyUtil';
 import useResize from '../../hooks/useResize';

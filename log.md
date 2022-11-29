@@ -105,15 +105,13 @@ column/data 和content的优先级问题
 3. 记录column/data的插入/删除
 4. column/data改变
 
-content存储
-insert:{pos,key}
-hidden:keys
-临时缓存
-外层的column/data转化掉
-columns：层叠columns
-flatCols：底层columns
-colkeymap:key=>number;
-rowkeymap:key=>number;
-rows: rowkey[]
-content/data/column
+问题：
+data/column/content的关系与改变刷新机制
+column:
+update(column)主动刷新
+最终归到一个content里，但是不要存太多东西
+column用过最多的是100多, column配置也比较多，存下来
+data可能成千上万，但是内容比较简洁，是records列表，额外存一个map找数据
+rowkeys
 
+const driver = new Driver();

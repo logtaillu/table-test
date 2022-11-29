@@ -3,7 +3,7 @@ import React from 'react'
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite'
 import { getValue } from '../../utils/valueUtil';
-import { useDriver } from '../DriverContext';
+import { useDriver } from '../../../src/table/context/DriverContext';
 import TableRow from '../row/TableRow';
 export default observer(function () {
     const driver = useDriver();

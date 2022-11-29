@@ -4,7 +4,7 @@ import EvDriver from '../driver/EvDriver';
 import { ICellRange } from '../interfaces/IGlobalType';
 import { getCellKey } from '../utils/keyUtil';
 import logUtil from '../utils/logUtil';
-import { useDriver } from './DriverContext';
+import { useDriver } from '../../src/table/context/DriverContext';
 export interface ISelectRangeProps {
 }
 

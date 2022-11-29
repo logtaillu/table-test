@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import { observer } from "mobx-react-lite";
 import { ITableProps } from '../interfaces/ITableProps';
 import { IntlProvider } from 'react-intl';
-import { useDriver } from './DriverContext';
+import { useDriver } from '../../src/table/context/DriverContext';
 import Toolbar from './toolbar/Toolbar';
 import messages from "../locales/index";
 import Table from './table/Table';

@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import { observer } from 'mobx-react-lite';
-import { useDriver } from '../DriverContext';
+import { useDriver } from '../../../src/table/context/DriverContext';
 import ToolbarOperation from './ToolbarOperation';
 import { ITableProps } from '../../interfaces/ITableProps';
 

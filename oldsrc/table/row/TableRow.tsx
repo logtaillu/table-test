@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { observer } from "mobx-react-lite";
 import { Resizable } from "react-resizable";
-import { useDriver } from '../DriverContext';
+import { useDriver } from '../../../src/table/context/DriverContext';
 import { ICellType, IRowKey } from '../../interfaces/IGlobalType';
 import { IRenderCol } from '../../interfaces/ITableProps';
 import { getRowKey } from '../../utils/keyUtil';

@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { useIntl } from 'react-intl';
 import DropDown from "rc-dropdown";
 import { IToolbarItem } from '../../interfaces/IToolbar';
-import { useDriver } from '../DriverContext';
+import { useDriver } from '../../../src/table/context/DriverContext';
 import { ITableProps } from '../../interfaces/ITableProps';
 import toolbars from '../../toolbars';
 export interface IToolbarOperation {

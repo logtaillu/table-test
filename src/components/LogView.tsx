@@ -2,10 +2,9 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react-lite'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AiOutlineClear } from 'react-icons/ai';
-import useDeepChange from '../hooks/useDeepChange';
 import logUtil from '../utils/logUtil';
 const LogItem = observer((props: { value, row }) => {
-    const value = useDeepChange(() => props.value);
+    const value = props.value;
         return (
             <tr>
                 <th>{props.row + 1}</th>

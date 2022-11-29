@@ -1,7 +1,7 @@
 import React from 'react'
 import { observer } from "mobx-react-lite";
 import AutoHeightComponent from './AutoHeightComponent';
-import { useDriver } from '../DriverContext';
+import { useDriver } from '../../../src/table/context/DriverContext';
 import { getValue } from '../../utils/valueUtil';
 export interface IBodyCell {
     data: any;

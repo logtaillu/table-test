@@ -1,7 +1,7 @@
 /** table部分 */
 import React, { useEffect, useRef } from 'react'
 import { observer } from 'mobx-react-lite';
-import { useDriver } from '../DriverContext';
+import { useDriver } from '../../../src/table/context/DriverContext';
 import THead from '../header/Thead';
 import ColGroup from '../header/ColGroup';
 import Tbody from '../body/Tbody';

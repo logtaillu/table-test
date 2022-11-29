@@ -5,7 +5,7 @@ import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { observer } from "mobx-react-lite";
 import { ITableCoreProps } from '../interfaces/ITableProps';
 import EvDriver from '../driver/EvDriver';
-import { DriverContext } from './DriverContext';
+import { DriverContext } from '../../src/table/context/DriverContext';
 import TableWrapper from './TableWrapper';
 import { mergeConfig } from '../utils/baseUtil';
 import logUtil from '../utils/logUtil';

@@ -4,24 +4,30 @@ export default class SerialMap<T> {
     // 序号映射
     keymap: Map<string, number> = new Map();
     // id字段
-    key: string = "key";
+    keystr: string = "key";
     constructor(ary?: T[], key?: string) {
         this.ary = ary || [];
-        this.key = key || "key";
+        this.keystr = key || "key";
         this.generateMap();
     }
     // 生成序号列表
     private generateMap() {
         this.keymap.clear();
-        this.ary.map((item, idx) => this.keymap.set(item[this.key], idx));
+        this.ary.map((item, idx) => this.keymap.set(item[this.keystr], idx));
     }
     // 从某个序号更新map
     private updateMap(fromIdx: number) {
         for (let i = fromIdx; i < this.ary.length; i++) {
             const item = this.ary[i];
-            this.keymap.set(item[this.key], i)
+            this.keymap.set(item[this.keystr], i)
         }
     }
+    // 获得序号
+    index(key: string) {
+        const idx = this.keymap.get(key);
+        return typeof (idx) === "number" ? idx : -1;
+    }
+
     // 重置
     set(ary: T[]) {
         this.ary = ary;
@@ -36,6 +42,15 @@ export default class SerialMap<T> {
     has(key: string) {
         return this.keymap.has(key);
     }
+    // 获得key
+    key(index: number) {
+        return index < this.ary.length ? this.ary[index][this.keystr] : "";
+    }
+    // 获得单项
+    item(keyOrIdx: string | number) {
+        const idx = typeof (keyOrIdx) === "number" ? keyOrIdx : this.index(keyOrIdx);
+        return idx < this.ary.length && idx >= 0 ? this.ary[keyOrIdx] : null;
+    }
     // 大小
     size() {
         return this.keymap.size;
@@ -47,14 +62,14 @@ export default class SerialMap<T> {
     // 增加
     add(item: T) {
         this.ary.push(item);
-        this.keymap.set(item[this.key], this.ary.length - 1);
+        this.keymap.set(item[this.keystr], this.ary.length - 1);
     }
     // 删除
     delete(key: string) {
         if (this.keymap.has(key)) {
-            const idx = this.keymap.get(key);
+            const idx = this.index(key);
             this.keymap.delete(key);
-            if (typeof (idx) === "number" && idx >= 0) {
+            if (idx >= 0) {
                 this.ary.splice(idx, 1);
                 this.updateMap(idx);
             }
@@ -67,22 +82,17 @@ export default class SerialMap<T> {
     }
     // 插入在前面
     insertBefore(key: string, ...items: T[]) {
-        const idx = this.keymap.get(key);
-        if (typeof (idx) === "number" && idx >= 0) {
+        const idx = this.index(key);
+        if (idx >= 0) {
             this.insert(idx, ...items);
         }
     }
     // 插入在后面
     insertAfter(key: string, ...items: T[]) {
-        const idx = this.keymap.get(key);
-        if (typeof (idx) === "number" && idx >= 0) {
+        const idx = this.index(key);
+        if (idx >= 0) {
             this.insert(idx + 1, ...items);
         }
-    }
-    // 获得序号
-    index(key: string) {
-        const idx = this.keymap.get(key);
-        return typeof (idx) === "number" ? idx : -1;
     }
     // 遍历
     mapNum(func, start: number, end: number) {
