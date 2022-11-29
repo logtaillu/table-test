@@ -1,4 +1,5 @@
 import zhCN from "./zh-CN";
-export default {
+export const languages: Record<string, any> = {
     "zh-CN": zhCN
-} as Record<string, any>;
+};
+export const defaultLang = "zh-CN";

@@ -2,7 +2,20 @@
  * 单行列单元格数据配置
  */
 
-import { IBorderType } from "./IGlobalType";
+/**
+ * 一个范围的边框类型  
+ * all - 全部  
+ * none - 无边框  
+ * left - 左边框  
+ * right - 右边框  
+ * top - 上边框  
+ * bottom - 下边框  
+ * outter - 外围边框  
+ * inner - 内部边框  
+ * horizontal - 横向  
+ * vertical - 纵向  
+ */
+ export type IBorderType = "all" | "none" | "left" | "top" | "right" | "bottom" | "outter" | "inner" | "horinzontal" | "vertical";
 
 /**单行配置 */
 export interface IRowConfig {
@@ -88,8 +101,10 @@ export interface ICellConfig {
     bt?: boolean;
     /** 有无下边框 */
     bb?: boolean;
-    /** body类型 [unused]*/
-    cellType?: string;
+    /** 值类型*/
+    dataType?: string;
+    /** 单元格数据 */
+    data?: any;
 }
 
 

@@ -1,6 +1,6 @@
 /** 事件监听 */
-import EvDriver from "../driver/EvDriver";
-import { IEventName } from "../interfaces/IPlugin";
+import EvDriver from "../EvDriver";
+import { IEventName } from "../../interfaces/IPlugin";
 
 class EventController {
     private typeEvents: Map<IEventName, any> = new Map();
@@ -8,7 +8,7 @@ class EventController {
     /** 注册控制器 */
     add(driver: EvDriver) {
         this.drivers.push(driver);
-        driver.events.forEach((value, name) => {
+        driver.action.events.forEach((value, name) => {
             this.addEvent(name);
         });
     }
@@ -21,7 +21,7 @@ class EventController {
     }
     /** 事件是否仍然存在 */
     isEventExist(name: IEventName) {
-        const idx = this.drivers.findIndex(d => d.events.has(name));
+        const idx = this.drivers.findIndex(d => d.action.events.has(name));
         return idx >= 0;
     }
 
@@ -31,9 +31,9 @@ class EventController {
         return e => {
             drivers.map(d => {
                 // 是否事件目标
-                if (d.isEventTarget(e)) {
+                if (d.action.isEventTarget(e)) {
                     // 遍历事件并执行
-                    d.events.get(name)?.forEach(item => {
+                    d.action.events.map(name, item => {
                         if (name !== "keydown" || (e.ctrlKey === (!!item.ctrl) && e.key.toLowerCase() === item.key?.toLocaleLowerCase())) {
                             item.func(d, e);
                         }

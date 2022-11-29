@@ -1,5 +1,5 @@
 // 更新对比
-import React, { useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 const deepEqual = (a, b) => {
     if (Array.isArray(a) && Array.isArray(b)) {
         if (a.length === b.length) {
@@ -10,7 +10,7 @@ const deepEqual = (a, b) => {
         const keysa = Object.keys(a);
         const keysb = Object.keys(b);
         if (keysa.length === keysb.length) {
-            return keysa.findIndex(k => a[k] !== b[k]) < 0;
+            return keysa.length === 0 || keysa.findIndex(k => deepEqual(a[k], b[k]) === false) < 0;
         }
         return false;
     } else {
@@ -24,5 +24,7 @@ export default function (value: any) {
     if (!equal) {
         preRef.current = result;
     }
-    return preRef.current;
+    return useMemo(() => {
+        return preRef.current;
+    }, [preRef.current]);
 }

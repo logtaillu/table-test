@@ -18,7 +18,7 @@ export interface IPluginEvent {
 /** 功能插件 */
 export interface IEvPlugin {
     /** 修改Props */
-    enrich?: (props: ITableProps, driver: EvDriver) => ITableProps;
+    enrich?: (props: ITableProps) => ITableProps;
     /** 操作处理对象map */
     actions?: IActionServiceMap;
     /** 事件列表 */

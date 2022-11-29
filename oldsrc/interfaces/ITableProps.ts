@@ -69,12 +69,6 @@ export interface ITableDriverProps<T = any> {
         /** 单元格编辑 */
         cellEditable?: boolean;
     };
-    /** className前缀 */
-    prefixCls?: string;
-    /** 最大操作栈项数 */
-    maxStack?: number;
-    /** 当前语言 */
-    lang?: string;
     /** 当前全局类型 */
     globalRange?: IGlobalRange;
     /** 行key[body部分] */
@@ -106,12 +100,6 @@ export interface ITableProps<T = any> extends ITableDriverProps<T> {
     scroll?: boolean;
     /** 是否最小100% */
     expand?: boolean;
-    /** 样式名 */
-    className?: string;
-    /** 内联样式 */
-    style?: React.CSSProperties;
-    /** 自定义语言文本 */
-    locales?: Record<string, any>;
     /** 工具栏资源map */
     sources?: Record<string, any>;
     /** 工具栏配置 */

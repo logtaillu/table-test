@@ -18,61 +18,6 @@ import { getLength, isMerged } from "./calcute";
 import initData from "./initData";
 const defaultPlugins = [base, selectRange];
 export default class EvDriver {
-    constructor() {
-        makeAutoObservable(this, {
-            tableRef: observable.ref
-        });
-    }
-    /*******************事件与操作处理注册 **********************/
-    /** 事件按类型列表 */
-    events: Map<keyof WindowEventMap, Set<IPluginEvent>> = new Map();
-    /** 表格元素 */
-    tableRef: HTMLDivElement | null = null;
-    /** 注册插件 */
-    register(plugins: IEvPlugin[]) {
-        plugins = defaultPlugins.concat(plugins);
-        plugins.map(p => {
-            const { events = [], actions = {} } = p;
-            Object.keys(actions).map(key => this.acServiceMap.set(key, actions[key]));
-            events.map(event => {
-                if (!this.events.has(event.name)) {
-                    this.events.set(event.name, new Set([event]));
-                } else {
-                    this.events.get(event.name)?.add(event);
-                }
-            });
-        });
-        eventUtil.add(this);
-    }
-    /** 插件全部移除 */
-    remove() {
-        eventUtil.remove(this);
-        this.events.clear();
-        this.acServiceMap.clear();
-    }
-    /** 是否事件目标 */
-    isEventTarget(e) {
-        const wrapper = e.target?.closest(`div.${this.prefix("table-core")}`);
-        return wrapper === this.tableRef;
-    }
-    /*******************动作处理 **********************/
-    /** 操作栈 */
-    actionStack: IActionStack = [];
-    /** 回退栈 */
-    undoStack: IActionStack = [];
-    /** 操作处理对象map */
-    acServiceMap: Map<string, IActionService> = new Map();
-    /**最大操作栈记录数，-1代表不限制 */
-    maxStackIn: number = -1;
-    get maxStack(): number {
-        return this.maxStackIn;
-    }
-    set maxStack(value: number | undefined) {
-        this.maxStackIn = typeof (value) === "number" ? value : this.maxStackIn;
-        if (this.maxStackIn >= 0 && this.actionStack.length > this.maxStackIn) {
-            this.actionStack.splice(0, this.actionStack.length - this.maxStackIn);
-        }
-    }
 
     /**对外的执行动作函数 */
     exec(type: string, value?: any, keep?: boolean) {
@@ -85,14 +30,6 @@ export default class EvDriver {
     /** 回退 */
     undo() {
         undo(this);
-    }
-    /** 是否可以undo */
-    get undoEnable() {
-        return this.actionStack.length > 0;
-    }
-    /** 是否可以redo */
-    get redoEnable() {
-        return this.undoStack.length;
     }
     /** 是否右选择范围 */
     get haveSelectRange() {
@@ -164,8 +101,6 @@ export default class EvDriver {
         this.selectingIn = value;
     }
 
-    lang: string = navigator.language;
-    prefixCls: string = "ev";
     editable: boolean = false;
     globalRange: IGlobalRange = "all";
     onRow: ITableDriverProps["onRow"] = undefined;
@@ -181,12 +116,6 @@ export default class EvDriver {
                 this[key] = props[key];
             }
         });
-    }
-    /**获取带前缀样式
-     * @param cls {string} 样式名
-     */
-    prefix(cls: string = "") {
-        return cls.length ? cls.split(" ").filter(s => !!s).map(s => this.prefixCls + "-" + s).join(" ") : this.prefixCls;
     }
 
     /** 底层columns列表 */

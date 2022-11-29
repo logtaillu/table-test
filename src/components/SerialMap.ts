@@ -29,7 +29,7 @@ export default class SerialMap<T> {
     }
 
     // 重置
-    set(ary: T[]) {
+    reset(ary: T[]) {
         this.ary = ary;
         this.generateMap();
     }
