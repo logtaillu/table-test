@@ -1,6 +1,18 @@
 import EvDriver from "../driver/EvDriver";
 import { IDriverContent } from "./IDriverContent";
 import { IEvPlugin } from "./IPlugin";
+import { IToolbarItem } from "./IToolbar";
+/** 可编辑类型 */
+export interface IEditable {
+    /** 列resize */
+    colResizeable?: boolean;
+    /** 行resize */
+    rowResizeable?: boolean;
+    /** 单元格编辑 */
+    cellEditable?: boolean;
+    /** 是否有工具栏 */
+    toolbar?: boolean;
+}
 /** 表格入参 */
 export interface ITableProps<T = any> {
     /** 外部提供的driver */
@@ -23,6 +35,12 @@ export interface ITableProps<T = any> {
     className?: string;
     /** 内联样式 */
     style?: React.CSSProperties;
+    /** 是否可编辑 */
+    editable?: boolean | IEditable;
+    /** 工具栏资源map */
+    sources?: Record<string, any>;
+    /** 工具栏配置 */
+    items?: IToolbarItem[][];
 }
 /** ref定义 */
 export interface ITableRef {

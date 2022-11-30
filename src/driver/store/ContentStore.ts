@@ -11,8 +11,14 @@ export default class ContentStore {
         this.driver = driver;
         makeAutoObservable(this, { driver: false });
     }
-    /** 缓存内容 */
+    /** 配置内容 */
     content: IDriverContent = {};
+    /** 不存储的配置内容 */
+    cache: IDriverContent = {};
+    /** 顺序取值对象 */
+    get contents() {
+        return [this.content, this.cache];
+    }
     /** 刷新缓存 */
     refresh(content: ITableProps["content"]) {
         this.content = mergeContent(content);

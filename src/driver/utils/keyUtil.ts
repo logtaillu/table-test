@@ -1,5 +1,6 @@
 /** key值转换函数 */
-import { ICellKey, IRowKey, IColKey, IBaseValueType, ICellType } from "../interfaces/IGlobalType";
+
+import { IBaseValueType, ICellKey, ICellType, IColKey, IRowKey } from "../../interfaces/IDriverContent";
 
 /**
  * string类型cell key
@@ -62,21 +63,4 @@ export function getRowKeyObj(keystr: string): IRowKey {
 
 export function getColKeyObj(keystr: string): IColKey {
     return { col: keystr };
-}
-
-/**
- * 从3种类型的key string转化成cell obj
- */
-export function getCellTypeObj(keystr: string): ICellKey {
-    const ary = keystr.split("-");
-    const basecell: ICellKey = { col: "0", row: "0", type: "body" };
-    if (ary.length == 0) {
-        return basecell;
-    } else if (ary.length === 1) {
-        return { ...basecell, ...getColKeyObj(keystr) };
-    } else if (ary.length === 2) {
-        return { ...basecell, ...getRowKeyObj(keystr) };
-    } else {
-        return getCellKeyObj(keystr);
-    }
 }

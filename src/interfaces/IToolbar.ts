@@ -20,6 +20,8 @@ export interface IToolbarArgs extends  IToolbarArgsNoValue{
 }
 export type IToolbarFunc<T, P = IToolbarArgs> = (args: P) => T;
 export interface IToolbarItemObj {
+    /** 展示模式， 默认有dropdown函数则dropdown，否则btn */
+    mode?: "btn" | "dropdown" | "list";
     /**@description 唯一标识，合并配置时做参考 */
     key: string;
     /**@description 资源列表 */

@@ -38,6 +38,7 @@ export const verticalAlign: IToolbarItemObj = {
 // 内边距
 export const padding: IToolbarItemObj = {
     key: "padding",
+    mode:"dropdown",
     icon: <MdOutlinePadding />,
     source: {
         // 后缀集合

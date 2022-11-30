@@ -9,7 +9,7 @@ import * as borders from "./border";
 import { mergeCell } from "./mergeCell";
 
 class ToolbarItemControler {
-    private itemMap: Record<string, IToolbarItemObj> = {
+    itemMap: Record<string, IToolbarItemObj> = {
         redo, undo, globalRange, autoHeight, size, ...fonts, ...aligns, ...borders, mergeCell
     };
     // 注册
@@ -24,5 +24,5 @@ class ToolbarItemControler {
     }
 
 };
-const toolbars = new ToolbarItemControler();
-export default toolbars;
+const toolbarItems = new ToolbarItemControler();
+export default toolbarItems;

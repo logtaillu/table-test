@@ -6,6 +6,8 @@ import { IntlProvider } from 'react-intl';
 import { useDriver } from '../context/DriverContext';
 import logUtil from '../../utils/logUtil';
 import { toJS } from 'mobx';
+import Toolbar from '../toolbar/Toolbar';
+import Table from '../table/Table';
 export default observer(function () {
     const driver = useDriver();
     const messages = driver.props.getMessages();
@@ -19,7 +21,10 @@ export default observer(function () {
             locale={driver.props.lang}
         >
             <div className={wrapperCls} style={style}>
-                xxx
+                {/* <Toolbar/> */}
+                <div className={driver.props.prefix("inner")}>
+                    <Table/>
+                </div>
             </div>
         </IntlProvider>
     )
