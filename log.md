@@ -105,14 +105,17 @@ column/data 和content的优先级问题
 3. 记录column/data的插入/删除
 4. column/data改变
 
-问题：
-data/column/content的关系与改变刷新机制
-column:
-update(column)主动刷新
-最终归到一个content里，但是不要存太多东西
-column用过最多的是100多, column配置也比较多，存下来
-data可能成千上万，但是内容比较简洁，是records列表，额外存一个map找数据
-rowkeys
+***
+问题点梳理：
+content量
+rows/columns/headers，代表了存在的所有keys
+1. 分页
+render的时候取这一段
+2. data、column转化与不存储处理
+转化成cache的内容，并且重置对应的keys,要处理merged
+3. range 由key查找序号
+serial map
+4. 中间插入/删除 columns/data
+serial map
+5. 非data数据用count初始化
 
-const driver = new Driver();
-还是要先把range部分弄掉

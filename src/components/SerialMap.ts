@@ -10,16 +10,19 @@ export default class SerialMap<T> {
         this.keystr = key || "key";
         this.generateMap();
     }
+    private getkey(item: T) {
+        return item && typeof (item) === "object" ? item[this.keystr] : item;
+    }
     // 生成序号列表
     private generateMap() {
         this.keymap.clear();
-        this.ary.map((item, idx) => this.keymap.set(item[this.keystr], idx));
+        this.ary.map((item, idx) => this.keymap.set(this.getkey(item), idx));
     }
     // 从某个序号更新map
     private updateMap(fromIdx: number) {
         for (let i = fromIdx; i < this.ary.length; i++) {
             const item = this.ary[i];
-            this.keymap.set(item[this.keystr], i)
+            this.keymap.set(this.getkey(item), i)
         }
     }
     // 获得序号
@@ -29,8 +32,8 @@ export default class SerialMap<T> {
     }
 
     // 重置
-    reset(ary: T[]) {
-        this.ary = ary;
+    reset(ary?: T[]) {
+        this.ary = ary || [];
         this.generateMap();
     }
     // 清除
@@ -44,7 +47,7 @@ export default class SerialMap<T> {
     }
     // 获得key
     key(index: number) {
-        return index < this.ary.length ? this.ary[index][this.keystr] : "";
+        return index < this.ary.length ? this.getkey(this.ary[index]) : "";
     }
     // 获得单项
     item(keyOrIdx: string | number) {
@@ -62,7 +65,7 @@ export default class SerialMap<T> {
     // 增加
     add(item: T) {
         this.ary.push(item);
-        this.keymap.set(item[this.keystr], this.ary.length - 1);
+        this.keymap.set(this.getkey(item), this.ary.length - 1);
     }
     // 删除
     delete(key: string) {

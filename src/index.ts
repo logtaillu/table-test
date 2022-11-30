@@ -4,4 +4,5 @@
 // export { default as toolbars } fro../oldsrc/toolbars/indexdex";
 export { default as TableCore } from "./table/core/TableCore";
 export { observer } from "mobx-react-lite";
-export { default as LogView} from "./components/LogView";
+export { default as LogView } from "./components/LogView";
+export { default as EvDriver } from "./driver/EvDriver";

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { TableCore, LogView } from "../src";
+import { TableCore, LogView, observer, EvDriver } from "../src";
 import useUpdate from '../src/hooks/useUpdate';
 import { ITableRef } from '../src/interfaces/ITableProps';
 import "../src/styles/index.less";
@@ -13,19 +13,19 @@ const getData = (str: string, num: number) => {
     }
     return res;
 }
-export default function () {
-    const coreRef = useRef<ITableRef>(null);
-    const update = useUpdate();
+export default observer(function () {
+    const [driver] = useState(new EvDriver());
     useEffect(() => {
-        coreRef.current?.driver.action.on("onContentInit", (value) => {
+        driver.action.on("onContentInit", (value) => {
             console.log(value);
         })
-     }, [coreRef.current]);
+    }, []);
+    const update = useUpdate();
     return (
         <div style={{ padding: 30, background: "#f5f5f5" }}>
             <button onClick={update} className='btn'>更新</button>
             <TableCore
-                ref={coreRef}
+                driver={driver}
                 // tableLayout='fixed'
                 // editable={true}
                 // toolbar={true}
@@ -48,9 +48,9 @@ export default function () {
                 // ]}
                 debug={true}
                 lang="zh-CN"
-                // style={{}}
+            // style={{}}
             />
-            <LogView/>
+            <LogView />
         </div>
     )
-}
+})

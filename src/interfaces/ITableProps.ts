@@ -1,5 +1,5 @@
 import EvDriver from "../driver/EvDriver";
-import { IDriverContent } from "./IDriverContent";
+import { IDriverContent, IGlobalRange } from "./IDriverContent";
 import { IEvPlugin } from "./IPlugin";
 import { IToolbarItem } from "./IToolbar";
 /** 可编辑类型 */
@@ -41,6 +41,15 @@ export interface ITableProps<T = any> {
     sources?: Record<string, any>;
     /** 工具栏配置 */
     items?: IToolbarItem[][];
+    /** 当前globalRange */
+    globalRange?: IGlobalRange;
+
+    /** 初始化用，非存储量 */
+    // data?: T[];
+    // columns?: any[];
+    // rowCount?: number;
+    // colCount?: number;
+    // headerCount?: number;
 }
 /** ref定义 */
 export interface ITableRef {

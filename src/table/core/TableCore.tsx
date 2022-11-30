@@ -21,7 +21,7 @@ const enrichProps = (props: ITableProps) => {
 export default observer(React.forwardRef<ITableRef, ITableProps>(function (props, ref) {
     const plugins = props.plugins;
     props = useDeepChange(enrichProps(props));
-    const { driver: pdriver, content, debug, maxStack, lang, locales, prefixCls, style, className, editable, items, sources } = props;
+    const { driver: pdriver, content, debug, maxStack, lang, locales, prefixCls, style, className, editable, items, sources, globalRange } = props;
     const [driver, setDriver] = useState(() => pdriver || new EvDriver());
 
     // 日志
@@ -45,8 +45,9 @@ export default observer(React.forwardRef<ITableRef, ITableProps>(function (props
         }
     }, [plugins]);
     // 更新
-    useEffect(() => { driver.content.refresh(content); }, [content]);
+    useEffect(() => { driver.content.contentInfo = content; }, [content]);
     useEffect(() => { driver.action.maxStack = maxStack }, [maxStack]);
+    useEffect(() => {driver.content.globalRange = globalRange}, [globalRange]);
     useEffect(() => { 
         driver.props.update({ lang, locales, prefixCls, style, className, editable });
     }, [lang, locales, prefixCls, style, className, editable, items, sources]);

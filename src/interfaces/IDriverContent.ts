@@ -1,6 +1,6 @@
 /** driver content定义 */
 
-import { ICellConfig, IColConfig, IGlobalBorderConfig, IRowConfig } from "./IConfig";
+import { ICellConfig, ICellCssVars, IColConfig, IGlobalBorderConfig, IRowConfig } from "./IConfig";
 
 /** record类型，key是行/列/单元格的key */
 export type IRecord<T> = Record<string, T>;
@@ -30,7 +30,8 @@ export type IBaseValueType = "col" | "row" | "cell" | "wrap";
  * colcell - col层级的cell
  */
 export type IExtendValueType = IBaseValueType | "colcell";
-
+/** 单项取值 */
+export type IContentValueType = IExtendValueType | "single";
 /**
  * 范围间关系  
  * in - 被包含  
@@ -99,7 +100,31 @@ export interface IDriverContent {
     /** 列key列表 */
     columns?: string[];
     /** body行key列表 */
-    bodyRows?: string[];
+    rows?: string[];
     /** header行key列表 */
-    headerRows?: string[];
+    headers?: string[];
 }
+
+/** 可用配置字段 */
+export type IConfigKey = keyof ICellConfig | keyof IRowConfig | keyof IColConfig | keyof ICellCssVars | keyof IGlobalBorderConfig | keyof IDriverContent;
+/** 设值时，目标对象里同时清除值的定义 */
+export type IClearConf = IConfigKey[][];
+/** 范围设值对象 */
+export interface IRangeSetter {
+    /** 类型 */
+    type: IExtendValueType;
+    /** 目标字段路径 */
+    path: IConfigKey[] | IConfigKey;
+    /** 值 */
+    value: any;
+    /** 指定范围 */
+    range?: IRangeAryType;
+    /** 指定的全局范围 */
+    grange?: IGlobalRange;
+    /** 指定的content */
+    content?: IDriverContent;
+    /** 额外需要清除的字段 type - */
+    clears?: IClearConf;
+}
+/** 批量范围设值 */
+export type IMultiRangeSetter = Array<IRangeSetter>;
