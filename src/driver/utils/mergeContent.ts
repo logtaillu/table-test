@@ -1,7 +1,15 @@
 /** 配置初始化函数 */
 
 import { IDriverContent } from "../../interfaces/IDriverContent";
-
+export function getInitContent(): IDriverContent{
+    return {
+        rows: [],
+        columns: [],
+        headers: [],
+        merged: [],
+        selected: []
+    };
+}
 function getDefaultContent(): IDriverContent {
     return ({
         all: {
@@ -29,13 +37,15 @@ function getDefaultContent(): IDriverContent {
                 borderWidth: "1px"
             }
         },
-        bodyRows: [],
+        rows: [],
         columns: [],
-        headerRows: []
+        headers: [],
+        merged: [],
+        selected: []
     })
 };
 /** 写入初始配置 */
-export default function (content?: IDriverContent ) {
+export default function (content?: Partial<IDriverContent>): IDriverContent {
     const init = getDefaultContent();
     if (!content) {
         return init;
@@ -54,5 +64,5 @@ export default function (content?: IDriverContent ) {
         })
     }
     mergeByTarget(content, init);
-    return content;
+    return content as IDriverContent;
 }

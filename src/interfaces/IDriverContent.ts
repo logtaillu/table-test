@@ -94,15 +94,15 @@ export interface IDriverContent {
     /** 整体配置 */
     all?: IGlobalCache;
     /** 合并的单元格，可not foramtted，只针对单类型，body/header不能合并在一起 */
-    merged?: ICellRange[];
+    merged: ICellRange[];
     /** 选择范围，可not formatted, not mintarget */
-    selected?: ICellRange[];
+    selected: ICellRange[];
     /** 列key列表 */
-    columns?: string[];
+    columns: string[];
     /** body行key列表 */
-    rows?: string[];
+    rows: string[];
     /** header行key列表 */
-    headers?: string[];
+    headers: string[];
 }
 
 /** 可用配置字段 */

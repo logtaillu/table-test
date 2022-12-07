@@ -18,7 +18,7 @@ export interface ITableProps<T = any> {
     /** 外部提供的driver */
     driver?: EvDriver;
     /** 外部提供的content */
-    content?: IDriverContent;
+    content?: Partial<IDriverContent>;
     /** 是否输出日志 */
     debug?: boolean | string[];
     /** 最大历史记录数 */

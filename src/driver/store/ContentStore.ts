@@ -1,27 +1,28 @@
 /** content控制 */
 import { makeAutoObservable, toJS } from "mobx";
-import SerialMap from "../../components/SerialMap";
+import ClassifyAry from "../structs/ClassifyAry";
 import { IClearConf, IConfigKey, IContentValueType, IDriverContent, IExtendValueType, IGlobalRange, IMultiRangeSetter, IRangeAryType } from "../../interfaces/IDriverContent";
 import { ITableProps } from "../../interfaces/ITableProps";
 import EvDriver from "../EvDriver";
-import mergeContent from "../utils/mergeContent";
+import mergeContent, { getInitContent } from "../utils/mergeContent";
+import RangeUtil from "../utils/rangeUtil";
 
 export default class ContentStore {
     driver: EvDriver;
+    util: RangeUtil;
     constructor(driver: EvDriver) {
         this.driver = driver;
-        makeAutoObservable(this, { driver: false });
+        this.util = new RangeUtil(this);
+        makeAutoObservable(this, { driver: false, util: false });
     }
     /** 配置内容 */
-    content: IDriverContent = {};
+    content: IDriverContent = getInitContent();
     /** 不存储的配置内容 */
-    cache: IDriverContent = {};
-    /** body行 */
-    rows: SerialMap<string> = new SerialMap();
+    cache: IDriverContent = getInitContent();
+    /** 行 */
+    rows: ClassifyAry<string> = new ClassifyAry();
     /** 列 */
-    columns: SerialMap<string> = new SerialMap();
-    /** header行 */
-    headers: SerialMap<string> = new SerialMap();
+    columns: ClassifyAry<string> = new ClassifyAry();
     /** 当前全局范围 */
     grange: IGlobalRange = "all";
     set globalRange(value: ITableProps["globalRange"]) {
@@ -36,9 +37,13 @@ export default class ContentStore {
     /** 刷新content */
     set contentInfo(content: ITableProps["content"]) {
         this.content = mergeContent(content);
-        this.rows.reset(this.content.rows);
-        this.columns.reset(this.content.columns);
-        this.headers.reset(this.content.headers);
+        this.rows.set([
+            ["header", this.content.headers],
+            ["body", this.content.rows]
+        ]);
+        this.rows.set([
+            ["columns", this.content.columns]
+        ]);
         this.driver.action.execHook("onContentInit", toJS(this.content));
     }
     /**范围取值 */

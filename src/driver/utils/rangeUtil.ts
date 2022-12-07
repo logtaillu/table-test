@@ -1,7 +1,36 @@
 import ContentStore from "../store/ContentStore";
 import { ICellKey, ICellRange, IGlobalRange, IRangeAryType, IRangeRelation, IRangeType } from "../../interfaces/IDriverContent";
 import { getAry } from "./valueUtil";
-import { getCellKey } from "./keyUtil";
+export default class RangeUtil {
+    store: ContentStore;
+    constructor(store: ContentStore) {
+        this.store = store;
+    }
+    /** 获取起始/结束单元格 
+     * @param store 存储
+     * @param grange 全局范围类型
+     * @param type 起点还是终点
+    */
+    getCornerCell(grange: IGlobalRange = "all", type: "start" | "end" = "end"): ICellKey | null{
+        const store = this.store;
+        const istart = type === "start";
+        if (store.columns.size()) {
+            const col = istart ? store.columns.key(0)?.key : store.columns.lastKey();
+            if (grange === "header") {
+                const row = istart ? store.rows.typeKey("header", 0) : store.rows.typeLastKey("header");
+                return row ? { row, col, type: "header" } : null;
+            } else if (grange === "body") {
+                const row = istart ? store.rows.typeKey("body", 0) : store.rows.typeLastKey("body");
+                return row ? { row, col, type: "body" } : null;
+            } else {
+                const row = istart ? store.rows.key(0) : store.rows.lastKey();
+                // return row ? { row, col, type: "body" } : null;
+            }
+        }
+    }
+
+}
+
 /***********************范围查找 ****************************/
 /** 获取起始/结束单元格 
  * @param store 存储
